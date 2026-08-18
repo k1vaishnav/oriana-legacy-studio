@@ -15,8 +15,8 @@ export function Reveal({ children, delay = 0, className, as = "div" }: RevealPro
   return (
     <Component
       className={className}
-      initial={reduced ? undefined : { opacity: 0, y: 26 }}
-      whileInView={reduced ? undefined : { opacity: 1, y: 0 }}
+      initial={reduced ? false : { opacity: 0, y: 26 }}
+      whileInView={reduced ? {} : { opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-12%" }}
       transition={{ duration: 1, delay, ease: [0.16, 1, 0.3, 1] }}
     >
@@ -55,8 +55,8 @@ export function ImageReveal({
       <motion.div
         className="group relative overflow-hidden bg-secondary"
         style={{ aspectRatio: ratio }}
-        initial={reduced ? undefined : { clipPath: "inset(12% 12% 12% 12%)", opacity: 0.4 }}
-        whileInView={reduced ? undefined : { clipPath: "inset(0% 0% 0% 0%)", opacity: 1 }}
+        initial={reduced ? false : { clipPath: "inset(12% 12% 12% 12%)", opacity: 0.4 }}
+        whileInView={reduced ? {} : { clipPath: "inset(0% 0% 0% 0%)", opacity: 1 }}
         viewport={{ once: true, margin: "-10%" }}
         transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
       >
