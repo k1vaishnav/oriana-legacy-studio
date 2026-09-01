@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as PortfolioRouteImport } from './routes/portfolio'
 import { Route as WeddingFilmsRouteImport } from './routes/wedding-films'
 import { Route as WeddingPhotographyRouteImport } from './routes/wedding-photography'
 
@@ -22,6 +23,11 @@ const IndexRoute = IndexRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortfolioRoute = PortfolioRouteImport.update({
+  id: '/portfolio',
+  path: '/portfolio',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WeddingFilmsRoute = WeddingFilmsRouteImport.update({
@@ -38,12 +44,14 @@ const WeddingPhotographyRoute = WeddingPhotographyRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/portfolio': typeof PortfolioRoute
   '/wedding-films': typeof WeddingFilmsRoute
   '/wedding-photography': typeof WeddingPhotographyRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/portfolio': typeof PortfolioRoute
   '/wedding-films': typeof WeddingFilmsRoute
   '/wedding-photography': typeof WeddingPhotographyRoute
 }
@@ -51,20 +59,29 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/portfolio': typeof PortfolioRoute
   '/wedding-films': typeof WeddingFilmsRoute
   '/wedding-photography': typeof WeddingPhotographyRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/wedding-films' | '/wedding-photography'
+  fullPaths:
+    '/' | '/about' | '/portfolio' | '/wedding-films' | '/wedding-photography'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/wedding-films' | '/wedding-photography'
-  id: '__root__' | '/' | '/about' | '/wedding-films' | '/wedding-photography'
+  to: '/' | '/about' | '/portfolio' | '/wedding-films' | '/wedding-photography'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/portfolio'
+    | '/wedding-films'
+    | '/wedding-photography'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  PortfolioRoute: typeof PortfolioRoute
   WeddingFilmsRoute: typeof WeddingFilmsRoute
   WeddingPhotographyRoute: typeof WeddingPhotographyRoute
 }
@@ -83,6 +100,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portfolio': {
+      id: '/portfolio'
+      path: '/portfolio'
+      fullPath: '/portfolio'
+      preLoaderRoute: typeof PortfolioRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/wedding-films': {
@@ -105,6 +129,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  PortfolioRoute: PortfolioRoute,
   WeddingFilmsRoute: WeddingFilmsRoute,
   WeddingPhotographyRoute: WeddingPhotographyRoute,
 }
