@@ -11,9 +11,14 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as OrianaGroupRouteImport } from './routes/oriana-group'
 import { Route as PortfolioRouteImport } from './routes/portfolio'
 import { Route as WeddingFilmsRouteImport } from './routes/wedding-films'
 import { Route as WeddingPhotographyRouteImport } from './routes/wedding-photography'
+import { Route as WeddingPhotographyPackagesRouteImport } from './routes/wedding-photography-packages'
+import { Route as PortfolioIndexRouteImport } from './routes/portfolio.index'
+import { Route as PortfolioRealWeddingsSlugRouteImport } from './routes/portfolio.real-weddings.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -23,6 +28,16 @@ const IndexRoute = IndexRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrianaGroupRoute = OrianaGroupRouteImport.update({
+  id: '/oriana-group',
+  path: '/oriana-group',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PortfolioRoute = PortfolioRouteImport.update({
@@ -40,50 +55,107 @@ const WeddingPhotographyRoute = WeddingPhotographyRouteImport.update({
   path: '/wedding-photography',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WeddingPhotographyPackagesRoute =
+  WeddingPhotographyPackagesRouteImport.update({
+    id: '/wedding-photography-packages',
+    path: '/wedding-photography-packages',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const PortfolioIndexRoute = PortfolioIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PortfolioRoute,
+} as any)
+const PortfolioRealWeddingsSlugRoute =
+  PortfolioRealWeddingsSlugRouteImport.update({
+    id: '/real-weddings/$slug',
+    path: '/real-weddings/$slug',
+    getParentRoute: () => PortfolioRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/portfolio': typeof PortfolioRoute
+  '/faq': typeof FaqRoute
+  '/oriana-group': typeof OrianaGroupRoute
+  '/portfolio': typeof PortfolioRouteWithChildren
   '/wedding-films': typeof WeddingFilmsRoute
   '/wedding-photography': typeof WeddingPhotographyRoute
+  '/wedding-photography-packages': typeof WeddingPhotographyPackagesRoute
+  '/portfolio/': typeof PortfolioIndexRoute
+  '/portfolio/real-weddings/$slug': typeof PortfolioRealWeddingsSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/portfolio': typeof PortfolioRoute
+  '/faq': typeof FaqRoute
+  '/oriana-group': typeof OrianaGroupRoute
   '/wedding-films': typeof WeddingFilmsRoute
   '/wedding-photography': typeof WeddingPhotographyRoute
+  '/wedding-photography-packages': typeof WeddingPhotographyPackagesRoute
+  '/portfolio': typeof PortfolioIndexRoute
+  '/portfolio/real-weddings/$slug': typeof PortfolioRealWeddingsSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/portfolio': typeof PortfolioRoute
+  '/faq': typeof FaqRoute
+  '/oriana-group': typeof OrianaGroupRoute
+  '/portfolio': typeof PortfolioRouteWithChildren
   '/wedding-films': typeof WeddingFilmsRoute
   '/wedding-photography': typeof WeddingPhotographyRoute
+  '/wedding-photography-packages': typeof WeddingPhotographyPackagesRoute
+  '/portfolio/': typeof PortfolioIndexRoute
+  '/portfolio/real-weddings/$slug': typeof PortfolioRealWeddingsSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/about' | '/portfolio' | '/wedding-films' | '/wedding-photography'
+    | '/'
+    | '/about'
+    | '/faq'
+    | '/oriana-group'
+    | '/portfolio'
+    | '/wedding-films'
+    | '/wedding-photography'
+    | '/wedding-photography-packages'
+    | '/portfolio/'
+    | '/portfolio/real-weddings/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/portfolio' | '/wedding-films' | '/wedding-photography'
+  to:
+    | '/'
+    | '/about'
+    | '/faq'
+    | '/oriana-group'
+    | '/wedding-films'
+    | '/wedding-photography'
+    | '/wedding-photography-packages'
+    | '/portfolio'
+    | '/portfolio/real-weddings/$slug'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/faq'
+    | '/oriana-group'
     | '/portfolio'
     | '/wedding-films'
     | '/wedding-photography'
+    | '/wedding-photography-packages'
+    | '/portfolio/'
+    | '/portfolio/real-weddings/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  PortfolioRoute: typeof PortfolioRoute
+  FaqRoute: typeof FaqRoute
+  OrianaGroupRoute: typeof OrianaGroupRoute
+  PortfolioRoute: typeof PortfolioRouteWithChildren
   WeddingFilmsRoute: typeof WeddingFilmsRoute
   WeddingPhotographyRoute: typeof WeddingPhotographyRoute
+  WeddingPhotographyPackagesRoute: typeof WeddingPhotographyPackagesRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -100,6 +172,20 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/oriana-group': {
+      id: '/oriana-group'
+      path: '/oriana-group'
+      fullPath: '/oriana-group'
+      preLoaderRoute: typeof OrianaGroupRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/portfolio': {
@@ -123,15 +209,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WeddingPhotographyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/wedding-photography-packages': {
+      id: '/wedding-photography-packages'
+      path: '/wedding-photography-packages'
+      fullPath: '/wedding-photography-packages'
+      preLoaderRoute: typeof WeddingPhotographyPackagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portfolio/': {
+      id: '/portfolio/'
+      path: '/'
+      fullPath: '/portfolio/'
+      preLoaderRoute: typeof PortfolioIndexRouteImport
+      parentRoute: typeof PortfolioRoute
+    }
+    '/portfolio/real-weddings/$slug': {
+      id: '/portfolio/real-weddings/$slug'
+      path: '/real-weddings/$slug'
+      fullPath: '/portfolio/real-weddings/$slug'
+      preLoaderRoute: typeof PortfolioRealWeddingsSlugRouteImport
+      parentRoute: typeof PortfolioRoute
+    }
   }
 }
+
+interface PortfolioRouteChildren {
+  PortfolioIndexRoute: typeof PortfolioIndexRoute
+  PortfolioRealWeddingsSlugRoute: typeof PortfolioRealWeddingsSlugRoute
+}
+
+const PortfolioRouteChildren: PortfolioRouteChildren = {
+  PortfolioIndexRoute: PortfolioIndexRoute,
+  PortfolioRealWeddingsSlugRoute: PortfolioRealWeddingsSlugRoute,
+}
+
+const PortfolioRouteWithChildren = PortfolioRoute._addFileChildren(
+  PortfolioRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  PortfolioRoute: PortfolioRoute,
+  FaqRoute: FaqRoute,
+  OrianaGroupRoute: OrianaGroupRoute,
+  PortfolioRoute: PortfolioRouteWithChildren,
   WeddingFilmsRoute: WeddingFilmsRoute,
   WeddingPhotographyRoute: WeddingPhotographyRoute,
+  WeddingPhotographyPackagesRoute: WeddingPhotographyPackagesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
