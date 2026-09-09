@@ -79,10 +79,10 @@ function ContactPage() {
     name: "",
     phone: "",
     email: "",
-    functionType: functionTypes[0],
+    functionType: "Wedding",
     date: "",
     venue: "",
-    place: coverage[0],
+    place: coverage[0] ?? "Kozhikode / Calicut",
     needs: [] as string[],
     message: "",
   });
