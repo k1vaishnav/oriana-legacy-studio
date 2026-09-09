@@ -52,9 +52,8 @@ export const Route = createFileRoute("/oriana-group")({
   component: OrianaGroupPage,
 });
 
-export default function noop() {
-  return null;
-}
+
+
 
 function OrianaGroupPage() {
   return (

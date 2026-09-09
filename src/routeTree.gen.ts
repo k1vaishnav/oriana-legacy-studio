@@ -11,9 +11,11 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as ContactRouteImport } from './routes/contact'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as OrianaGroupRouteImport } from './routes/oriana-group'
 import { Route as PortfolioRouteImport } from './routes/portfolio'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as WeddingFilmsRouteImport } from './routes/wedding-films'
 import { Route as WeddingPhotographyRouteImport } from './routes/wedding-photography'
 import { Route as WeddingPhotographyPackagesRouteImport } from './routes/wedding-photography-packages'
@@ -30,6 +32,11 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FaqRoute = FaqRouteImport.update({
   id: '/faq',
   path: '/faq',
@@ -43,6 +50,11 @@ const OrianaGroupRoute = OrianaGroupRouteImport.update({
 const PortfolioRoute = PortfolioRouteImport.update({
   id: '/portfolio',
   path: '/portfolio',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WeddingFilmsRoute = WeddingFilmsRouteImport.update({
@@ -76,9 +88,11 @@ const PortfolioRealWeddingsSlugRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
   '/oriana-group': typeof OrianaGroupRoute
   '/portfolio': typeof PortfolioRouteWithChildren
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/wedding-films': typeof WeddingFilmsRoute
   '/wedding-photography': typeof WeddingPhotographyRoute
   '/wedding-photography-packages': typeof WeddingPhotographyPackagesRoute
@@ -88,8 +102,10 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
   '/oriana-group': typeof OrianaGroupRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/wedding-films': typeof WeddingFilmsRoute
   '/wedding-photography': typeof WeddingPhotographyRoute
   '/wedding-photography-packages': typeof WeddingPhotographyPackagesRoute
@@ -100,9 +116,11 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
   '/faq': typeof FaqRoute
   '/oriana-group': typeof OrianaGroupRoute
   '/portfolio': typeof PortfolioRouteWithChildren
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/wedding-films': typeof WeddingFilmsRoute
   '/wedding-photography': typeof WeddingPhotographyRoute
   '/wedding-photography-packages': typeof WeddingPhotographyPackagesRoute
@@ -114,9 +132,11 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/contact'
     | '/faq'
     | '/oriana-group'
     | '/portfolio'
+    | '/sitemap.xml'
     | '/wedding-films'
     | '/wedding-photography'
     | '/wedding-photography-packages'
@@ -126,8 +146,10 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/contact'
     | '/faq'
     | '/oriana-group'
+    | '/sitemap.xml'
     | '/wedding-films'
     | '/wedding-photography'
     | '/wedding-photography-packages'
@@ -137,9 +159,11 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/contact'
     | '/faq'
     | '/oriana-group'
     | '/portfolio'
+    | '/sitemap.xml'
     | '/wedding-films'
     | '/wedding-photography'
     | '/wedding-photography-packages'
@@ -150,9 +174,11 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  ContactRoute: typeof ContactRoute
   FaqRoute: typeof FaqRoute
   OrianaGroupRoute: typeof OrianaGroupRoute
   PortfolioRoute: typeof PortfolioRouteWithChildren
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   WeddingFilmsRoute: typeof WeddingFilmsRoute
   WeddingPhotographyRoute: typeof WeddingPhotographyRoute
   WeddingPhotographyPackagesRoute: typeof WeddingPhotographyPackagesRoute
@@ -174,6 +200,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/faq': {
       id: '/faq'
       path: '/faq'
@@ -193,6 +226,13 @@ declare module '@tanstack/react-router' {
       path: '/portfolio'
       fullPath: '/portfolio'
       preLoaderRoute: typeof PortfolioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/wedding-films': {
@@ -250,9 +290,11 @@ const PortfolioRouteWithChildren = PortfolioRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  ContactRoute: ContactRoute,
   FaqRoute: FaqRoute,
   OrianaGroupRoute: OrianaGroupRoute,
   PortfolioRoute: PortfolioRouteWithChildren,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   WeddingFilmsRoute: WeddingFilmsRoute,
   WeddingPhotographyRoute: WeddingPhotographyRoute,
   WeddingPhotographyPackagesRoute: WeddingPhotographyPackagesRoute,
