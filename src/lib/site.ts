@@ -80,6 +80,35 @@ export const services = [
   },
 ];
 
+export const groupBrands = [
+  {
+    name: "Oriana Weddings",
+    description:
+      "The wedding division: candid and traditional photography, cinematic wedding films, drone coverage and live screening across Kerala and destination venues.",
+  },
+  {
+    name: "Oriana Studios",
+    description:
+      "Studio portraiture, family sittings, maternity and newborn sessions, and commercial product photography from our Cherooty Road base in Calicut.",
+  },
+  {
+    name: "Oriana Fashion",
+    description:
+      "Editorial and lookbook photography for designers, boutiques and bridal labels, including model direction, styling support and campaign films.",
+  },
+  {
+    name: "Oriana Events",
+    description:
+      "Event coverage and on-ground coordination for engagements, receptions, corporate functions and cultural celebrations.",
+  },
+  {
+    name: "Oriana Luxe",
+    description:
+      "Handcrafted wedding albums, fine-art prints, framed portraits and keepsake boxes finished for archival life.",
+  },
+];
+
+
 export const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
