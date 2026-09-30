@@ -1,401 +1,255 @@
+import { useEffect } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { Instagram, MapPin, MessageCircle, Phone, Mail, Youtube } from "lucide-react";
 
-import { Breadcrumbs, PageHero, SectionHeading } from "@/components/site/Blocks";
-import { Reveal } from "@/components/site/Reveal";
-import { gallery } from "@/lib/portfolio";
-import { SITE_URL, breadcrumbSchema, business, coverage, whatsappHref } from "@/lib/site";
-import { trackEvent } from "@/lib/analytics";
-
-const title = "Contact Oriana Weddings | Wedding Photographers in Calicut, Kerala";
-const description =
-  "Enquire about wedding photography and wedding films with Oriana Weddings in Kozhikode (Calicut), Kerala. Call, WhatsApp or send your wedding date and venue details.";
-
-const trail = [
-  { name: "Home", path: "/" },
-  { name: "Contact", path: "/contact" },
-];
+import { seo } from "@/lib/seo";
+import { EnquiryForm } from "@/components/site/EnquiryForm";
+import { business, offices, whatsappHref } from "@/lib/site";
 
 export const Route = createFileRoute("/contact")({
-  head: () => ({
-    meta: [
-      { title },
-      { name: "description", content: description },
-      { property: "og:title", content: title },
-      { property: "og:description", content: description },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: `${SITE_URL}/contact` },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-    links: [{ rel: "canonical", href: `${SITE_URL}/contact` }],
-    scripts: [
-      {
-        type: "application/ld+json",
-        children: JSON.stringify(breadcrumbSchema(trail)),
-      },
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "ContactPage",
-          name: title,
-          description,
-          url: `${SITE_URL}/contact`,
-          about: { "@id": `${SITE_URL}/#organization` },
-        }),
-      },
-    ],
-  }),
+  head: () =>
+    seo({
+      title:
+        "Contact the Best Photographer in Calicut | Contact the Best Photographer in Kerala | Oriana Weddings",
+      description:
+        "Contact Oriana Weddings for wedding photography, videography and cinematic wedding films in Calicut, Kerala, Ahmedabad, Gujarat, India and destination locations.",
+      path: "/contact",
+    }),
   component: ContactPage,
 });
 
-const functionTypes = [
-  "Wedding",
-  "Christian wedding",
-  "Hindu wedding",
-  "Muslim nikah",
-  "Engagement",
-  "Reception",
-  "Pre-wedding shoot",
-  "Post-wedding shoot",
-  "Other",
-];
+/**
+ * Contact.
+ *
+ * The shortest path on the site, so it has the fewest things in front of it.
+ *
+ * This page carried three large statements before anyone could type anything: a
+ * full-bleed photograph, a display-size hero title, and then a second
+ * display-size title belonging to the form itself. A visitor who came to type a
+ * wedding date scrolled past all three first. There was also a "three ways to
+ * reach us" band, which is a reasonable idea and was doing nothing here — every
+ * channel it offered is still in the aside and in the pinned mobile bar, one
+ * scroll away instead of one screen away.
+ *
+ * So: one heading at text size, then the form. The photograph is gone rather
+ * than moved; nothing about filling in a form needs a background image, and
+ * removing it took a full screen out of the shortest route to an enquiry.
+ *
+ * The other structural fixes:
+ *
+ *   - The reassurance used to sit as an abstract three-step band above the
+ *     form. It now sits next to the send button, where it can actually change a
+ *     decision.
+ *   - A couple handing over their wedding date is trusting a stranger with the
+ *     biggest day of their life. "No payment, no obligation" belongs at the
+ *     moment of that decision, not in a band two screens earlier.
+ *   - On a phone the page is long and the form is at the end of it, so the
+ *     call and WhatsApp actions are pinned to the bottom of the viewport. No
+ *     one should have to scroll to the end of a form to find out they could
+ *     have just rung.
+ */
 
-const requirements = [
-  "Candid photography",
-  "Traditional photography",
-  "Cinematic wedding film",
-  "Teaser / short film",
-  "Drone coverage",
-  "Live screening",
-  "Photobooth",
-  "Album & prints",
+/** What Oriana does with an enquiry. Reassurance, not a process diagram. */
+const NEXT_STEPS = [
+  {
+    step: "01",
+    title: "We read it ourselves",
+    body: "Your enquiry goes to the studio, not to a form inbox that nobody opens until Monday.",
+  },
+  {
+    step: "02",
+    title: "We reply with a plan",
+    body: "You get an honest answer about whether we are the right studio for your date — including when we are not.",
+  },
+  {
+    step: "03",
+    title: "Nothing is locked in",
+    body: "No payment to begin a conversation. We send a proposal you can read properly before you decide anything.",
+  },
 ];
 
 function ContactPage() {
-  const [sent, setSent] = useState(false);
-  const [form, setForm] = useState({
-    name: "",
-    phone: "",
-    email: "",
-    functionType: "Wedding",
-    date: "",
-    venue: "",
-    place: coverage[0] ?? "Kozhikode / Calicut",
-    needs: [] as string[],
-    message: "",
-  });
-
-  const toggleNeed = (value: string) =>
-    setForm((prev) => ({
-      ...prev,
-      needs: prev.needs.includes(value)
-        ? prev.needs.filter((n) => n !== value)
-        : [...prev.needs, value],
-    }));
-
-  const summary = [
-    `Hello Oriana Weddings,`,
-    `Name: ${form.name || "-"}`,
-    `Phone: ${form.phone || "-"}`,
-    form.email ? `Email: ${form.email}` : "",
-    `Function: ${form.functionType}`,
-    `Date: ${form.date || "to be confirmed"}`,
-    `Venue: ${form.venue || "-"}, ${form.place}`,
-    `Requirements: ${form.needs.length ? form.needs.join(", ") : "to discuss"}`,
-    form.message ? `Notes: ${form.message}` : "",
-  ]
-    .filter(Boolean)
-    .join("\n");
-
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    trackEvent("enquiry_submit", { function_type: form.functionType });
-    setSent(true);
-    window.open(whatsappHref(summary), "_blank", "noreferrer");
-  };
-
-  const field =
-    "w-full border border-border bg-transparent px-4 py-3 text-sm outline-none transition-colors focus:border-foreground";
-  const label = "block text-[0.6rem] tracking-[0.22em] uppercase text-muted-foreground";
+  /*
+   * The mobile action bar is fixed to the viewport, so it ends up on top of
+   * whatever sits at the bottom of the document — which is the footer's phone
+   * number and social links. The footer is rendered by the root layout, after
+   * this page, so this page cannot pad it directly. Setting a flag on <body>
+   * and letting the stylesheet do the padding is the one place both can meet.
+   */
+  useEffect(() => {
+    document.body.dataset["pinnedActions"] = "true";
+    return () => {
+      delete document.body.dataset["pinnedActions"];
+    };
+  }, []);
 
   return (
     <>
-      <Breadcrumbs trail={trail} />
-      <PageHero
-        eyebrow="Contact"
-        title={
-          <>
-            Tell us about <em>your day.</em>
-          </>
-        }
-        lede="Share your date, venue and what you have in mind. We will come back with availability, the right team and a package that fits."
-        image={gallery.details.src}
-        imageAlt={gallery.details.alt}
-        imageWidth={gallery.details.width}
-        imageHeight={gallery.details.height}
-      />
+      {/*
+        No hero photograph and no hero headline.
 
-      <section className="shell grid gap-16 py-20 md:grid-cols-12 md:py-28">
-        <div className="md:col-span-5">
-          <Reveal>
-            <h2 className="display-md">
-              Studio in <em>Calicut.</em>
-            </h2>
-          </Reveal>
-          <Reveal delay={0.08}>
-            <address className="mt-8 space-y-1 text-sm not-italic leading-relaxed text-muted-foreground">
-              <div>{business.name}</div>
-              <div>{business.street}</div>
-              <div>
-                {business.city}, {business.region} {business.postalCode}
-              </div>
-            </address>
-          </Reveal>
+        This page used to open on a full-bleed image and a display-size title,
+        then open the form under a second display-size title of its own — two
+        large statements in a row, both of them about the studio rather than
+        about the form. Someone who came to type a date had to scroll past both
+        before reaching a single input, on a page whose only job is that input.
 
-          <Reveal delay={0.14}>
-            <div className="mt-10 space-y-4 text-sm">
-              <a
-                href={business.phoneHref}
-                onClick={() => trackEvent("phone_click", { location: "contact_page" })}
-                className="flex items-center gap-3 transition-colors hover:text-champagne"
-              >
-                <Phone className="size-4" strokeWidth={1.2} /> {business.phone}
-              </a>
-              <a
-                href={business.phoneSecondaryHref}
-                onClick={() => trackEvent("phone_click", { location: "contact_page_secondary" })}
-                className="flex items-center gap-3 transition-colors hover:text-champagne"
-              >
-                <Phone className="size-4" strokeWidth={1.2} /> {business.phoneSecondary}
-              </a>
-              <a
-                href={`mailto:${business.email}`}
-                className="flex items-center gap-3 transition-colors hover:text-champagne"
-              >
-                <Mail className="size-4" strokeWidth={1.2} /> {business.email}
-              </a>
-              <a
-                href={whatsappHref("Hello Oriana Weddings, I'd like to check your availability.")}
-                target="_blank"
-                rel="noreferrer"
-                onClick={() => trackEvent("whatsapp_click", { location: "contact_page" })}
-                className="flex items-center gap-3 transition-colors hover:text-champagne"
-              >
-                <MessageCircle className="size-4" strokeWidth={1.2} /> WhatsApp us
-              </a>
-              <a
-                href={`https://www.google.com/maps/search/?api=1&query=${business.mapQuery}`}
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center gap-3 transition-colors hover:text-champagne"
-              >
-                <MapPin className="size-4" strokeWidth={1.2} /> Get directions
-              </a>
-              <div className="flex items-center gap-6 pt-2">
-                <a
-                  href={business.instagram}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label="Oriana Weddings on Instagram"
-                >
-                  <Instagram className="size-4" strokeWidth={1.2} />
-                </a>
-                <a
-                  href={business.youtube}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label="Oriana Weddings on YouTube"
-                >
-                  <Youtube className="size-4" strokeWidth={1.2} />
-                </a>
-              </div>
-            </div>
-          </Reveal>
-        </div>
-
-        <div className="md:col-span-7">
-          <Reveal>
-            <div className="border border-border">
-              <iframe
-                title="Oriana Weddings studio location in Kozhikode, Kerala"
-                src={`https://www.google.com/maps?q=${business.mapQuery}&output=embed`}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                className="h-[320px] w-full md:h-[420px]"
-              />
-            </div>
-          </Reveal>
+        So the heading is now one line at text size, and the form is the first
+        thing on the page. The photograph is gone rather than moved: nothing
+        about a contact form needs a background image, and dropping it takes a
+        full screen of scrolling out of the shortest path to an enquiry.
+      */}
+      <section className="surface-cream pt-14 pb-4 sm:pt-20" aria-labelledby="contact-heading">
+        <div className="shell">
+          <p className="eyebrow">Contact</p>
+          <h1 id="contact-heading" className="mt-4 max-w-[24ch] font-display text-h2 text-ink">
+            Tell us the date. We will tell you the rest.
+          </h1>
+          <p className="lede mt-4">
+            Write what you know and leave the rest blank. We read every enquiry ourselves and reply
+            the same day, usually the same evening.
+          </p>
         </div>
       </section>
 
-      <section className="border-t border-border bg-secondary/40">
-        <div className="shell py-20 md:py-28">
-          <SectionHeading
-            index="01"
-            eyebrow="Enquiry"
-            title={
-              <>
-                Send your wedding <em>details.</em>
-              </>
-            }
+      {/* The form first, on white. The page ground is cream; the card is the
+          one true white on the site, which is exactly what a panel of inputs
+          wants to be — paper on a spread. */}
+      {/* Bottom padding clears the pinned call/WhatsApp bar on phones. */}
+      <section id="enquiry" className="surface-cream pb-32 sm:pb-20">
+        <div className="shell grid gap-10 lg:grid-cols-12 lg:gap-12">
+          <div className="lg:col-span-7">
+            <EnquiryForm />
+
+            {/*
+              Where we are, on the left under the form.
+
+              It used to sit at the bottom of the right-hand column, so a visitor
+              reading top to bottom met the addresses last, after a block of
+              reassurance text that was about the studio's process rather than
+              about the place. Addresses are the other half of "how do I reach
+              you", and they belong with the form that starts the enquiry.
+
+              The box repeats the form's own card — same border, radius, ground
+              and padding — so the two panels line up edge to edge and the page
+              reads as one column with a form in it and a card under it, rather
+              than a form and a stray list of addresses.
+
+              Two offices, two columns. Stacked full height in a seven-column
+              measure they leave a long ragged gap next to the sidebar, and the
+              city names were being set in a class the type ramp does not
+              define, so they inherited body size and read as captions rather
+              than as the headings they are.
+            */}
+            <div className="mt-10 lg:mt-12">
+              <div className="rounded-card border border-line bg-bone p-6 sm:p-9">
+                <p className="eyebrow">Where we are</p>
+                <h2 className="mt-4 max-w-[28ch] font-display text-h3 leading-[1.15] text-ink">
+                  Two offices. One studio, whichever one you visit.
+                </h2>
+
+                <dl className="mt-8 grid gap-9 sm:grid-cols-2 sm:gap-12">
+                  {offices.map((office) => (
+                    <div key={office.city}>
+                      <dd className="font-display text-h3 leading-[1.1] tracking-[-0.015em] text-ink">
+                        {office.city}
+                      </dd>
+                      <dt className="mt-3 text-sm leading-relaxed text-mute">{office.role}</dt>
+                      <dd className="mt-4 text-base leading-relaxed text-mute">
+                        {office.street}
+                        <br />
+                        {office.postcode}
+                      </dd>
+                      <dd className="mt-4">
+                        <a href={office.phoneHref} className="link text-base text-ink">
+                          {office.phone}
+                        </a>
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+            </div>
+          </div>
+
+          <aside className="lg:col-span-4 lg:col-start-9">
+            {/* WhatsApp first and loudest, because on the other side of this
+                form is a real studio that answers messages. A visitor who
+                would rather talk than type should not have to scroll. */}
+            <div className="rounded-card border border-ink bg-bone p-7">
+              <p className="eyebrow">Faster than the form</p>
+              <p className="mt-5 max-w-[30ch] font-display text-h3 leading-[1.15] text-ink">
+                Message us on WhatsApp.
+              </p>
+              <p className="mt-4 max-w-[34ch] text-sm leading-relaxed text-mute">
+                One message is enough — send the date, or a voice note, or nothing more than
+                &ldquo;are you free in February&rdquo;. We read them ourselves.
+              </p>
+              <a
+                href={whatsappHref("Hi Oriana, I'd like to talk about my wedding.")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-ink mt-7 w-full justify-center"
+              >
+                Open WhatsApp
+              </a>
+              <div className="mt-6 border-t border-line pt-5">
+                <a
+                  href={business.phoneHref}
+                  className="flex items-baseline justify-between gap-4 text-sm text-ink"
+                >
+                  <span className="text-mute">Or call the studio</span>
+                  <span className="underline decoration-line underline-offset-4 transition-colors hover:decoration-ink">
+                    {business.phone}
+                  </span>
+                </a>
+              </div>
+            </div>
+
+            <p className="eyebrow mt-12">What happens next</p>
+
+            <ol className="mt-6 flex flex-col gap-6">
+              {NEXT_STEPS.map((item) => (
+                <li key={item.step} className="flex gap-4">
+                  <span className="tabular shrink-0 pt-0.5 text-xs gold">{item.step}</span>
+                  <span>
+                    <span className="block text-sm font-medium text-ink">{item.title}</span>
+                    <span className="mt-1 block max-w-[34ch] text-sm leading-relaxed text-mute">
+                      {item.body}
+                    </span>
+                  </span>
+                </li>
+              ))}
+            </ol>
+          </aside>
+        </div>
+      </section>
+
+      {/*
+        Pinned actions on small screens only.
+
+        The form is the last thing on a long page. Without this, a visitor who
+        changed their mind halfway down — or who never scrolled that far —
+        has no way to reach a human that does not involve more scrolling.
+      */}
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-paper/95 backdrop-blur-sm sm:hidden">
+        <div className="grid grid-cols-2 gap-px bg-line">
+          <a
+            href={business.phoneHref}
+            className="flex items-center justify-center gap-2 bg-paper px-4 py-4 text-sm text-ink"
           >
-            <p className="text-sm leading-relaxed text-muted-foreground">
-              Fill this in and we will open WhatsApp with your details ready to send — the fastest
-              way to reach the studio. You can also call either number directly.
-            </p>
-          </SectionHeading>
-
-          <form onSubmit={onSubmit} className="mt-14 grid gap-6 md:grid-cols-2">
-            <div>
-              <label className={label} htmlFor="name">
-                Your name
-              </label>
-              <input
-                id="name"
-                required
-                className={`${field} mt-3`}
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-              />
-            </div>
-            <div>
-              <label className={label} htmlFor="phone">
-                Phone / WhatsApp
-              </label>
-              <input
-                id="phone"
-                required
-                inputMode="tel"
-                className={`${field} mt-3`}
-                value={form.phone}
-                onChange={(e) => setForm({ ...form, phone: e.target.value })}
-              />
-            </div>
-            <div>
-              <label className={label} htmlFor="email">
-                Email (optional)
-              </label>
-              <input
-                id="email"
-                type="email"
-                className={`${field} mt-3`}
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-              />
-            </div>
-            <div>
-              <label className={label} htmlFor="functionType">
-                Function
-              </label>
-              <select
-                id="functionType"
-                className={`${field} mt-3`}
-                value={form.functionType}
-                onChange={(e) => setForm({ ...form, functionType: e.target.value })}
-              >
-                {functionTypes.map((type) => (
-                  <option key={type} value={type}>
-                    {type}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className={label} htmlFor="date">
-                Wedding date
-              </label>
-              <input
-                id="date"
-                type="date"
-                className={`${field} mt-3`}
-                value={form.date}
-                onChange={(e) => setForm({ ...form, date: e.target.value })}
-              />
-            </div>
-            <div>
-              <label className={label} htmlFor="place">
-                Location
-              </label>
-              <select
-                id="place"
-                className={`${field} mt-3`}
-                value={form.place}
-                onChange={(e) => setForm({ ...form, place: e.target.value })}
-              >
-                {coverage.map((place) => (
-                  <option key={place} value={place}>
-                    {place}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="md:col-span-2">
-              <label className={label} htmlFor="venue">
-                Venue / church / hall
-              </label>
-              <input
-                id="venue"
-                className={`${field} mt-3`}
-                value={form.venue}
-                onChange={(e) => setForm({ ...form, venue: e.target.value })}
-              />
-            </div>
-
-            <fieldset className="md:col-span-2">
-              <legend className={label}>What do you need?</legend>
-              <div className="mt-4 flex flex-wrap gap-3">
-                {requirements.map((item) => {
-                  const active = form.needs.includes(item);
-                  return (
-                    <button
-                      type="button"
-                      key={item}
-                      onClick={() => toggleNeed(item)}
-                      aria-pressed={active}
-                      className={`border px-4 py-2 text-[0.62rem] tracking-[0.2em] uppercase transition-colors ${
-                        active
-                          ? "border-foreground bg-foreground text-primary-foreground"
-                          : "border-border text-muted-foreground hover:border-foreground hover:text-foreground"
-                      }`}
-                    >
-                      {item}
-                    </button>
-                  );
-                })}
-              </div>
-            </fieldset>
-
-            <div className="md:col-span-2">
-              <label className={label} htmlFor="message">
-                Anything else
-              </label>
-              <textarea
-                id="message"
-                rows={4}
-                className={`${field} mt-3`}
-                value={form.message}
-                onChange={(e) => setForm({ ...form, message: e.target.value })}
-              />
-            </div>
-
-            <div className="md:col-span-2 flex flex-wrap items-center gap-6">
-              <button
-                type="submit"
-                className="border border-foreground bg-foreground px-8 py-4 text-[0.62rem] tracking-[0.28em] uppercase text-primary-foreground transition-colors hover:bg-transparent hover:text-foreground"
-              >
-                Send enquiry
-              </button>
-              {sent ? (
-                <p className="text-sm text-muted-foreground">
-                  Your details are ready in WhatsApp — press send there and we will reply shortly.
-                </p>
-              ) : null}
-            </div>
-          </form>
+            Call
+            <span className="text-xs text-mute">{business.phone}</span>
+          </a>
+          <a
+            href={whatsappHref("Hi Oriana, I would like to ask about my wedding.")}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center bg-ink px-4 py-3.5 text-sm text-paper"
+          >
+            WhatsApp
+          </a>
         </div>
-      </section>
+      </div>
     </>
   );
 }

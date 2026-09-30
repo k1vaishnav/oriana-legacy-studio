@@ -1,75 +1,29 @@
-import heroImage from "@/assets/oriana-weddings-calicut-cinematic-wedding-hero.jpg";
-import candidImage from "@/assets/oriana-weddings-kozhikode-candid-bridal-moment.jpg";
-import churchImage from "@/assets/oriana-weddings-calicut-church-wedding-ceremony.jpg";
-import wayanadImage from "@/assets/oriana-weddings-wayanad-pre-wedding-shoot.jpg";
-import filmStill from "@/assets/oriana-weddings-kerala-cinematic-wedding-film-still.jpg";
-import detailsImage from "@/assets/oriana-weddings-kerala-wedding-details-jasmine-gold.jpg";
-import beachImage from "@/assets/oriana-weddings-kozhikode-beach-post-wedding-portrait.jpg";
-import aerialImage from "@/assets/oriana-weddings-kerala-drone-wedding-venue-aerial.jpg";
+import type { ImageKey } from "./image-manifest";
 
-export const gallery = {
-  hero: {
-    src: heroImage,
-    width: 1920,
-    height: 1280,
-    alt: "Kerala bride and groom in cream and gold attire walking through a sunlit Calicut courtyard, photographed by Oriana Weddings",
-  },
-  candid: {
-    src: candidImage,
-    width: 1024,
-    height: 1408,
-    alt: "Bride laughing with her sisters while getting ready for a Kerala wedding in Kozhikode",
-  },
-  church: {
-    src: churchImage,
-    width: 1408,
-    height: 1008,
-    alt: "Bride and groom exchanging rings during a church wedding ceremony in Calicut",
-  },
-  wayanad: {
-    src: wayanadImage,
-    width: 1600,
-    height: 1008,
-    alt: "Couple on a misty Wayanad tea estate during a pre-wedding shoot at sunrise",
-  },
-  film: {
-    src: filmStill,
-    width: 1920,
-    height: 1088,
-    alt: "Cinematic wedding film still of a bride's veil catching evening light at a Kerala reception",
-  },
-  details: {
-    src: detailsImage,
-    width: 1200,
-    height: 1200,
-    alt: "Jasmine flowers and gold bangles arranged on silk, a Kerala wedding detail",
-  },
-  beach: {
-    src: beachImage,
-    width: 1408,
-    height: 1008,
-    alt: "Couple walking along a Kozhikode beach at golden hour for a post-wedding portrait session",
-  },
-  aerial: {
-    src: aerialImage,
-    width: 1600,
-    height: 1008,
-    alt: "Aerial drone view of a Kerala wedding venue surrounded by coconut palms",
-  },
-} as const;
-
-export type GalleryKey = keyof typeof gallery;
-
+/**
+ * Individual wedding stories.
+ *
+ * The slugs are the site's long-tail search assets: "wedding photographer at
+ * [venue]" is a real query, and a page that names the venue, the district and
+ * the kind of day is the only way to be found for it. So every entry carries a
+ * venue and a location, and they appear in the title, the metadata and the body
+ * — which is also why `src/routes/portfolio.real-weddings.$slug.tsx` builds its
+ * canonical URL and breadcrumb from the same fields.
+ */
 export type Wedding = {
   slug: string;
   title: string;
+  couple: string;
+  /** The venue, named. This is the long-tail keyword. */
+  venue: string;
   location: string;
-  category: "Candid" | "Traditional" | "Church" | "Pre-wedding" | "Destination";
+  type: "Candid" | "Traditional" | "Church" | "Pre-wedding" | "Destination" | "Intimate";
+  coverage: "Photography" | "Videography" | "Photography + Videography";
   season: string;
-  cover: GalleryKey;
+  cover: ImageKey;
   summary: string;
   story: string[];
-  frames: GalleryKey[];
+  frames: ImageKey[];
   services: string[];
 };
 
@@ -77,61 +31,94 @@ export const weddings: Wedding[] = [
   {
     slug: "calicut-church-wedding",
     title: "A Calicut Church Wedding",
+    couple: "Nikhil & Amritha",
+    venue: "St. Mary's Church, Kozhikode",
     location: "Kozhikode, Kerala",
-    category: "Church",
+    type: "Church",
+    coverage: "Photography + Videography",
     season: "January",
-    cover: "church",
+    cover: "calicut-church-wedding-ceremony",
     summary:
-      "Vows beneath stained glass in Calicut, followed by a courtyard reception lit by evening sun.",
+      "Vows beneath stained glass in Calicut, followed by a courtyard reception lit by the last of the evening sun.",
     story: [
-      "The morning began quietly — the family home in Kozhikode filling slowly with cousins, the bride's veil laid out across a bed of jasmine.",
-      "Inside the church, the light fell in long coloured bars across the aisle. We photographed the ceremony without interrupting it: the ring, the blessing, the parents watching from the second pew.",
+      "The morning began quietly — the family home in Kozhikode filling slowly with cousins, the bride's veil laid out across jasmine laid the night before.",
+      "Inside the church the light fell in long coloured bars across the aisle. We photographed the ceremony without interrupting it: the ring, the blessing, the parents watching from the second pew.",
       "By evening the courtyard had turned gold, and the reception became a portrait session of everyone who had travelled to be there.",
     ],
-    frames: ["church", "details", "candid", "hero"],
+    frames: [
+      "calicut-church-wedding-ceremony",
+      "church-golden-altar",
+      "church-vows-elegant",
+      "church-outside-joy",
+      "detail-rings-hands",
+      "kozhikode-candid-bridal-moment",
+    ],
     services: ["Candid photography", "Traditional photography", "Cinematic wedding film"],
   },
   {
     slug: "wayanad-pre-wedding-story",
     title: "Mist & Tea Estates",
+    couple: "Arjun & Divya",
+    venue: "Wayanad tea estates",
     location: "Wayanad, Kerala",
-    category: "Pre-wedding",
+    type: "Pre-wedding",
+    coverage: "Photography + Videography",
     season: "August",
-    cover: "wayanad",
+    cover: "wayanad-pre-wedding-shoot",
     summary:
-      "A sunrise pre-wedding shoot across Wayanad's tea estates, shot entirely in natural light.",
+      "A sunrise pre-wedding shoot across Wayanad's tea estates, shot entirely in natural light and finished as a save-the-date.",
     story: [
-      "We left Kozhikode at three in the morning to reach the estate before the mist lifted.",
-      "For two hours the couple simply walked and talked while we worked at a distance — the frames that followed needed no direction at all.",
+      "We left Kozhikode before three in the morning to reach the estate before the mist lifted.",
+      "For two hours the couple walked and talked while we worked at a distance — the frames that followed needed no direction at all.",
       "The film cut from this session became their save-the-date, scored to a single Malayalam guitar line.",
     ],
-    frames: ["wayanad", "beach", "film", "aerial"],
+    frames: [
+      "wayanad-pre-wedding-shoot",
+      "portrait-forest-couple",
+      "kozhikode-beach-post-wedding-portrait",
+      "portrait-outdoor-embrace",
+      "portrait-bride-sunlight",
+      "portrait-bride-window-tiara",
+    ],
     services: ["Pre-wedding photography", "Save-the-date film", "Drone cinematography"],
   },
   {
     slug: "malappuram-candid-wedding",
     title: "A House Full of Love",
+    couple: "Fahad & Sneha",
+    venue: "Traditional residence, Malappuram",
     location: "Malappuram, Kerala",
-    category: "Candid",
+    type: "Candid",
+    coverage: "Photography",
     season: "March",
-    cover: "candid",
+    cover: "kozhikode-candid-bridal-moment",
     summary:
       "A traditional Malappuram wedding photographed candidly, from the henna evening to the send-off.",
     story: [
       "Three days, one house, and a family that never stopped moving.",
-      "We covered the henna evening, the nikah, and the send-off, staying close to the bride's sisters — the true narrators of the day.",
+      "We covered the henna evening, the nikah and the send-off, staying close to the bride's sisters — the true narrators of the day.",
       "The final album reads like a documentary: unposed, warm, and impossible to reconstruct.",
     ],
-    frames: ["candid", "details", "hero", "beach"],
-    services: ["Candid photography", "Live screening", "Photobooth"],
+    frames: [
+      "kozhikode-candid-bridal-moment",
+      "haldi-vibrant-friends",
+      "mehndi-henna-jewellery",
+      "ceremony-groom-with-family",
+      "portrait-bride-jewellery-smile",
+      "detail-hands-gold-rings",
+    ],
+    services: ["Candid photography", "Haldi & Mehendi photography", "Live screening"],
   },
   {
     slug: "kozhikode-beach-post-wedding",
     title: "Golden Hour by the Arabian Sea",
-    location: "Kozhikode Beach, Kerala",
-    category: "Destination",
+    couple: "Vivek & Anu",
+    venue: "Kozhikode Beach",
+    location: "Kozhikode, Kerala",
+    type: "Destination",
+    coverage: "Photography + Videography",
     season: "November",
-    cover: "beach",
+    cover: "kozhikode-beach-post-wedding-portrait",
     summary:
       "A post-wedding portrait session on Kozhikode beach, timed to the last twenty minutes of light.",
     story: [
@@ -139,43 +126,95 @@ export const weddings: Wedding[] = [
       "We waited for the light to drop below the horizon line and let the couple wander the shore.",
       "The result is quiet, cinematic, and entirely theirs.",
     ],
-    frames: ["beach", "hero", "wayanad", "film"],
-    services: ["Post-wedding photography", "Cinematic film", "Drone shoot"],
+    frames: [
+      "kozhikode-beach-post-wedding-portrait",
+      "hero-beach-laugh",
+      "hero-beach-vows",
+      "portrait-veil-night-tender",
+      "detail-diamond-rings",
+    ],
+    services: ["Post-wedding photography", "Cinematic wedding film", "Drone shoot"],
   },
   {
     slug: "traditional-kerala-wedding",
     title: "Silk, Gold & Ritual",
+    couple: "Hari & Lakshmi",
+    venue: "Traditional ceremony, Kozhikode",
     location: "Kozhikode, Kerala",
-    category: "Traditional",
+    type: "Traditional",
+    coverage: "Photography + Videography",
     season: "May",
-    cover: "hero",
+    cover: "kerala-wedding-details-jasmine-gold",
     summary:
-      "A complete traditional Kerala wedding — every ritual documented, every elder portrait made.",
+      "A complete traditional Kerala wedding — every ritual documented in sequence, every elder portrait made.",
     story: [
       "Traditional coverage is a discipline: nothing may be missed, and nothing may be rushed.",
-      "We photographed each ritual in sequence and made formal portraits of every family group before the sadya.",
+      "We photographed each ritual in order and made formal portraits of every family group before the sadya.",
       "The archive runs to over two thousand frames; the album to eighty.",
     ],
-    frames: ["hero", "details", "church", "candid"],
-    services: ["Traditional photography", "Candid photography", "Wedding film"],
+    frames: [
+      "kerala-wedding-details-jasmine-gold",
+      "ceremony-red-lehenga",
+      "ceremony-temple-ritual",
+      "ceremony-groom-ritual-detail",
+      "detail-bride-groom-feet",
+      "mehndi-traditional-design",
+    ],
+    services: ["Traditional photography", "Candid photography", "Cinematic wedding film"],
   },
   {
     slug: "destination-wedding-aerials",
     title: "A Venue From Above",
-    location: "Kerala backwaters",
-    category: "Destination",
+    couple: "Ralph & Meera",
+    venue: "Backwater resort, Alappuzha",
+    location: "Alappuzha, Kerala",
+    type: "Destination",
+    coverage: "Photography + Videography",
     season: "December",
-    cover: "aerial",
+    cover: "detail-reception-luxury",
     summary:
-      "Drone-led coverage of a backwater destination wedding across coconut groves and water.",
+      "Destination coverage across coconut groves and backwater — a team on the ground and a drone over the venue.",
     story: [
       "Some venues can only be understood from the air.",
-      "We opened the film with a single rising aerial that held for eighteen seconds before the first cut.",
-      "On the ground, two photographers and two cinematographers covered three simultaneous events.",
+      "We opened the film with a single rising shot over the venue before the first cut.",
+      "On the ground, two photographers and two cinematographers covered three simultaneous events without anyone noticing a second team.",
     ],
-    frames: ["aerial", "film", "hero", "beach"],
+    frames: [
+      "detail-reception-luxury",
+      "detail-venue-setup-indoor",
+      "detail-reception-cake",
+      "church-altar-candid",
+      "portrait-formal-indoors",
+    ],
     services: ["Drone shoots", "Cinematic wedding film", "Candid photography"],
   },
 ];
+
+/**
+ * "Church wedding photography", "Pre-wedding photography" — the phrase the
+ * search query actually takes.
+ *
+ * The type doubles as the first word of the title, but "Pre-wedding" is already
+ * the whole service name, so the template needs a branch or it reads
+ * "Pre-wedding Wedding Photography".
+ */
+export const serviceLabel = (type: Wedding["type"]) =>
+  type === "Pre-wedding" ? "Pre-wedding photography" : `${type} wedding photography`;
+
+/**
+ * "St. Mary's Church, Kozhikode, Kerala" — the venue and its locality, with the
+ * town written once.
+ *
+ * Venues are named after the town they are in, so naively joining `venue` and
+ * `location` produces "St. Mary's Church, Kozhikode, Kozhikode, Kerala" in every
+ * title tag. The town is dropped from the locality when the venue already says
+ * it, which is the case for all six stories.
+ */
+export const place = (venue: string, location: string) => {
+  const [town, ...region] = location.split(",").map((part) => part.trim());
+  return town && venue.includes(town)
+    ? [venue, ...region].join(", ")
+    : [venue, location].join(", ");
+};
 
 export const findWedding = (slug: string) => weddings.find((w) => w.slug === slug);

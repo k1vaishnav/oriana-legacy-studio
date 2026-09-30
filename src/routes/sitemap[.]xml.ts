@@ -7,11 +7,9 @@ const staticPaths = [
   "/",
   "/about",
   "/wedding-photography",
-  "/wedding-photography-packages",
   "/wedding-films",
   "/portfolio",
   "/oriana-group",
-  "/faq",
   "/contact",
 ];
 
