@@ -17,31 +17,15 @@ import { ClosingCTA } from "@/components/site/ClosingCTA";
  * clean award badges with leaf image & sub-showcase, and FINE ART CLASS closing CTA.
  */
 export const Route = createFileRoute("/")({
-  head: () => {
-    const head = seo({
+  head: () =>
+    seo({
       title: "Best Photographer in Calicut | Best Photographer in Kerala | Oriana Weddings",
       description:
         "Oriana Weddings is a 12+ year wedding photography and filmmaking brand based in Calicut and Ahmedabad, managing personalised weddings across Kerala, Gujarat, India and international destinations.",
       path: "/",
-    });
-    return {
-      ...head,
-      // The hero is the LCP element — start it with the document, not after JS.
-      links: [
-        ...head.links,
-        {
-          rel: "preload",
-          href: "/img/home-hero-user.webp",
-          as: "image",
-          type: "image/webp",
-          fetchpriority: "high",
-        },
-      ],
-    };
-  },
+    }),
   component: Home,
 });
-
 function Home() {
   return (
     <>

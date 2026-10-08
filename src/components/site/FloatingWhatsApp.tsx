@@ -32,6 +32,8 @@ export function FloatingWhatsApp() {
   // every screen size. Pages without a hero are unaffected.
   const [pastHero, setPastHero] = useState(true);
   const pastHeroRef = useRef(true);
+  // Lift the mobile chat card above the on-screen keyboard while typing.
+  const [kbOffset, setKbOffset] = useState(0);
   // Guards so the scheduled auto-pop fires exactly once and never
   // re-opens over a user who explicitly closed it.
   const autoFiredRef = useRef(false);
@@ -284,6 +286,27 @@ export function FloatingWhatsApp() {
       window.removeEventListener("pagehide", beaconLeadData);
     };
   }, [beaconLeadData]);
+
+  // Track the on-screen keyboard: when it opens, the visual viewport
+  // shrinks, and the chat card rides just above it instead of hiding
+  // underneath. iOS Safari doesn't resize the layout viewport, which is
+  // exactly what this compensates for.
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const onResize = () => {
+      const lift = window.innerHeight - vv.height - vv.offsetTop;
+      setKbOffset(lift > 40 ? Math.round(lift) : 0);
+    };
+    vv.addEventListener("resize", onResize);
+    return () => vv.removeEventListener("resize", onResize);
+  }, []);
+
+  const scrollChatToInput = () => {
+    window.setTimeout(() => {
+      mobileEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+    }, 350);
+  };
 
   const botSay = (text: string, delay = 650) => {
     setIsTyping(true);
@@ -603,8 +626,9 @@ export function FloatingWhatsApp() {
       </div>
 
       {/* Mobile bar — hidden until the hero is scrolled past, so it never
-          covers the hero CTAs. An open chat stays put. */}
-      {pastHero && (
+          covers the hero CTAs, and while the keyboard is up. An open chat
+          stays put. */}
+      {pastHero && kbOffset === 0 && (
         <div
           className={`mobile-dock fixed inset-x-4 bottom-4 z-40 flex items-center justify-between gap-2 rounded-full border border-line/40 bg-paper/80 p-1.5 shadow-2xl backdrop-blur-xl transition-all duration-500 lg:hidden ${
             atBottom && !chatOpen ? "translate-y-24 opacity-0" : "translate-y-0 opacity-100"
@@ -670,7 +694,10 @@ export function FloatingWhatsApp() {
             ? "scale-100 opacity-100 translate-y-0"
             : "scale-95 opacity-0 pointer-events-none translate-y-4"
         }`}
-        style={{ maxHeight: "65dvh" }}
+        style={{
+          maxHeight: kbOffset > 0 ? "48dvh" : "65dvh",
+          ...(kbOffset > 0 ? { bottom: kbOffset + 8 } : {}),
+        }}
       >
         <div className="flex items-center justify-between bg-ink p-3.5 text-white">
           <div className="flex items-center gap-2.5">
@@ -757,6 +784,7 @@ export function FloatingWhatsApp() {
             type={step === "phone" ? "tel" : "text"}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
+            onFocus={scrollChatToInput}
             disabled={step === "interest" || step === "done"}
             placeholder={
               step === "name"
