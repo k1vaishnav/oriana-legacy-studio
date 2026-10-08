@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { business, whatsappHref } from "@/lib/site";
 
 type Step = "name" | "phone" | "interest" | "done";
@@ -35,6 +35,110 @@ export function FloatingWhatsApp() {
   const chatOpenRef = useRef(false);
   chatOpenRef.current = chatOpen;
 
+  // One id per chat session so partial rows can be grouped on the backend.
+  const [sessionId] = useState(() => {
+    try {
+      return crypto.randomUUID();
+    } catch {
+      return `chat-${Date.now()}-${Math.floor(Math.random() * 1e6)}`;
+    }
+  });
+
+  // Live mirrors for the unload flush (listeners only see mount-time state).
+  const leadRef = useRef(lead);
+  leadRef.current = lead;
+  const stepRef = useRef(step);
+  stepRef.current = step;
+  const messagesRef = useRef(messages);
+  messagesRef.current = messages;
+  const lastFlushKeyRef = useRef("");
+
+  const resolveEndpoint = useCallback(() => {
+    const accessKey = import.meta.env["VITE_WEB3FORMS_ACCESS_KEY"] as string | undefined;
+    const legacyEndpoint = import.meta.env["VITE_ENQUIRY_ENDPOINT"] as string | undefined;
+    if (!accessKey && !legacyEndpoint) return null;
+    return {
+      url: (accessKey ? "https://api.web3forms.com/submit" : legacyEndpoint) as string,
+      accessKey,
+    };
+  }, []);
+
+  const buildPayload = useCallback(
+    (
+      data: typeof lead,
+      status: string,
+      transcriptLines: { sender: "bot" | "user"; text: string }[],
+      accessKey: string | undefined,
+    ): Record<string, string> => {
+      const transcript = transcriptLines
+        .map((m) => `${m.sender === "user" ? "Visitor" : "Oriana"}: ${m.text}`)
+        .join("\n");
+      const payload: Record<string, string> = {
+        source: "Chatbot",
+        chat_session: sessionId,
+        chat_status: status,
+        name: data.name || "(not given)",
+        phone: data.phone || "(not given)",
+        email: "chatbot@orianaweddings.com",
+        service: data.interest || "(not chosen)",
+        query: `Chatbot ${status}. Full transcript:\n${transcript}`,
+        page_url: typeof window !== "undefined" ? window.location.href : "",
+      };
+      if (accessKey) payload["access_key"] = accessKey;
+      return payload;
+    },
+    [sessionId],
+  );
+
+  const sendLeadData = useCallback(
+    async (
+      data: typeof lead,
+      status: "started" | "name-captured" | "phone-captured" | "complete" | "abandoned",
+      transcriptLines: { sender: "bot" | "user"; text: string }[],
+    ) => {
+      const endpoint = resolveEndpoint();
+      if (!endpoint) return;
+
+      try {
+        const payload = buildPayload(data, status, transcriptLines, endpoint.accessKey);
+        await fetch(endpoint.url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+      } catch (e) {
+        console.error("Failed to save lead in background", e);
+      }
+    },
+    [resolveEndpoint, buildPayload],
+  );
+
+  // Best-effort flush when the tab is closed/hidden — fetch may not
+  // survive unload, so this uses sendBeacon with the latest snapshot.
+  const beaconLeadData = useCallback(() => {
+    const snapshot = leadRef.current;
+    const transcript = messagesRef.current;
+    const userLines = transcript.filter((m) => m.sender === "user");
+    if (stepRef.current === "done") return;
+    if (!snapshot.name && !snapshot.phone && userLines.length === 0) return;
+
+    const key = JSON.stringify([snapshot, stepRef.current, userLines.length]);
+    if (lastFlushKeyRef.current === key) return;
+    lastFlushKeyRef.current = key;
+
+    const endpoint = resolveEndpoint();
+    if (!endpoint || !("sendBeacon" in navigator)) return;
+    try {
+      const payload = buildPayload(snapshot, "abandoned", transcript, endpoint.accessKey);
+      navigator.sendBeacon(
+        endpoint.url,
+        new Blob([JSON.stringify(payload)], { type: "application/json" }),
+      );
+    } catch {
+      /* unload path — nothing left to do */
+    }
+  }, [resolveEndpoint, buildPayload]);
+
   const focusActiveInput = () => {
     // Wait for the open transition so the focus ring doesn't jump.
     window.setTimeout(() => {
@@ -52,8 +156,12 @@ export function FloatingWhatsApp() {
     focusActiveInput();
   };
 
-  const closeChat = () => {
+  const closeChat = useCallback(() => {
     userClosedRef.current = true;
+    // If they walk away mid-flow, log whatever we have before closing.
+    if (step !== "done" && (lead.name || lead.phone || messages.some((m) => m.sender === "user"))) {
+      void sendLeadData(lead, "abandoned", messages);
+    }
     setChatOpen(false);
     setNudgeVisible(false);
     // Attention resumes on the buttons right away; the teaser card
@@ -62,7 +170,7 @@ export function FloatingWhatsApp() {
     renudgeTimerRef.current = window.setTimeout(() => {
       if (!chatOpenRef.current) setNudgeVisible(true);
     }, 12000);
-  };
+  }, [step, lead, messages, sendLeadData]);
 
   // Scroll position (hide dock near footer) + teaser + guaranteed auto-pop.
   // NOTE: nothing here is cancelled by random taps/scrolls — the chat pops
@@ -117,39 +225,20 @@ export function FloatingWhatsApp() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [chatOpen]);
+  }, [chatOpen, closeChat]);
 
-  const sendLeadData = async (data: typeof lead) => {
-    const accessKey = import.meta.env["VITE_WEB3FORMS_ACCESS_KEY"];
-    const legacyEndpoint = import.meta.env["VITE_ENQUIRY_ENDPOINT"];
-
-    if (!accessKey && !legacyEndpoint) return;
-
-    try {
-      const payload: Record<string, string> = {
-        source: "Chatbot",
-        name: data.name,
-        phone: data.phone,
-        email: "chatbot@orianaweddings.com",
-        service: data.interest,
-        query: `Captured via automated chatbot flow.`,
-      };
-
-      let url = legacyEndpoint;
-      if (accessKey) {
-        payload["access_key"] = accessKey;
-        url = "https://api.web3forms.com/submit";
-      }
-
-      await fetch(url as string, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-    } catch (e) {
-      console.error("Failed to save lead in background", e);
-    }
-  };
+  // Last-resort logging: tab closed, reloaded, or app backgrounded mid-chat.
+  useEffect(() => {
+    const onHidden = () => {
+      if (document.visibilityState === "hidden") beaconLeadData();
+    };
+    document.addEventListener("visibilitychange", onHidden);
+    window.addEventListener("pagehide", beaconLeadData);
+    return () => {
+      document.removeEventListener("visibilitychange", onHidden);
+      window.removeEventListener("pagehide", beaconLeadData);
+    };
+  }, [beaconLeadData]);
 
   const botSay = (text: string, delay = 650) => {
     setIsTyping(true);
@@ -170,17 +259,29 @@ export function FloatingWhatsApp() {
     if (step === "name") {
       const looksLikeQuestion =
         /[?]|price|cost|package|availab|date|book|venue|where|how|what/i.test(userMsg);
-      setLead((prev) => ({ ...prev, name: looksLikeQuestion ? prev.name : userMsg }));
+      const withUserLine = [...messages, { sender: "user" as const, text: userMsg }];
       if (looksLikeQuestion) {
+        // They asked something instead of giving a name — log the text anyway.
+        void sendLeadData(lead, "started", withUserLine);
         botSay(
           `Great question! Our team will give you exact pricing & dates — could I get your name first so they can reply personally?`,
         );
         return;
       }
+      const updated = { ...lead, name: userMsg };
+      setLead(updated);
+      // Log the name immediately — if they leave now, we still have it.
+      void sendLeadData(updated, "name-captured", withUserLine);
       setStep("phone");
       botSay(`Nice to meet you, ${userMsg}! What's the best phone number to reach you at?`);
     } else if (step === "phone") {
-      setLead((prev) => ({ ...prev, phone: userMsg }));
+      const updated = { ...lead, phone: userMsg };
+      setLead(updated);
+      // Log name + phone immediately — never lose a reachable lead.
+      void sendLeadData(updated, "phone-captured", [
+        ...messages,
+        { sender: "user" as const, text: userMsg },
+      ]);
       setStep("interest");
       botSay("Got it! What are you looking for? Just tap one below 👇");
     }
@@ -188,11 +289,12 @@ export function FloatingWhatsApp() {
 
   const handleChipClick = (interest: string) => {
     const completedLead = { ...lead, interest };
+    const withUserLine = [...messages, { sender: "user" as const, text: interest }];
     setLead(completedLead);
-    setMessages((prev) => [...prev, { sender: "user", text: interest }]);
+    setMessages(withUserLine);
     setStep("done");
 
-    sendLeadData(completedLead);
+    void sendLeadData(completedLead, "complete", withUserLine);
 
     window.setTimeout(() => {
       setMessages((prev) => [
