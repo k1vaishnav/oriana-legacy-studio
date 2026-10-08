@@ -41,9 +41,9 @@ const BADGES: AwardBadge[] = [
 
 export function Awards() {
   return (
-    <section id="awards" className="py-20 md:py-28 bg-[#F6F4EF]" aria-labelledby="awards-heading">
+    <section id="awards" className="py-14 md:py-28 bg-[#F6F4EF]" aria-labelledby="awards-heading">
       <div className="shell max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="text-center mb-16">
+        <div className="text-center mb-10 md:mb-16">
           <p className="text-xs uppercase tracking-[0.3em] text-[#8F8A82] mb-3 font-semibold">
             DECADE OF EXCELLENCE
           </p>
@@ -56,7 +56,7 @@ export function Awards() {
         </div>
 
         {/* 5 Golden Laurel Wreath Leaf Badges (Title inside leaf, Year & Org showcase UNDER leaf) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-6 items-start justify-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 md:gap-10 lg:gap-6 items-start justify-center">
           {BADGES.map((badge, idx) => (
             <div
               key={idx}

@@ -1503,6 +1503,119 @@
     bottom: 4.3rem;
   }
 }
+
+/* Hero message + actions. Bottom-anchored so the faces stay visible, with a
+   scrim tuned for legibility and a bottom offset that clears the floating
+   call/chat bar on phones (plus the iOS home-indicator zone). */
+.home-hero-scrim {
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 1;
+  height: 62%;
+  background: linear-gradient(transparent 0%, rgb(0 0 0 / 28%) 45%, rgb(0 0 0 / 62%) 100%);
+  pointer-events: none;
+}
+.home-hero-content {
+  position: absolute;
+  z-index: 2;
+  right: clamp(1.25rem, 6vw, 6rem);
+  bottom: clamp(2rem, 5vw, 4rem);
+  left: clamp(1.25rem, 6vw, 6rem);
+  display: grid;
+  justify-items: center;
+  gap: 0.7rem;
+  color: #fff;
+  text-align: center;
+  text-wrap: balance;
+}
+.home-hero-eyebrow {
+  margin: 0;
+  font: 600 0.62rem/1.4 var(--font-sans);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+.home-hero-title {
+  max-width: 16ch;
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.1rem, 9.5vw, 4.5rem);
+  letter-spacing: -0.02em;
+  line-height: 1.04;
+  text-shadow: 0 2px 24px rgb(0 0 0 / 45%);
+}
+.home-hero-sub {
+  margin: 0;
+  max-width: 38ch;
+  font-size: clamp(0.85rem, 3.6vw, 1rem);
+  line-height: 1.55;
+  opacity: 0.88;
+}
+.home-hero-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.65rem;
+  margin-top: 0.5rem;
+}
+.home-hero-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  min-width: 9.5rem;
+  padding: 0.8rem 1.6rem;
+  border-radius: 999px;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  transition:
+    transform 0.25s ease,
+    background-color 0.25s ease,
+    color 0.25s ease;
+}
+.home-hero-cta:active {
+  transform: scale(0.97);
+}
+.home-hero-cta-primary {
+  background: var(--color-gold-ink);
+  color: #fff;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 35%);
+}
+.home-hero-cta-ghost {
+  border: 1px solid rgb(255 255 255 / 65%);
+  background: rgb(0 0 0 / 25%);
+  color: #fff;
+  backdrop-filter: blur(6px);
+}
+@media (min-width: 768px) {
+  .home-hero-content {
+    justify-items: start;
+    text-align: left;
+  }
+  .home-hero-ctas {
+    justify-content: flex-start;
+  }
+  .home-hero-cta:hover {
+    transform: translateY(-2px);
+  }
+}
+@media (max-width: 767px) {
+  .home-hero-content {
+    bottom: max(1.75rem, env(safe-area-inset-bottom));
+  }
+  .home-hero-cta {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+  .home-hero-ctas {
+    width: 100%;
+    max-width: 24rem;
+  }
+}
 .home-intro {
   padding: clamp(3.5rem, 7vw, 6.5rem) clamp(1rem, 4vw, 4rem);
   background: var(--color-paper);
@@ -1789,6 +1902,13 @@
   .photography-collection {
     aspect-ratio: 2 / 3;
   }
+  .photography-collection::after {
+    background: linear-gradient(180deg, transparent 42%, rgb(0 0 0 / 58%) 100%);
+  }
+  .photography-collection-title {
+    bottom: 1rem;
+    font-size: 0.78rem;
+  }
   .editorial-image-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1809,9 +1929,26 @@
     justify-content: flex-start;
     overflow-x: auto;
     padding-bottom: 0.35rem;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .film-cover-row::-webkit-scrollbar {
+    display: none;
   }
   .film-cover {
     flex: 0 0 6rem;
+    scroll-snap-align: start;
+  }
+}
+
+/* Floating dock + chat card clear the iPhone home indicator / gesture bar. */
+@media (max-width: 1023px) {
+  .mobile-dock {
+    bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+  .mobile-chat-card {
+    bottom: max(72px, calc(env(safe-area-inset-bottom) + 72px));
   }
 }
 
@@ -2994,6 +3131,7 @@ select.field {
   padding: 0;
   overflow: hidden;
   background-color: #dfd5c5;
+  background-image: url("/img/closing-cta-user.webp");
   background-position: center 46%;
   background-repeat: no-repeat;
   background-size: cover;
@@ -3051,6 +3189,7 @@ select.field {
     width: calc(100% - 1.25rem);
     min-height: 31rem;
     margin: 1.5rem auto;
+    background-image: url("/img/closing-cta-user-800.webp");
     background-position: 57% center;
   }
   .closing-cta-banner::before {
@@ -3703,6 +3842,11 @@ select.field {
     max-width: 34ch;
     font-size: 0.78rem;
     line-height: 1.7;
+    /* The 16/9 band is ~200px tall on phones — never let the copy spill it. */
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 }
 

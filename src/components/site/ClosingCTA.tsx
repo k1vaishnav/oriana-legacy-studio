@@ -12,11 +12,7 @@ import { whatsappHref } from "@/lib/site";
  */
 export function ClosingCTA() {
   return (
-    <section
-      className="closing-cta closing-cta-banner"
-      aria-labelledby="closing-cta-heading"
-      style={{ backgroundImage: "url('/img/closing-cta-user.webp')" }}
-    >
+    <section className="closing-cta closing-cta-banner" aria-labelledby="closing-cta-heading">
       <div className="closing-cta-inner shell">
         <div className="closing-cta-copy">
           <p className="closing-cta-kicker">ORIANAWEDDINGS · WEDDING PHOTOGRAPHY &amp; FILMS</p>

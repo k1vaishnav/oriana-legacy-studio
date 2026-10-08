@@ -558,7 +558,7 @@ export function FloatingWhatsApp() {
 
       {/* Mobile bar */}
       <div
-        className={`fixed inset-x-4 bottom-4 z-40 flex items-center justify-between gap-2 rounded-full border border-line/40 bg-paper/80 p-1.5 shadow-2xl backdrop-blur-xl transition-all duration-500 lg:hidden ${
+        className={`mobile-dock fixed inset-x-4 bottom-4 z-40 flex items-center justify-between gap-2 rounded-full border border-line/40 bg-paper/80 p-1.5 shadow-2xl backdrop-blur-xl transition-all duration-500 lg:hidden ${
           atBottom && !chatOpen ? "translate-y-24 opacity-0" : "translate-y-0 opacity-100"
         }`}
       >
@@ -615,7 +615,7 @@ export function FloatingWhatsApp() {
       <div
         role="dialog"
         aria-label="Chat with Oriana Weddings"
-        className={`fixed inset-x-3 bottom-[72px] z-50 flex flex-col overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-black/10 transition-all duration-300 origin-bottom lg:hidden ${
+        className={`mobile-chat-card fixed inset-x-3 bottom-[72px] z-50 flex flex-col overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-black/10 transition-all duration-300 origin-bottom lg:hidden ${
           chatOpen
             ? "scale-100 opacity-100 translate-y-0"
             : "scale-95 opacity-0 pointer-events-none translate-y-4"
