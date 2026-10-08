@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 
 import { seo } from "@/lib/seo";
+import { ClosingCTA } from "@/components/site/ClosingCTA";
 import { EnquiryForm } from "@/components/site/EnquiryForm";
 import { business, offices, whatsappHref } from "@/lib/site";
 
@@ -223,6 +224,8 @@ function ContactPage() {
           </aside>
         </div>
       </section>
+
+      <ClosingCTA />
 
       {/*
         Pinned actions on small screens only.
