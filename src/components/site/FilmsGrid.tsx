@@ -1,7 +1,4 @@
 import { useState } from "react";
-import { ResponsiveImage } from "@/lib/images";
-import { ceremonies, details, originals, portraits, preWedding } from "@/lib/photos";
-import type { Photo } from "@/lib/photos";
 
 type FilmCardData = {
   couple: string;
@@ -50,15 +47,6 @@ const featuredFilms: FilmCardData[] = [
     posterHeight: 720,
     youtubeId: "1N3foXgTtHo",
   },
-];
-
-const editorialCovers: readonly Photo[] = [
-  originals[4]!,
-  originals[5]!,
-  portraits[4]!,
-  ceremonies[0]!,
-  preWedding[0]!,
-  details[0]!,
 ];
 
 export function FilmsGrid() {
@@ -124,34 +112,6 @@ export function FilmsGrid() {
             </button>
           );
         })}
-      </div>
-
-      <div className="film-cover-row" role="list" aria-label="More wedding stories">
-        {editorialCovers.map((photo) => (
-          <div className="film-cover" key={photo.key} role="listitem">
-            <ResponsiveImage
-              image={photo.key}
-              alt={photo.alt}
-              ratio="2 / 3"
-              sizes="(min-width: 900px) 8rem, 6rem"
-              className="film-cover-image"
-            />
-          </div>
-        ))}
-      </div>
-
-      <div className="film-cover-row" role="list" aria-label="More wedding stories">
-        {editorialCovers.map((photo) => (
-          <div className="film-cover" key={photo.key} role="listitem">
-            <ResponsiveImage
-              image={photo.key}
-              alt={photo.alt}
-              ratio="2 / 3"
-              sizes="(min-width: 900px) 8rem, 6rem"
-              className="film-cover-image"
-            />
-          </div>
-        ))}
       </div>
     </section>
   );
