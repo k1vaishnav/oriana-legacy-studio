@@ -27,13 +27,11 @@ export function FloatingWhatsApp() {
   const mobileInputRef = useRef<HTMLInputElement>(null);
   const desktopEndRef = useRef<HTMLDivElement>(null);
   const mobileEndRef = useRef<HTMLDivElement>(null);
-  // On phones the hero has its own CTAs — the floating buttons, teaser
-  // and auto-popup stay out of the way until the hero is scrolled past.
-  // Desktop is untouched. Pages without a hero are unaffected.
+  // The hero has its own CTAs — the floating buttons, teaser and
+  // auto-popup stay out of the way until the hero is scrolled past, on
+  // every screen size. Pages without a hero are unaffected.
   const [pastHero, setPastHero] = useState(true);
-  const [isMobileView, setIsMobileView] = useState(false);
   const pastHeroRef = useRef(true);
-  const isMobileRef = useRef(false);
   // Guards so the scheduled auto-pop fires exactly once and never
   // re-opens over a user who explicitly closed it.
   const autoFiredRef = useRef(false);
@@ -175,7 +173,7 @@ export function FloatingWhatsApp() {
     // comes back after a breather so it doesn't feel naggy.
     window.clearTimeout(renudgeTimerRef.current);
     renudgeTimerRef.current = window.setTimeout(() => {
-      if (!chatOpenRef.current && (!isMobileRef.current || pastHeroRef.current)) {
+      if (!chatOpenRef.current && pastHeroRef.current) {
         setNudgeVisible(true);
       }
     }, 12000);
@@ -184,17 +182,13 @@ export function FloatingWhatsApp() {
   // Scroll position (hide dock near footer) + teaser + guaranteed auto-pop.
   // NOTE: nothing here is cancelled by random taps/scrolls — the chat pops
   // once per page load unless the user explicitly closed it first.
-  // On phones both popups additionally wait until the hero is scrolled past.
+  // All popups additionally wait until the hero is scrolled past.
   useEffect(() => {
-    const mq = window.matchMedia("(max-width: 1023px)");
     let heroObserver: IntersectionObserver | null = null;
 
     const syncHeroGate = () => {
-      const mobile = mq.matches;
-      isMobileRef.current = mobile;
-      setIsMobileView(mobile);
       const hero = document.querySelector(".home-hero-wrap");
-      if (!mobile || !hero || typeof IntersectionObserver === "undefined") {
+      if (!hero || typeof IntersectionObserver === "undefined") {
         pastHeroRef.current = true;
         setPastHero(true);
         return;
@@ -212,9 +206,8 @@ export function FloatingWhatsApp() {
       }
     };
     syncHeroGate();
-    mq.addEventListener("change", syncHeroGate);
 
-    const heroInWay = () => isMobileRef.current && !pastHeroRef.current;
+    const heroInWay = () => !pastHeroRef.current;
 
     const onScroll = () => {
       setAtBottom(window.innerHeight + window.scrollY >= document.body.scrollHeight - 80);
@@ -253,7 +246,6 @@ export function FloatingWhatsApp() {
     const autoTimer = window.setTimeout(doAutoOpen, AUTO_OPEN_DELAY);
 
     return () => {
-      mq.removeEventListener("change", syncHeroGate);
       heroObserver?.disconnect();
       window.removeEventListener("scroll", onScroll);
       window.clearTimeout(nudgeTimer);
@@ -369,12 +361,13 @@ export function FloatingWhatsApp() {
 
   return (
     <>
-      {/* Desktop dock — chat window stays visible even near the footer once open */}
+      {/* Desktop dock — hidden until the hero is scrolled past, and near
+          the footer. The chat window stays visible once open regardless. */}
       <div
         className={`fixed right-5 bottom-5 z-40 hidden flex-col items-end gap-3 transition-all duration-500 lg:flex ${
-          chatOpen
-            ? "translate-y-0 opacity-100"
-            : !atBottom
+          !pastHero && !chatOpen
+            ? "pointer-events-none translate-y-8 opacity-0"
+            : !atBottom || chatOpen
               ? "translate-y-0 opacity-100"
               : "pointer-events-none translate-y-8 opacity-0"
         }`}
@@ -609,9 +602,9 @@ export function FloatingWhatsApp() {
         </a>
       </div>
 
-      {/* Mobile bar — hidden until the hero is scrolled past on phones,
-          so it never covers the hero CTAs. An open chat stays put. */}
-      {(!isMobileView || pastHero) && (
+      {/* Mobile bar — hidden until the hero is scrolled past, so it never
+          covers the hero CTAs. An open chat stays put. */}
+      {pastHero && (
         <div
           className={`mobile-dock fixed inset-x-4 bottom-4 z-40 flex items-center justify-between gap-2 rounded-full border border-line/40 bg-paper/80 p-1.5 shadow-2xl backdrop-blur-xl transition-all duration-500 lg:hidden ${
             atBottom && !chatOpen ? "translate-y-24 opacity-0" : "translate-y-0 opacity-100"
