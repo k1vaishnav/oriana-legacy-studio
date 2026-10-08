@@ -45,8 +45,8 @@ export const films: Film[] = [
     duration: "Teaser · 60–90 sec",
     description:
       "A short, high-impact cut delivered within weeks of the wedding. Made to be shared from the car on the way home.",
-    ...yt("yt-wedding-highlight"),
-    youtubeId: "BwLRjyUjk7g",
+    ...yt("yt-haripriya-glimpse"),
+    youtubeId: "znvVRN1awcc",
   },
   {
     slug: "save-the-date",
@@ -85,10 +85,7 @@ export const films: Film[] = [
     duration: "Reels · 15–60 sec",
     description:
       "Vertical cuts built for sharing, drawn from the same coverage as the feature film.",
-    poster: "/img/yt-reel.jpg",
-    posterSrcSet: "/img/yt-reel-480.jpg 480w",
-    posterWidth: 480,
-    posterHeight: 360,
-    youtubeId: "_2TvlpPqb38",
+    ...yt("yt-mehndi-day"),
+    youtubeId: "GZiu5-_Zwkw",
   },
 ];
