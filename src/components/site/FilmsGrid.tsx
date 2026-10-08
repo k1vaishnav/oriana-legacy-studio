@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { getImage, srcSet } from "@/lib/image-manifest";
 import { ResponsiveImage } from "@/lib/images";
 import { VideoLightbox } from "@/components/site/VideoLightbox";
 import { ceremonies, details, originals, portraits, preWedding } from "@/lib/photos";
@@ -8,34 +7,49 @@ import type { Photo } from "@/lib/photos";
 type FilmCardData = {
   couple: string;
   location: string;
-  posterKey: "film-tamanna-dan" | "film-alisha-rahul" | "film-sid-saloni" | "film-zina-zoya";
-  vimeoId: string;
+  poster: string;
+  posterSrcSet: string;
+  posterWidth: number;
+  posterHeight: number;
+  youtubeId: string;
 };
 
 const featuredFilms: FilmCardData[] = [
   {
-    couple: "TAMANNA & DAN",
-    location: "Lake Como, Italy",
-    posterKey: "film-tamanna-dan",
-    vimeoId: "787844871",
+    couple: "ARUN & DIANA",
+    location: "Kerala",
+    poster: "/img/yt-arun-diana.jpg",
+    posterSrcSet: "/img/yt-arun-diana-480.jpg 480w, /img/yt-arun-diana-800.jpg 800w",
+    posterWidth: 1280,
+    posterHeight: 720,
+    youtubeId: "kdRKkLJkZgI",
   },
   {
-    couple: "ALISHA & RAHUL",
-    location: "Amalfi Coast, Italy",
-    posterKey: "film-alisha-rahul",
-    vimeoId: "790541936",
+    couple: "SANGEETH & SRUTHI",
+    location: "Kerala",
+    poster: "/img/yt-sangeeth-sruthi.jpg",
+    posterSrcSet: "/img/yt-sangeeth-sruthi-480.jpg 480w, /img/yt-sangeeth-sruthi-800.jpg 800w",
+    posterWidth: 1280,
+    posterHeight: 720,
+    youtubeId: "YMOYz-KhvEQ",
   },
   {
-    couple: "SALONI & SID",
-    location: "Bangkok",
-    posterKey: "film-sid-saloni",
-    vimeoId: "682018257",
+    couple: "RARUN & AMISHA",
+    location: "Kerala",
+    poster: "/img/yt-rarun-amisha.jpg",
+    posterSrcSet: "/img/yt-rarun-amisha-480.jpg 480w, /img/yt-rarun-amisha-800.jpg 800w",
+    posterWidth: 1280,
+    posterHeight: 720,
+    youtubeId: "UrGMsSwgdKE",
   },
   {
-    couple: "ZINA & ZAIN",
-    location: "Kashmir Valley",
-    posterKey: "film-zina-zoya",
-    vimeoId: "758257831",
+    couple: "MANISH & KRITIKA",
+    location: "Pre-wedding",
+    poster: "/img/yt-manish-kritika.jpg",
+    posterSrcSet: "/img/yt-manish-kritika-480.jpg 480w, /img/yt-manish-kritika-800.jpg 800w",
+    posterWidth: 1280,
+    posterHeight: 720,
+    youtubeId: "1N3foXgTtHo",
   },
 ];
 
@@ -62,8 +76,6 @@ export function FilmsGrid() {
       </div>
       <div className="films-feature-grid">
         {featuredFilms.map((film) => {
-          const image = getImage(film.posterKey);
-
           return (
             <button
               key={film.couple}
@@ -73,25 +85,15 @@ export function FilmsGrid() {
               aria-label={`Play ${film.couple}, filmed in ${film.location}`}
             >
               <picture className="film-feature-picture">
-                <source
-                  type="image/avif"
-                  srcSet={srcSet(film.posterKey, "avif")}
-                  sizes="(min-width: 100rem) 50rem, (min-width: 640px) 50vw, 100vw"
-                />
-                <source
-                  type="image/webp"
-                  srcSet={srcSet(film.posterKey, "webp")}
-                  sizes="(min-width: 100rem) 50rem, (min-width: 640px) 50vw, 100vw"
-                />
                 <img
-                  src={image.src}
-                  srcSet={srcSet(film.posterKey, "jpeg")}
+                  src={film.poster}
+                  srcSet={film.posterSrcSet}
                   sizes="(min-width: 100rem) 50rem, (min-width: 640px) 50vw, 100vw"
                   alt=""
                   loading="lazy"
                   decoding="async"
-                  width={image.width}
-                  height={image.height}
+                  width={film.posterWidth}
+                  height={film.posterHeight}
                 />
               </picture>
               <span className="film-feature-shade" aria-hidden="true" />
@@ -129,7 +131,7 @@ export function FilmsGrid() {
           open={true}
           onClose={() => setActiveFilm(null)}
           title={activeFilm.couple}
-          vimeoId={activeFilm.vimeoId}
+          youtubeId={activeFilm.youtubeId}
         />
       )}
     </section>

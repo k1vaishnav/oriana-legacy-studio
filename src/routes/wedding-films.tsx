@@ -4,7 +4,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { ClosingCTA } from "@/components/site/ClosingCTA";
 import { VideoPlayer } from "@/components/site/VideoPlayer";
 import { films, type Film } from "@/lib/films";
-import { getImage, srcSet } from "@/lib/image-manifest";
 import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/wedding-films")({
@@ -44,7 +43,6 @@ function FilmsPage() {
           </h1>
           <div className="films-library-grid">
             {films.map((film) => {
-              const poster = getImage(film.poster);
               return (
                 <article className="films-library-card" key={film.slug}>
                   <button
@@ -54,25 +52,15 @@ function FilmsPage() {
                     aria-label={`View ${film.title} details and play film`}
                   >
                     <picture className="films-library-picture">
-                      <source
-                        type="image/avif"
-                        srcSet={srcSet(film.poster, "avif")}
-                        sizes="(min-width: 1024px) 25vw, 50vw"
-                      />
-                      <source
-                        type="image/webp"
-                        srcSet={srcSet(film.poster, "webp")}
-                        sizes="(min-width: 1024px) 25vw, 50vw"
-                      />
                       <img
-                        src={poster.src}
-                        srcSet={srcSet(film.poster, "jpeg")}
+                        src={film.poster}
+                        srcSet={film.posterSrcSet}
                         sizes="(min-width: 1024px) 25vw, 50vw"
                         alt=""
                         loading="lazy"
                         decoding="async"
-                        width={poster.width}
-                        height={poster.height}
+                        width={film.posterWidth}
+                        height={film.posterHeight}
                       />
                     </picture>
                     <span className="films-library-meta">
@@ -113,9 +101,12 @@ function FilmsPage() {
             </button>
             <div className="film-detail-player">
               <VideoPlayer
-                vimeoId={activeFilm.vimeoId}
+                youtubeId={activeFilm.youtubeId}
                 title={activeFilm.title}
                 poster={activeFilm.poster}
+                posterSrcSet={activeFilm.posterSrcSet}
+                posterWidth={activeFilm.posterWidth}
+                posterHeight={activeFilm.posterHeight}
               />
             </div>
             <div className="film-detail-copy">

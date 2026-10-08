@@ -1,31 +1,32 @@
-import type { ImageKey } from "./image-manifest";
-
 export type Film = {
   slug: string;
   title: string;
   location: string;
   duration: string;
   description: string;
-  poster: ImageKey;
-  /**
-   * PLACEHOLDER MEDIA. The posters and ids below are frames from another
-   * studio's public portfolio, used so the player, the layout and the film
-   * section can be reviewed against real footage. They are not Oriana's work
-   * and are not licensed for launch. Every poster and every id must be replaced
-   * with the studio's own films before this site goes live — the copy, titles
-   * and durations above are Oriana's and stay as they are.
-   */
-  vimeoId?: string | undefined;
+  /** Real Oriana work: YouTube thumbnail stills + the film's YouTube id. */
+  poster: string;
+  posterSrcSet: string;
+  posterWidth: number;
+  posterHeight: number;
+  youtubeId?: string | undefined;
 };
 
 /**
- * Wedding films.
+ * Wedding films — real Oriana work from the studio's own YouTube channel.
  *
  * Each entry is a photograph with an optional player behind it. The poster is
- * what a visitor sees and what a search engine indexes; the Vimeo iframe is only
- * created after a click, so a page of four films costs four images and no
- * player JavaScript.
+ * what a visitor sees and what a search engine indexes; the YouTube iframe is
+ * only created after a click, so a page of films costs images and no player
+ * JavaScript.
  */
+const yt = (name: string, width = 1280, height = 720) => ({
+  poster: `/img/${name}.jpg`,
+  posterSrcSet: `/img/${name}-480.jpg 480w, /img/${name}-800.jpg 800w`,
+  posterWidth: width,
+  posterHeight: height,
+});
+
 export const films: Film[] = [
   {
     slug: "the-wedding-film",
@@ -34,8 +35,8 @@ export const films: Film[] = [
     duration: "Feature · 12–20 min",
     description:
       "The full narrative of the day, edited as cinema — your voices, your vows, your people. This is the film the family gathers around.",
-    poster: "film-zina-zoya",
-    vimeoId: "758257831",
+    ...yt("yt-we-became-one"),
+    youtubeId: "35c2JPyf90I",
   },
   {
     slug: "the-teaser",
@@ -44,8 +45,8 @@ export const films: Film[] = [
     duration: "Teaser · 60–90 sec",
     description:
       "A short, high-impact cut delivered within weeks of the wedding. Made to be shared from the car on the way home.",
-    poster: "film-sid-saloni",
-    vimeoId: "682018257",
+    ...yt("yt-wedding-highlight"),
+    youtubeId: "BwLRjyUjk7g",
   },
   {
     slug: "save-the-date",
@@ -54,8 +55,8 @@ export const films: Film[] = [
     duration: "Pre-wedding · 2–3 min",
     description:
       "Shot on location months before the day — mist over the tea estates, the two of you walking ahead. The announcement with intent.",
-    poster: "film-alisha-rahul",
-    vimeoId: "790541936",
+    ...yt("yt-save-the-date-chennai"),
+    youtubeId: "LD7Z8_gTSH8",
   },
   {
     slug: "storytelling-film",
@@ -64,8 +65,8 @@ export const films: Film[] = [
     duration: "Story · 5–8 min",
     description:
       "Films focused on emotion, people and personality rather than simply chronological coverage.",
-    poster: "film-prerna-neelaabh",
-    vimeoId: "459679250",
+    ...yt("yt-kerala-wedding"),
+    youtubeId: "bF1HWBMYiqk",
   },
   {
     slug: "highlights",
@@ -74,8 +75,8 @@ export const films: Film[] = [
     duration: "Highlights · 3–4 min",
     description:
       "Documenting celebrations, ceremonies, family interactions and important moments with a cinematic visual approach.",
-    poster: "film-tamanna-dan",
-    vimeoId: "787844871",
+    ...yt("yt-vyshnavi-wedding"),
+    youtubeId: "Be-OFEhGUxQ",
   },
   {
     slug: "reels",
@@ -84,7 +85,10 @@ export const films: Film[] = [
     duration: "Reels · 15–60 sec",
     description:
       "Vertical cuts built for sharing, drawn from the same coverage as the feature film.",
-    poster: "film-eshieta-sarthak",
-    vimeoId: "895524845",
+    poster: "/img/yt-reel.jpg",
+    posterSrcSet: "/img/yt-reel-480.jpg 480w",
+    posterWidth: 480,
+    posterHeight: 360,
+    youtubeId: "_2TvlpPqb38",
   },
 ];

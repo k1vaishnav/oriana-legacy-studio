@@ -11,15 +11,19 @@ import { soulCinema } from "@/lib/site";
  * same warm cream as the rest of the site, with room above and below, so the
  * film sits inside the page instead of interrupting it with a black band.
  *
+ * The footage is the studio's own "We Became One" wedding film, ambient
+ * (muted, looping, no controls) behind the manifesto — and it only loads when
+ * the band scrolls near, so it costs nothing on initial page load.
+ *
  * The copy comes from `soulCinema` in `@/lib/site` rather than being written
  * here, so the manifesto is the same sentence everywhere it appears.
  */
+const FEATURE_VIDEO_ID = "35c2JPyf90I";
 export function SoulCinemaBanner() {
   const frameRef = useRef<HTMLDivElement>(null);
   const [playVideo, setPlayVideo] = useState(false);
 
-  // The 2.5MB film only starts downloading when the band is close to the
-  // viewport — autoplay would otherwise fetch it on initial page load.
+  // The film only starts loading when the band is close to the viewport.
   // Respects reduced-motion by staying on the still poster.
   useEffect(() => {
     const node = frameRef.current;
@@ -53,25 +57,24 @@ export function SoulCinemaBanner() {
         <div className="frame" ref={frameRef}>
           <div className="frame-media" aria-hidden="true">
             {playVideo ? (
-              <video
-                className="frame-video"
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="metadata"
-                poster="/img/home-hero-user.webp"
-                aria-hidden="true"
-              >
-                <source src="/video/soul-cinema-stock.mp4" type="video/mp4" />
-              </video>
+              <iframe
+                className="frame-yt"
+                src={`https://www.youtube-nocookie.com/embed/${FEATURE_VIDEO_ID}?autoplay=1&mute=1&loop=1&playlist=${FEATURE_VIDEO_ID}&controls=0&rel=0&playsinline=1&disablekb=1`}
+                allow="autoplay; fullscreen"
+                tabIndex={-1}
+                title="Oriana Weddings film"
+              />
             ) : (
               <img
                 className="frame-video"
-                src="/img/home-hero-user.webp"
+                src="/img/yt-we-became-one-800.jpg"
+                srcSet="/img/yt-we-became-one-480.jpg 480w, /img/yt-we-became-one-800.jpg 800w"
+                sizes="100vw"
                 alt=""
                 loading="lazy"
                 decoding="async"
+                width={1280}
+                height={720}
               />
             )}
             <div className="frame-grade" />

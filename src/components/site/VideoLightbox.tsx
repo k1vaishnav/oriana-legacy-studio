@@ -4,12 +4,12 @@ export function VideoLightbox({
   open,
   onClose,
   title,
-  vimeoId,
+  youtubeId,
 }: {
   open: boolean;
   onClose: () => void;
   title: string;
-  vimeoId: string;
+  youtubeId: string;
 }) {
   useEffect(() => {
     if (!open) return;
@@ -37,14 +37,19 @@ export function VideoLightbox({
         autoFocus
       >
         <svg viewBox="0 0 16 16" className="size-4" fill="none" aria-hidden="true">
-          <path d="m4 4 8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+          <path
+            d="m4 4 8 8M12 4l-8 8"
+            stroke="currentColor"
+            strokeWidth="1.4"
+            strokeLinecap="round"
+          />
         </svg>
       </button>
 
       <figure className="lightbox-stage flex flex-col gap-4">
         <div className="relative w-full max-w-[90vw] lg:max-w-[80vw] aspect-video">
           <iframe
-            src={`https://player.vimeo.com/video/${vimeoId}?autoplay=1&title=0&byline=0&portrait=0`}
+            src={`https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&rel=0`}
             className="absolute inset-0 h-full w-full"
             frameBorder="0"
             allow="autoplay; fullscreen; picture-in-picture"

@@ -1,41 +1,38 @@
 import { useState } from "react";
 
-import { getImage, srcSet, type ImageKey } from "@/lib/image-manifest";
-
 /**
- * A Vimeo film that does not load until it is asked for.
+ * A YouTube film that does not load until it is asked for.
  *
- * A Vimeo embed pulls roughly half a megabyte of player JavaScript, which on a
- * photography site is the single most expensive thing on the page and competes
- * directly with the images. So nothing is fetched until a visitor clicks: the
- * card is a photograph, and the iframe replaces it in place on click, keeping
- * the same box so nothing on the page moves.
- *
- * `vimeoId` is a placeholder. Replace the ids in `src/lib/films.ts` with the
- * studio's own films before launch — do not ship other studios' work.
+ * A YouTube embed pulls player JavaScript, which on a photography site is
+ * one of the most expensive things on the page and competes directly with
+ * the images. So nothing is fetched until a visitor clicks: the card is a
+ * still from the studio's own channel, and the iframe replaces it in place
+ * on click, keeping the same box so nothing on the page moves.
  */
 export function VideoPlayer({
-  vimeoId,
+  youtubeId,
   title,
   poster,
+  posterSrcSet,
+  posterWidth,
+  posterHeight,
   ratio = "16 / 9",
   autoplay = true,
 }: {
-  vimeoId?: string | undefined;
+  youtubeId?: string | undefined;
   title: string;
-  poster: ImageKey;
-  ratio?: string;
-  autoplay?: boolean;
+  poster: string;
+  posterSrcSet: string;
+  posterWidth: number;
+  posterHeight: number;
+  ratio?: string | undefined;
+  autoplay?: boolean | undefined;
 }) {
   const [playing, setPlaying] = useState(false);
-  const entry = getImage(poster);
 
-  if (!vimeoId) {
+  if (!youtubeId) {
     return (
-      /* A known cream surface, not the poster's average colour. Tinting with
-         entry.color meant the contrast of this panel depended on whichever
-         photograph happened to be behind it — a light frame left "Film coming
-         soon" sitting at roughly 2:1. */
+      /* A known cream surface while the real film is one click away. */
       <div className="img-shell surface-bone" style={{ aspectRatio: ratio }}>
         <div className="flex h-full w-full flex-col items-center justify-center gap-2 p-6 text-center">
           <p className="text-sm font-medium text-ink">Film coming soon</p>
@@ -47,19 +44,14 @@ export function VideoPlayer({
 
   const query = new URLSearchParams({
     autoplay: autoplay ? "1" : "0",
-    background: "1",
-    // Lets the player fill its box instead of letterboxing inside a black frame.
-    dnt: "1",
-    title: "0",
-    byline: "0",
-    portrait: "0",
+    rel: "0",
   });
 
   return (
-    <div className="img-shell" style={{ aspectRatio: ratio, backgroundColor: entry.color }}>
+    <div className="img-shell" style={{ aspectRatio: ratio, backgroundColor: "#201e1b" }}>
       {playing ? (
         <iframe
-          src={`https://player.vimeo.com/video/${vimeoId}?${query}`}
+          src={`https://www.youtube-nocookie.com/embed/${youtubeId}?${query}`}
           title={title}
           className="absolute inset-0 size-full border-0"
           allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
@@ -75,22 +67,12 @@ export function VideoPlayer({
               height: "100%",
             }}
           >
-            <source
-              type="image/avif"
-              srcSet={srcSet(poster, "avif")}
-              sizes="(min-width: 1024px) 44rem, 92vw"
-            />
-            <source
-              type="image/webp"
-              srcSet={srcSet(poster, "webp")}
-              sizes="(min-width: 1024px) 44rem, 92vw"
-            />
             <img
-              src={entry.src}
-              srcSet={srcSet(poster, "jpeg")}
+              src={poster}
+              srcSet={posterSrcSet}
               alt={title}
-              width={entry.width}
-              height={entry.height}
+              width={posterWidth}
+              height={posterHeight}
               loading="lazy"
               decoding="async"
               sizes="(min-width: 1024px) 44rem, 92vw"
