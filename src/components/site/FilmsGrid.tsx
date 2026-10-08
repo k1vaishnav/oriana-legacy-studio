@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { getImage } from "@/lib/image-manifest";
 import { ResponsiveImage } from "@/lib/images";
-import { Lightbox } from "@/components/site/Lightbox";
+import { VideoLightbox } from "@/components/site/VideoLightbox";
 import { ceremonies, details, originals, portraits, preWedding } from "@/lib/photos";
 import type { Photo } from "@/lib/photos";
 
@@ -104,11 +104,11 @@ export function FilmsGrid() {
       </div>
 
       {activeFilm && (
-        <Lightbox
+        <VideoLightbox
           open={true}
           onClose={() => setActiveFilm(null)}
           title={activeFilm.couple}
-          media={{ type: "video", vimeoId: activeFilm.vimeoId, title: activeFilm.couple }}
+          vimeoId={activeFilm.vimeoId}
         />
       )}
     </section>

@@ -168,8 +168,9 @@ export function EnquiryForm() {
     }
 
     const endpoint = import.meta.env["VITE_ENQUIRY_ENDPOINT"] as string | undefined;
+    const web3formsKey = import.meta.env["VITE_WEB3FORMS_ACCESS_KEY"] as string | undefined;
 
-    if (!endpoint) {
+    if (!endpoint && !web3formsKey) {
       // No endpoint configured. Hand the composed message to WhatsApp, which is
       // a real destination and a real delivery, not a pretend success screen.
       handOff();
@@ -179,10 +180,18 @@ export function EnquiryForm() {
 
     setState("sending");
     try {
-      const response = await fetch(endpoint, {
+      const payload: any = { ...fields };
+      let url = endpoint;
+      
+      if (web3formsKey) {
+        payload.access_key = web3formsKey;
+        url = "https://api.web3forms.com/submit";
+      }
+
+      const response = await fetch(url as string, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(fields),
+        body: JSON.stringify(payload),
       });
       if (!response.ok) throw new Error(String(response.status));
       setState("sent");

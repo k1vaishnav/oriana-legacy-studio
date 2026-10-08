@@ -14,7 +14,6 @@ import { reportLovableError } from "@/lib/lovable-error-reporting";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { FloatingWhatsApp } from "@/components/site/FloatingWhatsApp";
-import { ConciergeChat } from "@/components/site/ConciergeChat";
 import { SITE_URL, organizationSchema } from "@/lib/site";
 
 function NotFoundComponent() {
@@ -179,7 +178,6 @@ function RootComponent() {
       </main>
       <Footer />
       <FloatingWhatsApp />
-      <ConciergeChat />
     </QueryClientProvider>
   );
 }
