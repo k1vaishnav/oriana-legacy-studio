@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { getImage, type ImageKey } from "@/lib/image-manifest";
+import { getImage, srcSet, type ImageKey } from "@/lib/image-manifest";
 
 /**
  * A Vimeo film that does not load until it is asked for.
@@ -67,22 +67,40 @@ export function VideoPlayer({
         />
       ) : (
         <>
-          <img
-            src={entry.src}
-            alt={title}
-            width={entry.width}
-            height={entry.height}
-            loading="lazy"
-            decoding="async"
-            sizes="(min-width: 1024px) 44rem, 92vw"
+          <picture
             style={{
               position: "absolute",
               inset: 0,
               width: "100%",
               height: "100%",
-              objectFit: "cover",
             }}
-          />
+          >
+            <source
+              type="image/avif"
+              srcSet={srcSet(poster, "avif")}
+              sizes="(min-width: 1024px) 44rem, 92vw"
+            />
+            <source
+              type="image/webp"
+              srcSet={srcSet(poster, "webp")}
+              sizes="(min-width: 1024px) 44rem, 92vw"
+            />
+            <img
+              src={entry.src}
+              srcSet={srcSet(poster, "jpeg")}
+              alt={title}
+              width={entry.width}
+              height={entry.height}
+              loading="lazy"
+              decoding="async"
+              sizes="(min-width: 1024px) 44rem, 92vw"
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+              }}
+            />
+          </picture>
           {/* Kept deliberately light: enough to hold the caption, not to darken
               the photograph into a different picture. */}
           <span

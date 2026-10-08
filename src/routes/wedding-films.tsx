@@ -4,14 +4,13 @@ import { createFileRoute } from "@tanstack/react-router";
 import { ClosingCTA } from "@/components/site/ClosingCTA";
 import { VideoPlayer } from "@/components/site/VideoPlayer";
 import { films, type Film } from "@/lib/films";
-import { getImage } from "@/lib/image-manifest";
+import { getImage, srcSet } from "@/lib/image-manifest";
 import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/wedding-films")({
   head: () =>
     seo({
-      title:
-        "Wedding Films | Oriana Weddings",
+      title: "Wedding Films | Oriana Weddings",
       description:
         "Watch wedding films, teasers, highlights and storytelling films by Oriana Weddings.",
       path: "/wedding-films",
@@ -40,7 +39,9 @@ function FilmsPage() {
     <>
       <main className="films-library-page">
         <section className="films-library" aria-labelledby="films-library-title">
-          <h1 id="films-library-title" className="sr-only">Wedding films</h1>
+          <h1 id="films-library-title" className="sr-only">
+            Wedding films
+          </h1>
           <div className="films-library-grid">
             {films.map((film) => {
               const poster = getImage(film.poster);
@@ -52,8 +53,31 @@ function FilmsPage() {
                     onClick={() => setActiveFilm(film)}
                     aria-label={`View ${film.title} details and play film`}
                   >
-                    <img src={poster.src} alt="" loading="lazy" />
-                    <span className="films-library-meta">{film.duration} <span aria-hidden="true">·</span> {film.location}</span>
+                    <picture className="films-library-picture">
+                      <source
+                        type="image/avif"
+                        srcSet={srcSet(film.poster, "avif")}
+                        sizes="(min-width: 1024px) 25vw, 50vw"
+                      />
+                      <source
+                        type="image/webp"
+                        srcSet={srcSet(film.poster, "webp")}
+                        sizes="(min-width: 1024px) 25vw, 50vw"
+                      />
+                      <img
+                        src={poster.src}
+                        srcSet={srcSet(film.poster, "jpeg")}
+                        sizes="(min-width: 1024px) 25vw, 50vw"
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                        width={poster.width}
+                        height={poster.height}
+                      />
+                    </picture>
+                    <span className="films-library-meta">
+                      {film.duration} <span aria-hidden="true">·</span> {film.location}
+                    </span>
                     <span className="films-library-title">{film.title}</span>
                     <span className="films-library-description">{film.description}</span>
                   </button>
@@ -95,7 +119,9 @@ function FilmsPage() {
               />
             </div>
             <div className="film-detail-copy">
-              <p className="films-library-meta">{activeFilm.duration} <span aria-hidden="true">·</span> {activeFilm.location}</p>
+              <p className="films-library-meta">
+                {activeFilm.duration} <span aria-hidden="true">·</span> {activeFilm.location}
+              </p>
               <h2 id="film-detail-title">{activeFilm.title}</h2>
               <p>{activeFilm.description}</p>
             </div>

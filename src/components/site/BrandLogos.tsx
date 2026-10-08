@@ -55,7 +55,7 @@ function MarkTile({ name, href, art, image, className = "" }: Mark & { className
       aria-label={name}
     >
       {image ? (
-        <img className="mark-image" src={image} alt="" />
+        <img className="mark-image" src={image} alt="" loading="lazy" decoding="async" />
       ) : (
         <svg viewBox="0 0 200 44" className="mark-svg" role="presentation" aria-hidden="true">
           {art}
@@ -511,7 +511,7 @@ const SOFTWARE: readonly Mark[] = [
   {
     name: "Final Cut Pro",
     href: "https://www.apple.com/final-cut-pro/",
-    image: "/brand-logos/final-cut-pro.png",
+    image: "/brand-logos/final-cut-pro.webp",
     art: (
       <Word x={100} y={29} size={18} ls={1} font={SANS} weight={700} anchor="middle">
         FCP
@@ -563,7 +563,7 @@ export function SoftwareLogos() {
           aria-label={mark.name}
         >
           {mark.image ? (
-            <img className="kit-icon" src={mark.image} alt="" />
+            <img className="kit-icon" src={mark.image} alt="" loading="lazy" decoding="async" />
           ) : (
             <svg viewBox="0 0 200 44" className="mark-svg" role="presentation" aria-hidden="true">
               {mark.art}

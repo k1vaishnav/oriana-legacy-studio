@@ -2,7 +2,7 @@ import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 
 import { Lightbox } from "@/components/site/Lightbox";
-import { getImage } from "@/lib/image-manifest";
+import { getImage, srcSet } from "@/lib/image-manifest";
 import { FILTERS, GROUPS, type FilterId } from "@/lib/photoFilters";
 import type { Photo } from "@/lib/photos";
 import { seo } from "@/lib/seo";
@@ -57,19 +57,43 @@ function PortfolioPage() {
           </div>
 
           <div className="portfolio-showcase-grid">
-            {visiblePhotos.map((photo, index) => (
-              <article className="portfolio-work-card" key={`${photo.key}-${index}`}>
-                <button
-                  type="button"
-                  className="portfolio-work-button"
-                  onClick={() => setActivePhoto(index)}
-                  aria-label={`View portfolio image: ${photo.alt}`}
-                >
-                  <img src={getImage(photo.key).src} alt="" loading="lazy" />
-                  <span className="portfolio-work-title">{photo.alt}</span>
-                </button>
-              </article>
-            ))}
+            {visiblePhotos.map((photo, index) => {
+              const entry = getImage(photo.key);
+              return (
+                <article className="portfolio-work-card" key={`${photo.key}-${index}`}>
+                  <button
+                    type="button"
+                    className="portfolio-work-button"
+                    onClick={() => setActivePhoto(index)}
+                    aria-label={`View portfolio image: ${photo.alt}`}
+                  >
+                    <picture className="portfolio-work-picture">
+                      <source
+                        type="image/avif"
+                        srcSet={srcSet(photo.key, "avif")}
+                        sizes="(min-width: 1024px) 25vw, 50vw"
+                      />
+                      <source
+                        type="image/webp"
+                        srcSet={srcSet(photo.key, "webp")}
+                        sizes="(min-width: 1024px) 25vw, 50vw"
+                      />
+                      <img
+                        src={entry.src}
+                        srcSet={srcSet(photo.key, "jpeg")}
+                        sizes="(min-width: 1024px) 25vw, 50vw"
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                        width={entry.width}
+                        height={entry.height}
+                      />
+                    </picture>
+                    <span className="portfolio-work-title">{photo.alt}</span>
+                  </button>
+                </article>
+              );
+            })}
           </div>
         </section>
       </main>

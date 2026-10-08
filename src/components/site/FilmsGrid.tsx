@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getImage } from "@/lib/image-manifest";
+import { getImage, srcSet } from "@/lib/image-manifest";
 import { ResponsiveImage } from "@/lib/images";
 import { VideoLightbox } from "@/components/site/VideoLightbox";
 import { ceremonies, details, originals, portraits, preWedding } from "@/lib/photos";
@@ -72,7 +72,28 @@ export function FilmsGrid() {
               className="film-feature"
               aria-label={`Play ${film.couple}, filmed in ${film.location}`}
             >
-              <img src={image.src} alt="" loading="lazy" />
+              <picture className="film-feature-picture">
+                <source
+                  type="image/avif"
+                  srcSet={srcSet(film.posterKey, "avif")}
+                  sizes="(min-width: 100rem) 50rem, (min-width: 640px) 50vw, 100vw"
+                />
+                <source
+                  type="image/webp"
+                  srcSet={srcSet(film.posterKey, "webp")}
+                  sizes="(min-width: 100rem) 50rem, (min-width: 640px) 50vw, 100vw"
+                />
+                <img
+                  src={image.src}
+                  srcSet={srcSet(film.posterKey, "jpeg")}
+                  sizes="(min-width: 100rem) 50rem, (min-width: 640px) 50vw, 100vw"
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  width={image.width}
+                  height={image.height}
+                />
+              </picture>
               <span className="film-feature-shade" aria-hidden="true" />
               <span className="film-feature-copy" aria-hidden="true">
                 <span className="film-feature-brand">ORIANA WEDDINGS</span>

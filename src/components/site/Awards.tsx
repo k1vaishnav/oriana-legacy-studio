@@ -47,7 +47,10 @@ export function Awards() {
           <p className="text-xs uppercase tracking-[0.3em] text-[#8F8A82] mb-3 font-semibold">
             DECADE OF EXCELLENCE
           </p>
-          <h2 id="awards-heading" className="font-serif text-3xl md:text-5xl text-[#171717] font-normal">
+          <h2
+            id="awards-heading"
+            className="font-serif text-3xl md:text-5xl text-[#171717] font-normal"
+          >
             Awards & Accolades
           </h2>
         </div>
@@ -61,13 +64,19 @@ export function Awards() {
             >
               {/* Leaf Container */}
               <div className="relative w-full max-w-[210px] aspect-square flex items-center justify-center mx-auto">
-                {/* Official Laurel Leaf PNG from Directory */}
-                <img
-                  src="/brand/award-leaf.png"
-                  alt="Golden Laurel Wreath Award"
-                  className="absolute inset-0 w-full h-full object-contain pointer-events-none select-none transition-transform duration-500 group-hover:scale-105"
-                  loading="lazy"
-                />
+                {/* Official Laurel Leaf — 47KB WebP (was 787KB PNG), PNG fallback */}
+                <picture className="absolute inset-0 w-full h-full pointer-events-none select-none">
+                  <source type="image/webp" srcSet="/brand/award-leaf-420.webp" />
+                  <img
+                    src="/brand/award-leaf.png"
+                    alt="Golden Laurel Wreath Award"
+                    width={420}
+                    height={420}
+                    className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </picture>
 
                 {/* Content STRICTLY inside the Leaf - Only Title & Subtitle */}
                 <div className="relative z-10 flex flex-col items-center justify-center px-7 py-6 text-center max-w-[160px]">
@@ -76,7 +85,7 @@ export function Awards() {
                       {badge.subtitle}
                     </span>
                   )}
-                  
+
                   <h3 className="font-sans font-bold text-[11px] sm:text-[12px] tracking-tight leading-[1.2] text-[#171717] uppercase max-w-[13ch]">
                     {badge.title}
                   </h3>

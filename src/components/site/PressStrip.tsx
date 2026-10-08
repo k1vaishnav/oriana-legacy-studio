@@ -1,22 +1,50 @@
 import { CameraLogos, SoftwareLogos } from "@/components/site/BrandLogos";
 
 const affiliations = [
-  { name: "WeddingSutra", style: "affiliation-weddingsutra", href: "https://www.weddingsutra.com/" },
+  {
+    name: "WeddingSutra",
+    style: "affiliation-weddingsutra",
+    href: "https://www.weddingsutra.com/",
+  },
   { name: "Vogue", style: "affiliation-vogue", href: "https://www.vogue.in/" },
-  { name: "Hindustan Times", style: "affiliation-hindustan", href: "https://www.hindustantimes.com/" },
+  {
+    name: "Hindustan Times",
+    style: "affiliation-hindustan",
+    href: "https://www.hindustantimes.com/",
+  },
   { name: "India Film Project", style: "affiliation-ifp", href: "https://ifp.world/" },
-  { name: "The Times of India", style: "affiliation-toi", href: "https://timesofindia.indiatimes.com/" },
-  { name: "Asian Photography", style: "affiliation-asian", href: "https://asianphotographyindia.com/" },
-  { name: "Femina India Wedding Show", style: "affiliation-femina", href: "https://www.femina.in/" },
+  {
+    name: "The Times of India",
+    style: "affiliation-toi",
+    href: "https://timesofindia.indiatimes.com/",
+  },
+  {
+    name: "Asian Photography",
+    style: "affiliation-asian",
+    href: "https://asianphotographyindia.com/",
+  },
+  {
+    name: "Femina India Wedding Show",
+    style: "affiliation-femina",
+    href: "https://www.femina.in/",
+  },
   { name: "Diva", style: "affiliation-diva", href: "https://www.divaplanetmagazine.com/" },
   {
     name: "Sabyasachi",
     style: "affiliation-sabyasachi",
     href: "https://www.sabyasachi.com",
   },
-  { name: "Condé Nast Traveler", style: "affiliation-traveler", href: "https://www.cntraveller.in/" },
+  {
+    name: "Condé Nast Traveler",
+    style: "affiliation-traveler",
+    href: "https://www.cntraveller.in/",
+  },
   { name: "Wedding Vows", style: "affiliation-vows", href: "https://www.weddingvows.com/" },
-  { name: "Cultured Wedding Magazine", style: "affiliation-cultured", href: "https://www.instagram.com/culturedwedding/" },
+  {
+    name: "Cultured Wedding Magazine",
+    style: "affiliation-cultured",
+    href: "https://www.instagram.com/culturedwedding/",
+  },
   {
     name: "Manish Malhotra",
     style: "affiliation-manish",
@@ -27,7 +55,7 @@ const affiliations = [
     name: "Vera Wang",
     style: "affiliation-vera",
     href: "https://www.verawang.com",
-    image: "/brand-logos/vera-wang.png",
+    image: "/brand-logos/vera-wang.webp",
   },
 ];
 
@@ -38,7 +66,15 @@ export function CouturePressStrip() {
         {affiliations.map(({ name, style, href, image }) => {
           const mark = (
             <span className={`affiliation-mark ${style}`}>
-              {image ? <img className="affiliation-image" src={image} alt={name} /> : null}
+              {image ? (
+                <img
+                  className="affiliation-image"
+                  src={image}
+                  alt={name}
+                  loading="lazy"
+                  decoding="async"
+                />
+              ) : null}
               {!image && name === "WeddingSutra" ? (
                 <>
                   <span className="affiliation-seal">WS</span>
