@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { ResponsiveImage } from "@/lib/images";
-import { VideoLightbox } from "@/components/site/VideoLightbox";
 import { ceremonies, details, originals, portraits, preWedding } from "@/lib/photos";
 import type { Photo } from "@/lib/photos";
 
@@ -63,7 +62,9 @@ const editorialCovers: readonly Photo[] = [
 ];
 
 export function FilmsGrid() {
-  const [activeFilm, setActiveFilm] = useState<FilmCardData | null>(null);
+  // Which card is playing inline. The film opens right inside its own
+  // frame — no popup, no page change.
+  const [playingCouple, setPlayingCouple] = useState<string | null>(null);
 
   return (
     <section id="films" className="films-editorial-section" aria-labelledby="films-heading">
@@ -76,11 +77,24 @@ export function FilmsGrid() {
       </div>
       <div className="films-feature-grid">
         {featuredFilms.map((film) => {
+          if (playingCouple === film.couple) {
+            return (
+              <div key={film.couple} className="film-feature">
+                <iframe
+                  src={`https://www.youtube-nocookie.com/embed/${film.youtubeId}?autoplay=1&rel=0`}
+                  title={`${film.couple} wedding film`}
+                  className="absolute inset-0 size-full border-0"
+                  allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
+                  allowFullScreen
+                />
+              </div>
+            );
+          }
           return (
             <button
               key={film.couple}
               type="button"
-              onClick={() => setActiveFilm(film)}
+              onClick={() => setPlayingCouple(film.couple)}
               className="film-feature"
               aria-label={`Play ${film.couple}, filmed in ${film.location}`}
             >
@@ -126,14 +140,19 @@ export function FilmsGrid() {
         ))}
       </div>
 
-      {activeFilm && (
-        <VideoLightbox
-          open={true}
-          onClose={() => setActiveFilm(null)}
-          title={activeFilm.couple}
-          youtubeId={activeFilm.youtubeId}
-        />
-      )}
+      <div className="film-cover-row" role="list" aria-label="More wedding stories">
+        {editorialCovers.map((photo) => (
+          <div className="film-cover" key={photo.key} role="listitem">
+            <ResponsiveImage
+              image={photo.key}
+              alt={photo.alt}
+              ratio="2 / 3"
+              sizes="(min-width: 900px) 8rem, 6rem"
+              className="film-cover-image"
+            />
+          </div>
+        ))}
+      </div>
     </section>
   );
 }
