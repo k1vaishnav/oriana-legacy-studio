@@ -1871,16 +1871,26 @@
   display: flex;
   width: min(100%, 62rem);
   margin: clamp(1.5rem, 3vw, 2.5rem) auto 0;
-  justify-content: center;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
   gap: clamp(0.8rem, 2.5vw, 2rem);
+  overflow-x: auto;
+  padding-bottom: 0.35rem;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.film-cover-row::-webkit-scrollbar {
+  display: none;
 }
 .film-cover {
   position: relative;
-  flex: 0 1 7.5rem;
+  flex: 0 0 7.5rem;
   min-width: 0;
   aspect-ratio: 0.68;
   overflow: hidden;
   background: #e9e2d9;
+  scroll-snap-align: start;
 }
 .film-cover-image {
   position: absolute;
