@@ -26,7 +26,7 @@ export function EditorialHero({ src, alt }: { src: string; alt: string }) {
         <div className="home-hero-scrim" aria-hidden="true" />
         <div className="home-hero-content">
           <p className="home-hero-eyebrow">Oriana Weddings · Photography &amp; Films</p>
-          <h1 className="home-hero-title">Your wedding, held forever.</h1>
+          <h1 className="home-hero-title">Your wedding, our responsibility.</h1>
           <p className="home-hero-sub">Candid, traditional &amp; cinematic — managed by Oriana.</p>
           <div className="home-hero-ctas">
             <Link to="/portfolio" className="home-hero-cta home-hero-cta-primary">

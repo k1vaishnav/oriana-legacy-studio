@@ -27,6 +27,13 @@ export function FloatingWhatsApp() {
   const mobileInputRef = useRef<HTMLInputElement>(null);
   const desktopEndRef = useRef<HTMLDivElement>(null);
   const mobileEndRef = useRef<HTMLDivElement>(null);
+  // On phones the hero has its own CTAs — the floating buttons, teaser
+  // and auto-popup stay out of the way until the hero is scrolled past.
+  // Desktop is untouched. Pages without a hero are unaffected.
+  const [pastHero, setPastHero] = useState(true);
+  const [isMobileView, setIsMobileView] = useState(false);
+  const pastHeroRef = useRef(true);
+  const isMobileRef = useRef(false);
   // Guards so the scheduled auto-pop fires exactly once and never
   // re-opens over a user who explicitly closed it.
   const autoFiredRef = useRef(false);
@@ -168,30 +175,73 @@ export function FloatingWhatsApp() {
     // comes back after a breather so it doesn't feel naggy.
     window.clearTimeout(renudgeTimerRef.current);
     renudgeTimerRef.current = window.setTimeout(() => {
-      if (!chatOpenRef.current) setNudgeVisible(true);
+      if (!chatOpenRef.current && (!isMobileRef.current || pastHeroRef.current)) {
+        setNudgeVisible(true);
+      }
     }, 12000);
   }, [step, lead, messages, sendLeadData]);
 
   // Scroll position (hide dock near footer) + teaser + guaranteed auto-pop.
   // NOTE: nothing here is cancelled by random taps/scrolls — the chat pops
   // once per page load unless the user explicitly closed it first.
+  // On phones both popups additionally wait until the hero is scrolled past.
   useEffect(() => {
+    const mq = window.matchMedia("(max-width: 1023px)");
+    let heroObserver: IntersectionObserver | null = null;
+
+    const syncHeroGate = () => {
+      const mobile = mq.matches;
+      isMobileRef.current = mobile;
+      setIsMobileView(mobile);
+      const hero = document.querySelector(".home-hero-wrap");
+      if (!mobile || !hero || typeof IntersectionObserver === "undefined") {
+        pastHeroRef.current = true;
+        setPastHero(true);
+        return;
+      }
+      if (!heroObserver) {
+        heroObserver = new IntersectionObserver(
+          (entries) => {
+            const past = !entries.some((entry) => entry.isIntersecting);
+            pastHeroRef.current = past;
+            setPastHero(past);
+          },
+          { threshold: 0.12 },
+        );
+        heroObserver.observe(hero);
+      }
+    };
+    syncHeroGate();
+    mq.addEventListener("change", syncHeroGate);
+
+    const heroInWay = () => isMobileRef.current && !pastHeroRef.current;
+
     const onScroll = () => {
       setAtBottom(window.innerHeight + window.scrollY >= document.body.scrollHeight - 80);
+      // SPA route changes swap the hero without remounting this component.
+      syncHeroGate();
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
 
-    const nudgeTimer = window.setTimeout(() => {
+    let nudgeRetry = 0;
+    const doNudge = () => {
       if (autoFiredRef.current || userClosedRef.current) return;
+      if (heroInWay()) {
+        window.clearTimeout(nudgeRetry);
+        nudgeRetry = window.setTimeout(doNudge, 2000);
+        return;
+      }
       setNudgeVisible(true);
-    }, NUDGE_DELAY);
+    };
+    const nudgeTimer = window.setTimeout(doNudge, NUDGE_DELAY);
 
     let retryTimer = 0;
     const doAutoOpen = () => {
       if (autoFiredRef.current || userClosedRef.current) return;
-      if (document.hidden) {
-        // Tab in background — try again shortly instead of giving up.
+      if (document.hidden || heroInWay()) {
+        // Tab in background or hero CTAs still on screen — try again
+        // shortly instead of giving up.
         retryTimer = window.setTimeout(doAutoOpen, 2000);
         return;
       }
@@ -203,8 +253,11 @@ export function FloatingWhatsApp() {
     const autoTimer = window.setTimeout(doAutoOpen, AUTO_OPEN_DELAY);
 
     return () => {
+      mq.removeEventListener("change", syncHeroGate);
+      heroObserver?.disconnect();
       window.removeEventListener("scroll", onScroll);
       window.clearTimeout(nudgeTimer);
+      window.clearTimeout(nudgeRetry);
       window.clearTimeout(autoTimer);
       window.clearTimeout(retryTimer);
       window.clearTimeout(renudgeTimerRef.current);
@@ -556,62 +609,66 @@ export function FloatingWhatsApp() {
         </a>
       </div>
 
-      {/* Mobile bar */}
-      <div
-        className={`mobile-dock fixed inset-x-4 bottom-4 z-40 flex items-center justify-between gap-2 rounded-full border border-line/40 bg-paper/80 p-1.5 shadow-2xl backdrop-blur-xl transition-all duration-500 lg:hidden ${
-          atBottom && !chatOpen ? "translate-y-24 opacity-0" : "translate-y-0 opacity-100"
-        }`}
-      >
-        <button
-          onClick={() => (chatOpen ? closeChat() : openChat())}
-          aria-expanded={chatOpen}
-          aria-label={chatOpen ? "Close chat" : "Get a quote"}
-          className={`relative flex flex-1 items-center justify-center gap-2 rounded-full py-3 text-sm font-bold tracking-tight text-white transition-colors hover:bg-gold-ink/90 shadow-lg ${chatOpen ? "bg-ink" : "bg-gold-ink"} ${showAttentionDot ? "btn-attn-gold" : ""}`}
+      {/* Mobile bar — hidden until the hero is scrolled past on phones,
+          so it never covers the hero CTAs. An open chat stays put. */}
+      {(!isMobileView || pastHero) && (
+        <div
+          className={`mobile-dock fixed inset-x-4 bottom-4 z-40 flex items-center justify-between gap-2 rounded-full border border-line/40 bg-paper/80 p-1.5 shadow-2xl backdrop-blur-xl transition-all duration-500 lg:hidden ${
+            atBottom && !chatOpen ? "translate-y-24 opacity-0" : "translate-y-0 opacity-100"
+          }`}
         >
-          {chatOpen ? (
-            <svg
-              viewBox="0 0 24 24"
-              className="size-4 text-white"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          ) : (
-            <svg
-              viewBox="0 0 24 24"
-              className="size-4 text-white"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
-              />
-            </svg>
-          )}
-          {chatOpen ? "Close" : "Get Quote"}
-        </button>
-        <a
-          href={business.phoneHref}
-          className={`relative flex flex-1 items-center justify-center gap-2 rounded-full bg-white/60 py-3 text-sm font-bold tracking-tight text-ink transition-colors hover:bg-white ${showAttentionDot ? "btn-attn-light" : ""}`}
-        >
-          <svg
-            viewBox="0 0 16 16"
-            className="size-4 text-gold-ink"
-            fill="currentColor"
-            aria-hidden="true"
+          <button
+            onClick={() => (chatOpen ? closeChat() : openChat())}
+            aria-expanded={chatOpen}
+            aria-label={chatOpen ? "Close chat" : "Get a quote"}
+            className={`relative flex flex-1 items-center justify-center gap-2 rounded-full py-3 text-sm font-bold tracking-tight text-white transition-colors hover:bg-gold-ink/90 shadow-lg ${chatOpen ? "bg-ink" : "bg-gold-ink"} ${showAttentionDot ? "btn-attn-gold" : ""}`}
           >
-            <path d="M10.5 1h-5A1.5 1.5 0 0 0 4 2.5v11A1.5 1.5 0 0 0 5.5 15h5A1.5 1.5 0 0 0 12 13.5v-11A1.5 1.5 0 0 0 10.5 1Zm-5 1h5a.5.5 0 0 1 .5.5v8h-6v-8a.5.5 0 0 1 .5-.5Zm5 12h-5a.5.5 0 0 1-.5-.5V11h6v2.5a.5.5 0 0 1-.5.5ZM8 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
-          </svg>
-          {business.phone}
-        </a>
-      </div>
+            {chatOpen ? (
+              <svg
+                viewBox="0 0 24 24"
+                className="size-4 text-white"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg
+                viewBox="0 0 24 24"
+                className="size-4 text-white"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+                />
+              </svg>
+            )}
+            {chatOpen ? "Close" : "Get Quote"}
+          </button>
+          <a
+            href={business.phoneHref}
+            className={`relative flex flex-1 items-center justify-center gap-2 rounded-full bg-white/60 py-3 text-sm font-bold tracking-tight text-ink transition-colors hover:bg-white ${showAttentionDot ? "btn-attn-light" : ""}`}
+          >
+            <svg
+              viewBox="0 0 16 16"
+              className="size-4 text-gold-ink"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path d="M10.5 1h-5A1.5 1.5 0 0 0 4 2.5v11A1.5 1.5 0 0 0 5.5 15h5A1.5 1.5 0 0 0 12 13.5v-11A1.5 1.5 0 0 0 10.5 1Zm-5 1h5a.5.5 0 0 1 .5.5v8h-6v-8a.5.5 0 0 1 .5-.5Zm5 12h-5a.5.5 0 0 1-.5-.5V11h6v2.5a.5.5 0 0 1-.5.5ZM8 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
+            </svg>
+            {business.phone}
+          </a>
+        </div>
+      )}
 
-      {/* Mobile chat card */}
+      {/* Mobile chat card — always mounted so an open conversation survives
+          scrolling back up; it can only open past the hero anyway. */}
       <div
         role="dialog"
         aria-label="Chat with Oriana Weddings"
