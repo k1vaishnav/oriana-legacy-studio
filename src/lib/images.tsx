@@ -57,7 +57,6 @@ export function ResponsiveImage({
     >
       <picture>
         <source type="image/avif" srcSet={srcSet(image, "avif")} sizes={sizes} />
-        <source type="image/webp" srcSet={srcSet(image, "webp")} sizes={sizes} />
         <img
           src={entry.src}
           srcSet={srcSet(image, "jpeg")}
@@ -103,11 +102,6 @@ export function PriorityImage(props: ResponsiveImageProps) {
         <source
           type="image/avif"
           srcSet={srcSet(props.image, "avif")}
-          sizes={props.sizes ?? "100vw"}
-        />
-        <source
-          type="image/webp"
-          srcSet={srcSet(props.image, "webp")}
           sizes={props.sizes ?? "100vw"}
         />
         <img

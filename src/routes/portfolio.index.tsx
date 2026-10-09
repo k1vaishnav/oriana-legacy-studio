@@ -73,11 +73,6 @@ function PortfolioPage() {
                         srcSet={srcSet(photo.key, "avif")}
                         sizes="(min-width: 1024px) 25vw, 50vw"
                       />
-                      <source
-                        type="image/webp"
-                        srcSet={srcSet(photo.key, "webp")}
-                        sizes="(min-width: 1024px) 25vw, 50vw"
-                      />
                       <img
                         src={entry.src}
                         srcSet={srcSet(photo.key, "jpeg")}
