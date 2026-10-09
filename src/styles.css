@@ -443,6 +443,34 @@
   outline: 2px solid #8e7958;
   outline-offset: 3px;
 }
+.portfolio-showcase-more {
+  display: flex;
+  justify-content: center;
+  margin-top: 2.5rem;
+}
+.portfolio-show-more {
+  min-height: 3rem;
+  padding: 0.8rem 2.2rem;
+  border: 1px solid #b49b60;
+  border-radius: 999px;
+  background: transparent;
+  color: #171513;
+  font: 600 0.82rem/1.2 var(--font-sans);
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease,
+    transform 0.25s ease;
+}
+.portfolio-show-more:hover {
+  background: #b49b60;
+  color: #fff;
+  transform: translateY(-2px);
+}
+.portfolio-show-more:active {
+  transform: scale(0.97);
+}
 .portfolio-showcase-count {
   margin: 0;
   color: #746b60;

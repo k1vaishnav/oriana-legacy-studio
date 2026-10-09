@@ -30,7 +30,7 @@ export function PhotographyRow() {
         {COLLECTIONS.map((item, index) => (
           <Link
             key={item.id}
-            to="/wedding-photography"
+            to="/portfolio"
             search={{ filter: item.id }}
             className="photography-collection"
             aria-label={`View ${item.title} wedding photography`}
