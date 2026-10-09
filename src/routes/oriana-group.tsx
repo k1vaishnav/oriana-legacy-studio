@@ -1,13 +1,12 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { seo } from "@/lib/seo";
 import { ClosingCTA } from "@/components/site/ClosingCTA";
 import { Reveal } from "@/components/site/Reveal";
 import { Marquee } from "@/components/site/Marquee";
-import { ActionLink, Arrow, SectionHead, SplitHead } from "@/components/site/ui";
-import { PageHero } from "@/components/site/PageHero";
+import { Arrow, SectionHead, SplitHead } from "@/components/site/ui";
 import { BrandMark } from "@/lib/BrandMark";
-import { business, groupBrands, groupStatement } from "@/lib/site";
+import { groupBrands, groupStatement } from "@/lib/site";
 
 export const Route = createFileRoute("/oriana-group")({
   head: () =>
@@ -28,31 +27,27 @@ export const Route = createFileRoute("/oriana-group")({
  * *who each brand is for*. A couple looking for wedding photography and a
  * parent looking for baby photographs are the same household, and the point of
  * the group is that the same house already has an answer for both.
+ *
+ * The header is text-only on purpose — no big brand image. Each row links to
+ * the brand's own page, which carries the gallery and the details.
  */
-const BRAND_AUDIENCE: Record<string, string> = {
-  "Oriana Weddings": "Couples planning a wedding in Kerala, Gujarat, India or abroad.",
-  "Baby Crew Studios": "Parents with newborns, babies and young children.",
-  "DEOR Fashion": "Fashion labels, designers and brands needing editorial or campaign work.",
-  "ORION Events": "Families and companies needing event design, coordination and production.",
-  "Odonata Republic":
-    "Collectors and interior owners looking for specialty albums and fine-art prints.",
-};
 
 function GroupPage() {
   return (
     <>
-      <PageHero
-        eyebrow="The Oriana Group"
-        title="Five brands, one house"
-        lead={groupStatement}
-        image="detail-reception-luxury"
-        alt="Luxury wedding reception setup with florals and candlelight"
-        meta={[
-          { label: "Brands", value: `${groupBrands.length}` },
-          { label: "Offices", value: "Calicut & Ahmedabad" },
-        ]}
-        crumb={[{ name: "Group" }]}
-      />
+      {/* Minimal text header — no brand imagery. */}
+      <section
+        className="surface-paper pt-14 pb-10 sm:pt-20 sm:pb-14"
+        aria-labelledby="group-heading"
+      >
+        <div className="shell">
+          <p className="eyebrow">The Oriana Group</p>
+          <h1 id="group-heading" className="mt-4 max-w-[16ch] font-display text-h2 text-ink">
+            Five brands, one house
+          </h1>
+          <p className="lede mt-4 max-w-[56ch]">{groupStatement}</p>
+        </div>
+      </section>
 
       <section className="section surface-paper">
         <div className="shell">
@@ -82,25 +77,18 @@ function GroupPage() {
                 <div className="flex flex-col gap-4 lg:col-span-5">
                   <p className="text-base text-ink/75">{brand.tagline}</p>
                   <p className="text-sm mute">{brand.description}</p>
-                  <p className="text-sm mute">{BRAND_AUDIENCE[brand.name]}</p>
+                  <p className="text-sm mute">{brand.audience}</p>
                 </div>
                 <div className="flex items-start lg:col-span-3">
-                  {index === 0 ? (
-                    <ActionLink to="/wedding-photography" variant="line">
-                      Explore photography
-                      <Arrow />
-                    </ActionLink>
-                  ) : (
-                    <a
-                      href={`mailto:${business.email}?subject=${encodeURIComponent(
-                        `Enquiry — ${brand.name}`,
-                      )}`}
-                      className="link group inline-flex items-center gap-1.5 text-sm"
-                    >
-                      Enquire about {brand.name}
-                      <Arrow />
-                    </a>
-                  )}
+                  <Link
+                    to="/oriana-group/$slug"
+                    params={{ slug: brand.slug }}
+                    className="link group inline-flex items-center gap-1.5 text-sm"
+                    aria-label={`Open the ${brand.name} page`}
+                  >
+                    View {brand.name}
+                    <Arrow />
+                  </Link>
                 </div>
               </article>
             </Reveal>

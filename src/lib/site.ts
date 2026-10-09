@@ -1,5 +1,7 @@
 export const SITE_URL = "https://orianaweddings.com";
 
+import type { ImageKey } from "./image-manifest";
+
 export const business = {
   name: "Oriana Weddings",
   legalDescription: "Wedding Photography & Wedding Films",
@@ -284,36 +286,93 @@ export const offices = [
 export const groupStatement =
   "Oriana Group brings together creative brands working across photography, fashion, events and luxury products.";
 
-export const groupBrands = [
+export const groupBrands: {
+  name: string;
+  slug: string;
+  tagline: string;
+  description: string;
+  audience: string;
+  gallery: ImageKey[];
+}[] = [
   {
     name: "Oriana Weddings",
+    slug: "oriana-weddings",
     tagline: "Wedding photography and cinematic films.",
     description:
       "Wedding photography and cinematic films — candid, traditional, intimate, pre-wedding, post-wedding, destination and confidential wedding coverage. Managed by Oriana.",
+    audience: "Couples planning a wedding in Kerala, Gujarat, India or abroad.",
+    gallery: [
+      "calicut-cinematic-wedding-hero",
+      "church-vows-elegant",
+      "portrait-formal-indoors",
+      "haldi-joy",
+      "detail-bouquet",
+      "wide-coastal",
+    ],
   },
   {
     name: "Baby Crew Studios",
+    slug: "baby-crew-studios",
     tagline: "Baby photography and related creative services.",
     description:
       "Baby photography and related creative services — newborn, baby and family portraiture.",
+    audience: "Parents with newborns, babies and young children.",
+    gallery: [
+      "detail-orange-roses",
+      "portrait-bride-bouquet-smile",
+      "detail-bouquet",
+      "haldi-joy",
+      "kozhikode-candid-bridal-moment",
+      "portrait-bride-sunlight",
+    ],
   },
   {
     name: "DEOR Fashion",
+    slug: "deor-fashion",
     tagline: "Fashion photography and fashion-related creative work.",
     description:
       "Fashion photography and fashion-related creative work — editorial, lookbook and campaign photography.",
+    audience: "Fashion labels, designers and brands needing editorial or campaign work.",
+    gallery: [
+      "portrait-formal-indoors",
+      "portrait-bride-window-tiara",
+      "portrait-bride-monochrome-veil",
+      "portrait-forest-couple",
+      "portrait-outdoor-embrace",
+      "detail-hands-jewellery",
+    ],
   },
   {
     name: "ORION Events",
+    slug: "orion-events",
     tagline: "Wedding and corporate event services.",
     description:
       "Wedding and corporate event services — event design, coordination and on-ground production.",
+    audience: "Families and companies needing event design, coordination and production.",
+    gallery: [
+      "detail-reception-luxury",
+      "detail-venue-setup-indoor",
+      "kerala-drone-wedding-venue-aerial",
+      "wide-coastal",
+      "detail-reception-cake",
+      "haldi-vibrant-friends",
+    ],
   },
   {
     name: "Odonata Republic",
+    slug: "odonata-republic",
     tagline: "Fashion and luxury products.",
     description:
       "Fashion and luxury products — specialty collections, handcrafted albums and fine-art prints.",
+    audience: "Collectors and interior owners looking for specialty albums and fine-art prints.",
+    gallery: [
+      "detail-bride-jewellery-mehndi",
+      "detail-diamond-rings",
+      "detail-hands-gold-rings",
+      "kerala-wedding-details-jasmine-gold",
+      "mehndi-ornate-closeup",
+      "detail-orange-roses",
+    ],
   },
 ];
 

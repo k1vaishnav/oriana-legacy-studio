@@ -17,6 +17,7 @@ import { Route as PortfolioRouteImport } from './routes/portfolio'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as WeddingFilmsRouteImport } from './routes/wedding-films'
 import { Route as WeddingPhotographyRouteImport } from './routes/wedding-photography'
+import { Route as OrianaGroupSlugRouteImport } from './routes/oriana-group.$slug'
 import { Route as PortfolioIndexRouteImport } from './routes/portfolio.index'
 import { Route as PortfolioRealWeddingsSlugRouteImport } from './routes/portfolio.real-weddings.$slug'
 
@@ -60,6 +61,11 @@ const WeddingPhotographyRoute = WeddingPhotographyRouteImport.update({
   path: '/wedding-photography',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OrianaGroupSlugRoute = OrianaGroupSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => OrianaGroupRoute,
+} as any)
 const PortfolioIndexRoute = PortfolioIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -76,11 +82,12 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
-  '/oriana-group': typeof OrianaGroupRoute
+  '/oriana-group': typeof OrianaGroupRouteWithChildren
   '/portfolio': typeof PortfolioRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/wedding-films': typeof WeddingFilmsRoute
   '/wedding-photography': typeof WeddingPhotographyRoute
+  '/oriana-group/$slug': typeof OrianaGroupSlugRoute
   '/portfolio/': typeof PortfolioIndexRoute
   '/portfolio/real-weddings/$slug': typeof PortfolioRealWeddingsSlugRoute
 }
@@ -88,10 +95,11 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
-  '/oriana-group': typeof OrianaGroupRoute
+  '/oriana-group': typeof OrianaGroupRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/wedding-films': typeof WeddingFilmsRoute
   '/wedding-photography': typeof WeddingPhotographyRoute
+  '/oriana-group/$slug': typeof OrianaGroupSlugRoute
   '/portfolio': typeof PortfolioIndexRoute
   '/portfolio/real-weddings/$slug': typeof PortfolioRealWeddingsSlugRoute
 }
@@ -100,11 +108,12 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
-  '/oriana-group': typeof OrianaGroupRoute
+  '/oriana-group': typeof OrianaGroupRouteWithChildren
   '/portfolio': typeof PortfolioRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/wedding-films': typeof WeddingFilmsRoute
   '/wedding-photography': typeof WeddingPhotographyRoute
+  '/oriana-group/$slug': typeof OrianaGroupSlugRoute
   '/portfolio/': typeof PortfolioIndexRoute
   '/portfolio/real-weddings/$slug': typeof PortfolioRealWeddingsSlugRoute
 }
@@ -119,6 +128,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/wedding-films'
     | '/wedding-photography'
+    | '/oriana-group/$slug'
     | '/portfolio/'
     | '/portfolio/real-weddings/$slug'
   fileRoutesByTo: FileRoutesByTo
@@ -130,6 +140,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/wedding-films'
     | '/wedding-photography'
+    | '/oriana-group/$slug'
     | '/portfolio'
     | '/portfolio/real-weddings/$slug'
   id:
@@ -142,6 +153,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/wedding-films'
     | '/wedding-photography'
+    | '/oriana-group/$slug'
     | '/portfolio/'
     | '/portfolio/real-weddings/$slug'
   fileRoutesById: FileRoutesById
@@ -150,7 +162,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
-  OrianaGroupRoute: typeof OrianaGroupRoute
+  OrianaGroupRoute: typeof OrianaGroupRouteWithChildren
   PortfolioRoute: typeof PortfolioRouteWithChildren
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   WeddingFilmsRoute: typeof WeddingFilmsRoute
@@ -215,6 +227,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WeddingPhotographyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/oriana-group/$slug': {
+      id: '/oriana-group/$slug'
+      path: '/$slug'
+      fullPath: '/oriana-group/$slug'
+      preLoaderRoute: typeof OrianaGroupSlugRouteImport
+      parentRoute: typeof OrianaGroupRoute
+    }
     '/portfolio/': {
       id: '/portfolio/'
       path: '/'
@@ -231,6 +250,18 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface OrianaGroupRouteChildren {
+  OrianaGroupSlugRoute: typeof OrianaGroupSlugRoute
+}
+
+const OrianaGroupRouteChildren: OrianaGroupRouteChildren = {
+  OrianaGroupSlugRoute: OrianaGroupSlugRoute,
+}
+
+const OrianaGroupRouteWithChildren = OrianaGroupRoute._addFileChildren(
+  OrianaGroupRouteChildren,
+)
 
 interface PortfolioRouteChildren {
   PortfolioIndexRoute: typeof PortfolioIndexRoute
@@ -250,7 +281,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
-  OrianaGroupRoute: OrianaGroupRoute,
+  OrianaGroupRoute: OrianaGroupRouteWithChildren,
   PortfolioRoute: PortfolioRouteWithChildren,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   WeddingFilmsRoute: WeddingFilmsRoute,

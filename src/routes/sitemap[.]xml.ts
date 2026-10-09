@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { weddings } from "@/lib/portfolio";
-import { SITE_URL } from "@/lib/site";
+import { SITE_URL, groupBrands } from "@/lib/site";
 
 const staticPaths = [
   "/",
@@ -19,6 +19,7 @@ export const Route = createFileRoute("/sitemap.xml")({
       GET: () => {
         const paths = [
           ...staticPaths,
+          ...groupBrands.map((brand) => `/oriana-group/${brand.slug}`),
           ...weddings.map((wedding) => `/portfolio/real-weddings/${wedding.slug}`),
         ];
 
