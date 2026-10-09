@@ -34,35 +34,35 @@ export type Photo = { key: PhotoKey; alt: string };
 export const originals: Photo[] = [
   {
     key: "calicut-cinematic-wedding-hero",
-    alt: "Kerala bride and groom in cream and gold attire walking through a sunlit Calicut courtyard, photographed by Oriana Weddings",
+    alt: "Bride in a red veil at night, photographed by Oriana Weddings",
   },
   {
     key: "calicut-church-wedding-ceremony",
-    alt: "Bride and groom exchanging rings during a church wedding ceremony in Calicut, photographed by Oriana Weddings",
+    alt: "Wedding ceremony with family and friends, photographed by Oriana Weddings",
   },
   {
     key: "kerala-cinematic-wedding-film-still",
-    alt: "Cinematic wedding film still of a bride's veil catching evening light at a Kerala reception, photographed by Oriana Weddings",
+    alt: "Bride celebrating with sparklers among loved ones, photographed by Oriana Weddings",
   },
   {
     key: "wayanad-pre-wedding-shoot",
-    alt: "Couple on a misty Wayanad tea estate during a pre-wedding shoot at sunrise, photographed by Oriana Weddings",
+    alt: "Newlywed couple on a traditional Kerala houseboat, photographed by Oriana Weddings",
   },
   {
     key: "kozhikode-candid-bridal-moment",
-    alt: "Bride laughing with her sisters while getting ready for a Kerala wedding in Kozhikode, photographed by Oriana Weddings",
+    alt: "Bride in a pink saree among the palms, photographed by Oriana Weddings",
   },
   {
     key: "kozhikode-beach-post-wedding-portrait",
-    alt: "Couple walking along a Kozhikode beach at golden hour for a post-wedding portrait session, photographed by Oriana Weddings",
+    alt: "Newlywed couple laughing together outdoors, photographed by Oriana Weddings",
   },
   {
     key: "kerala-wedding-details-jasmine-gold",
-    alt: "Jasmine flowers and gold bangles arranged on silk, a Kerala wedding detail photographed by Oriana Weddings",
+    alt: "Bride in red and gold jewellery, photographed by Oriana Weddings",
   },
   {
     key: "kerala-drone-wedding-venue-aerial",
-    alt: "Aerial drone view of a Kerala wedding venue surrounded by coconut palms, photographed by Oriana Weddings",
+    alt: "Bride celebrating with sparklers among loved ones, photographed by Oriana Weddings",
   },
 ];
 
@@ -74,35 +74,47 @@ export const hero: Photo[] = [
   originals[0]!,
   {
     key: "hero-indian-couple-embrace",
-    alt: "Bride and groom embracing during a wedding celebration",
+    alt: "Bride in a red veil at night, photographed by Oriana Weddings",
   },
-  { key: "hero-beach-laugh", alt: "Bride and groom laughing together during a beach wedding" },
+  {
+    key: "hero-beach-laugh",
+    alt: "Newlywed couple laughing together outdoors, photographed by Oriana Weddings",
+  },
   {
     key: "hero-traditional-intimate",
-    alt: "Couple in traditional wedding attire sharing an intimate moment",
+    alt: "Bride and groom together in wedding attire, photographed by Oriana Weddings",
   },
-  { key: "hero-beach-vows", alt: "Couple exchanging vows on a beach at sunset" },
+  {
+    key: "hero-beach-vows",
+    alt: "Newlywed couple on a traditional Kerala houseboat, photographed by Oriana Weddings",
+  },
 ];
 
 /** Rituals and ceremonies — the proof that we cover Kerala and Christian alike. */
 export const ceremonies: Photo[] = [
-  { key: "ceremony-temple-ritual", alt: "Bride and groom during a traditional temple ceremony" },
-  { key: "ceremony-red-lehenga", alt: "Bride in a red lehenga during an Indian wedding ceremony" },
+  {
+    key: "ceremony-temple-ritual",
+    alt: "Bride in red and gold jewellery, photographed by Oriana Weddings",
+  },
+  {
+    key: "ceremony-red-lehenga",
+    alt: "Bride in red bridal attire at night, photographed by Oriana Weddings",
+  },
   {
     key: "ceremony-groom-with-family",
-    alt: "Groom surrounded by family during a traditional wedding",
+    alt: "Wedding ceremony with family and friends, photographed by Oriana Weddings",
   },
   {
     key: "ceremony-ritual-exchange",
-    alt: "Bride and groom exchanging rituals during a wedding ceremony",
+    alt: "Bride and groom in wedding attire, photographed by Oriana Weddings",
   },
   {
     key: "ceremony-groom-ritual-detail",
-    alt: "Groom performing a ritual during an Indian wedding",
+    alt: "Couple holding hands in wedding attire, photographed by Oriana Weddings",
   },
   {
     key: "ceremony-south-asian-prewedding",
-    alt: "Couple in traditional attire during a pre-wedding ceremony",
+    alt: "Newlywed couple sharing a quiet moment outdoors, photographed by Oriana Weddings",
   },
 ];
 
@@ -110,88 +122,205 @@ export const ceremonies: Photo[] = [
 export const churchWeddings: Photo[] = [
   {
     key: "church-golden-altar",
-    alt: "Bride and groom standing before the altar during a church wedding",
+    alt: "Bride in a gold veil and temple jewellery, photographed by Oriana Weddings",
   },
-  { key: "church-altar-wide", alt: "Church wedding ceremony with the couple at the altar" },
-  { key: "church-vows-elegant", alt: "Bride and groom exchanging vows during a church wedding" },
-  { key: "church-outside-joy", alt: "Bride and groom outside a church after their ceremony" },
-  { key: "church-red-carpet-aisle", alt: "Wedding couple standing in a church aisle" },
-  { key: "church-altar-candid", alt: "Candid moment at the altar during a church wedding" },
+  {
+    key: "church-altar-wide",
+    alt: "Wedding ceremony with family and friends, photographed by Oriana Weddings",
+  },
+  {
+    key: "church-vows-elegant",
+    alt: "Veiled bride with the groom, photographed by Oriana Weddings",
+  },
+  {
+    key: "church-outside-joy",
+    alt: "Newlywed couple laughing together outdoors, photographed by Oriana Weddings",
+  },
+  {
+    key: "church-red-carpet-aisle",
+    alt: "Bride and groom in wedding attire, photographed by Oriana Weddings",
+  },
+  {
+    key: "church-altar-candid",
+    alt: "Veiled bride with the groom, photographed by Oriana Weddings",
+  },
 ];
 
 /** Haldi and Mehendi — the colour, movement and noise before the wedding day. */
 export const preWedding: Photo[] = [
-  { key: "haldi-couple-celebration", alt: "Couple celebrating together at a Haldi ceremony" },
-  { key: "haldi-bride-with-friends", alt: "Bride surrounded by friends at a Haldi ceremony" },
-  { key: "haldi-turmeric-moment", alt: "Applying turmeric paste during a Haldi ceremony" },
-  { key: "haldi-vibrant-friends", alt: "Friends celebrating at a colourful Haldi ceremony" },
-  { key: "haldi-joy", alt: "Joyful moment at a Haldi celebration" },
-  { key: "haldi-hands-turmeric", alt: "Hands covered in turmeric at a Haldi ceremony" },
+  {
+    key: "haldi-couple-celebration",
+    alt: "Couple dancing at their wedding, photographed by Oriana Weddings",
+  },
+  {
+    key: "haldi-bride-with-friends",
+    alt: "Bride and groom in vibrant wedding attire, photographed by Oriana Weddings",
+  },
+  {
+    key: "haldi-turmeric-moment",
+    alt: "Bride during the haldi ceremony, photographed by Oriana Weddings",
+  },
+  {
+    key: "haldi-vibrant-friends",
+    alt: "Bride and groom in vibrant wedding attire, photographed by Oriana Weddings",
+  },
+  {
+    key: "haldi-joy",
+    alt: "Bride in a pink saree among the palms, photographed by Oriana Weddings",
+  },
+  {
+    key: "haldi-hands-turmeric",
+    alt: "Bride during the haldi ceremony, photographed by Oriana Weddings",
+  },
 ];
 
 /** Henna and jewellery — the detail work that fills albums. */
 export const details: Photo[] = [
-  { key: "mehndi-ornate-closeup", alt: "Intricate mehndi designs on a bride's hands" },
-  { key: "mehndi-henna-jewellery", alt: "Mehndi and traditional jewellery on a bride's hands" },
-  { key: "mehndi-gujarat-henna", alt: "Bridal mehndi in a traditional Gujarati style" },
-  { key: "mehndi-bangles-henna", alt: "Bride's hands adorned with henna and bangles" },
-  { key: "mehndi-hands-adorned", alt: "Adorned bridal hands with henna and jewellery" },
-  { key: "mehndi-hands-jewellery", alt: "Bridal hands with henna and gold jewellery" },
-  { key: "mehndi-traditional-design", alt: "Traditional mehndi design on a bride's hands" },
-  { key: "detail-bride-jewellery-mehndi", alt: "Close-up of a bride's jewellery and mehndi" },
-  { key: "detail-bride-henna-face", alt: "Bride with detailed henna and jewellery at a wedding" },
+  {
+    key: "mehndi-ornate-closeup",
+    alt: "Bride during the haldi ceremony, photographed by Oriana Weddings",
+  },
+  {
+    key: "mehndi-henna-jewellery",
+    alt: "Bride in a gold veil and temple jewellery, photographed by Oriana Weddings",
+  },
+  {
+    key: "mehndi-gujarat-henna",
+    alt: "Bride during the haldi ceremony, photographed by Oriana Weddings",
+  },
+  {
+    key: "mehndi-bangles-henna",
+    alt: "Bride in red and gold jewellery, photographed by Oriana Weddings",
+  },
+  {
+    key: "mehndi-hands-adorned",
+    alt: "Bride during the haldi ceremony, photographed by Oriana Weddings",
+  },
+  {
+    key: "mehndi-hands-jewellery",
+    alt: "Bride in a gold veil and temple jewellery, photographed by Oriana Weddings",
+  },
+  {
+    key: "mehndi-traditional-design",
+    alt: "Bride during the haldi ceremony, photographed by Oriana Weddings",
+  },
+  {
+    key: "detail-bride-jewellery-mehndi",
+    alt: "Bride in a gold veil and temple jewellery, photographed by Oriana Weddings",
+  },
+  {
+    key: "detail-bride-henna-face",
+    alt: "Bride during the haldi ceremony, photographed by Oriana Weddings",
+  },
   {
     key: "detail-rings-bouquet",
-    alt: "Bride and groom's hands showing wedding rings with a bouquet",
+    alt: "Bride in red and gold jewellery, photographed by Oriana Weddings",
   },
-  { key: "detail-rings-hands", alt: "Wedding rings on a couple's hands" },
-  { key: "detail-diamond-rings", alt: "Wedding bands shown during a ceremony" },
-  { key: "detail-ring-exchange", alt: "Couple exchanging wedding rings" },
-  { key: "detail-hands-gold-rings", alt: "Gold wedding rings on a couple's hands" },
-  { key: "detail-hands-jewellery", alt: "A couple's hands wearing elegant jewellery" },
-  { key: "detail-orange-roses", alt: "Bride holding a bouquet of orange roses" },
-  { key: "detail-bouquet-closeup", alt: "Close-up of a wedding bouquet" },
-  { key: "detail-groom-bouquet", alt: "Groom holding a wedding bouquet" },
-  { key: "detail-bride-groom-feet", alt: "Bride and groom's feet during a traditional wedding" },
+  {
+    key: "detail-rings-hands",
+    alt: "Couple holding hands in wedding attire, photographed by Oriana Weddings",
+  },
+  {
+    key: "detail-diamond-rings",
+    alt: "Couple holding hands in wedding attire, photographed by Oriana Weddings",
+  },
+  {
+    key: "detail-ring-exchange",
+    alt: "Couple holding hands in wedding attire, photographed by Oriana Weddings",
+  },
+  {
+    key: "detail-hands-gold-rings",
+    alt: "Couple holding hands in wedding attire, photographed by Oriana Weddings",
+  },
+  {
+    key: "detail-hands-jewellery",
+    alt: "Bride in a gold veil and temple jewellery, photographed by Oriana Weddings",
+  },
+  {
+    key: "detail-orange-roses",
+    alt: "Bride in a pink saree among the palms, photographed by Oriana Weddings",
+  },
+  {
+    key: "detail-bouquet-closeup",
+    alt: "Bride in a pink saree among the palms, photographed by Oriana Weddings",
+  },
+  {
+    key: "detail-groom-bouquet",
+    alt: "Bride in red and gold jewellery, photographed by Oriana Weddings",
+  },
+  {
+    key: "detail-bride-groom-feet",
+    alt: "Couple dancing at their wedding, photographed by Oriana Weddings",
+  },
 ];
 
 /** Venue, reception and the built environment. */
 export const venues: Photo[] = [
   {
     key: "detail-reception-luxury",
-    alt: "Luxury wedding reception table with florals and glassware",
+    alt: "Newlywed couple at home, photographed by Oriana Weddings",
   },
-  { key: "detail-venue-setup-indoor", alt: "Wedding venue set up with floral arrangements" },
-  { key: "detail-reception-cake", alt: "Wedding reception table with a cake and floral decor" },
-  { key: "detail-reception-monochrome", alt: "Reception table setting in black and white" },
+  {
+    key: "detail-venue-setup-indoor",
+    alt: "Newlywed couple in a quiet moment at home, photographed by Oriana Weddings",
+  },
+  { key: "detail-reception-cake", alt: "Newlywed couple at home, photographed by Oriana Weddings" },
+  {
+    key: "detail-reception-monochrome",
+    alt: "Newlywed couple in a quiet moment at home, photographed by Oriana Weddings",
+  },
 ];
 
 /** Portraits — the frames that have to survive being looked at closely. */
 export const portraits: Photo[] = [
-  { key: "portrait-bride-sunlight", alt: "Bride photographed in natural daylight" },
+  {
+    key: "portrait-bride-sunlight",
+    alt: "Kerala bride in gold jewellery at a doorway, photographed by Oriana Weddings",
+  },
   {
     key: "portrait-bride-window-tiara",
-    alt: "Bride in a lace wedding dress looking out of a window",
+    alt: "Kerala bride in gold jewellery at a doorway, photographed by Oriana Weddings",
   },
-  { key: "portrait-bride-bouquet-smile", alt: "Bride smiling with her bouquet" },
-  { key: "portrait-bride-veil-seated", alt: "Bride seated indoors wearing her veil" },
+  {
+    key: "portrait-bride-bouquet-smile",
+    alt: "Bride in red and gold jewellery, photographed by Oriana Weddings",
+  },
+  {
+    key: "portrait-bride-veil-seated",
+    alt: "Veiled bride with the groom, photographed by Oriana Weddings",
+  },
   {
     key: "portrait-bride-monochrome-veil",
-    alt: "Black and white portrait of a bride wearing a veil",
+    alt: "Bride in red bridal attire at night, photographed by Oriana Weddings",
   },
-  { key: "portrait-newlywed-traditional", alt: "Newlywed couple in traditional wedding attire" },
-  { key: "portrait-bride-jewellery-smile", alt: "Bride in traditional attire wearing jewellery" },
-  { key: "portrait-outdoor-embrace", alt: "Bride and groom embracing outdoors" },
+  {
+    key: "portrait-newlywed-traditional",
+    alt: "Bride and groom in vibrant wedding attire, photographed by Oriana Weddings",
+  },
+  {
+    key: "portrait-bride-jewellery-smile",
+    alt: "Bride in a gold veil and temple jewellery, photographed by Oriana Weddings",
+  },
+  {
+    key: "portrait-outdoor-embrace",
+    alt: "Newlywed couple sharing a quiet moment outdoors, photographed by Oriana Weddings",
+  },
   {
     key: "portrait-veil-night-tender",
-    alt: "Bride and groom sharing a tender moment under a veil",
+    alt: "Bride in a red veil at night, photographed by Oriana Weddings",
   },
   {
     key: "portrait-forest-couple",
-    alt: "Bride and groom posing in a forest during their wedding photography",
+    alt: "Newlywed couple sharing a quiet moment outdoors, photographed by Oriana Weddings",
   },
-  { key: "portrait-formal-indoors", alt: "Bride and groom in formal wedding wear" },
-  { key: "portrait-beach-walk", alt: "Bride and groom walking along the beach" },
+  {
+    key: "portrait-formal-indoors",
+    alt: "Bride and groom in wedding attire, photographed by Oriana Weddings",
+  },
+  {
+    key: "portrait-beach-walk",
+    alt: "Newlywed couple laughing together outdoors, photographed by Oriana Weddings",
+  },
 ];
 
 /** Everything, for the portfolio wall and the lightbox. */
