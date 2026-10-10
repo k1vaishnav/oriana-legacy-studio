@@ -515,7 +515,7 @@ export const schemaTypes = [
       },
     ],
     preview: {
-      select: { title: "name", subtitle: "tagline" },
+      select: { title: "name", subtitle: "tagline", media: "cover" },
     },
   },
 
@@ -565,7 +565,7 @@ export const schemaTypes = [
       },
     ],
     preview: {
-      select: { title: "title", subtitle: "couple" },
+      select: { title: "title", subtitle: "couple", media: "cover" },
     },
   },
 
