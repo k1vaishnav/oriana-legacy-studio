@@ -191,7 +191,11 @@ export function PhotoImage({
 
   const widths = assetWidths(asset);
   const src = (w: number) => cmsImageUrl(asset, w) ?? "";
-  const lqip = asset.lqip ? `url("data:image/jpeg;base64,${asset.lqip}")` : undefined;
+  // Sanity ships the placeholder as a full data URI; prefix ours only if bare.
+  const lqip =
+    asset.lqip != null && asset.lqip !== ""
+      ? `url("${asset.lqip.startsWith("data:") ? asset.lqip : `data:image/jpeg;base64,${asset.lqip}`}")`
+      : undefined;
 
   return (
     <div

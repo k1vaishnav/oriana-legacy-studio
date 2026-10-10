@@ -92,30 +92,32 @@ type RawImage =
   | {
       crop?: CmsCrop | null;
       hotspot?: CmsHotspot | null;
-      asset?: {
-        _ref?: string;
-        metadata?: {
-          dimensions?: { width?: number; height?: number };
-          lqip?: string;
-        } | null;
-      } | null;
+      ref?: string;
+      dimensions?: { width?: number; height?: number } | null;
+      lqip?: string;
     }
   | null
   | undefined;
 
-/** Image fragment: the asset reference plus everything rendering needs. */
-const IMG = `{crop,hotspot,asset->{_ref,metadata{dimensions{width,height},lqip}}}`;
+/**
+ * Image fragment: explicit reference id plus dimensions and placeholder.
+ *
+ * NOTE: `asset->{_ref}` does NOT work — dereferencing follows the reference,
+ * and the target asset document has no `_ref` of its own. The id must be read
+ * off the reference itself (`asset._ref`).
+ */
+const IMG = `{crop,hotspot,"ref":asset._ref,"dimensions":asset->metadata.dimensions,"lqip":asset->metadata.lqip}`;
 
 const mapAsset = (raw: RawImage): CmsAsset | null => {
-  const ref = raw?.asset?._ref;
-  const width = raw?.asset?.metadata?.dimensions?.width;
-  const height = raw?.asset?.metadata?.dimensions?.height;
+  const ref = raw?.ref;
+  const width = raw?.dimensions?.width;
+  const height = raw?.dimensions?.height;
   if (!ref || !width || !height) return null;
   return {
     ref,
     width,
     height,
-    lqip: raw?.asset?.metadata?.lqip,
+    lqip: raw?.lqip,
     crop: raw?.crop ?? null,
     hotspot: raw?.hotspot ?? null,
   };
