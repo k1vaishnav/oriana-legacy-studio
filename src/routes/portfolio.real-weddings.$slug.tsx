@@ -19,8 +19,8 @@ export const Route = createFileRoute("/portfolio/real-weddings/$slug")({
   head: ({ loaderData }) => {
     const wedding = loaderData!.wedding;
     return seo({
-      title: `${wedding.couple} — Wedding Story | ${business.name}`,
-      description: wedding.summary,
+      title: wedding.seoTitle ?? `${wedding.couple} — Wedding Story | ${business.name}`,
+      description: wedding.seoDescription ?? wedding.summary,
       path: `/portfolio/real-weddings/${wedding.slug}`,
       image: getImage(wedding.cover).src,
     });

@@ -23,8 +23,8 @@ export const Route = createFileRoute("/brands/$slug")({
   head: ({ loaderData }) => {
     const brand = loaderData!.brand;
     return seo({
-      title: `${brand.name} | Our Brands | ${business.name}`,
-      description: `${brand.tagline} ${brand.description}`,
+      title: brand.seoTitle ?? `${brand.name} | Our Brands | ${business.name}`,
+      description: brand.seoDescription ?? `${brand.tagline} ${brand.description}`,
       path: `/brands/${brand.slug}`,
       image: getImage(brand.cover).src,
     });

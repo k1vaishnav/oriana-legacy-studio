@@ -1,13 +1,33 @@
 import { useState } from "react";
 import { ResponsiveImage } from "@/lib/images";
 import { Lightbox } from "@/components/site/Lightbox";
-import { originals, ceremonies } from "@/lib/photos";
+import { originals, ceremonies, photoAlt } from "@/lib/photos";
+import type { ImageKey } from "@/lib/image-manifest";
 import type { Photo } from "@/lib/photos";
 
-const GRID_PHOTOS: readonly Photo[] = [...originals, ...ceremonies];
+const DEFAULT_PHOTOS: readonly Photo[] = [...originals, ...ceremonies];
+const DEFAULT_LINES = ["Some of the most", "ICONIC", "wedding images"];
 const GRID_CELLS = Array.from({ length: 15 }, (_, index) => index);
 
-export function EditorialGrid() {
+/**
+ * The 15-cell mosaic — CMS picks the 14 photographs and the 3 title lines.
+ * The middle cell (index 7) is always the title, so 14 photos fill 14 cells.
+ */
+export function EditorialGrid({
+  photos,
+  titleLines,
+}: {
+  photos?: ImageKey[];
+  titleLines?: string[];
+}) {
+  const gridPhotos: readonly Photo[] =
+    photos && photos.length > 0
+      ? photos.slice(0, 14).map((key) => ({ key, alt: photoAlt(key) ?? "Wedding photograph" }))
+      : DEFAULT_PHOTOS;
+  const lines =
+    titleLines && titleLines.length >= 3
+      ? [titleLines[0]!, titleLines[1]!, titleLines[2]!]
+      : DEFAULT_LINES;
   const [lightbox, setLightbox] = useState<number | null>(null);
 
   return (
@@ -20,15 +40,15 @@ export function EditorialGrid() {
           if (cell === 7) {
             return (
               <div className="editorial-grid-title" key="title">
-                <span>Some of the most</span>
-                <strong>ICONIC</strong>
-                <span>wedding images</span>
+                <span>{lines[0]}</span>
+                <strong>{lines[1]}</strong>
+                <span>{lines[2]}</span>
               </div>
             );
           }
 
           const photoIndex = cell < 7 ? cell : cell - 1;
-          const photo = GRID_PHOTOS[photoIndex];
+          const photo = gridPhotos[photoIndex];
           if (!photo) return null;
 
           return (
@@ -53,7 +73,7 @@ export function EditorialGrid() {
 
       {lightbox !== null && (
         <Lightbox
-          photos={GRID_PHOTOS}
+          photos={gridPhotos}
           index={lightbox}
           onClose={() => setLightbox(null)}
           onStep={setLightbox}

@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { seo } from "@/lib/seo";
-import { getFilms, getHomePage, getWeddings } from "@/lib/cms";
+import { asImageKey, getFilms, getHomePage, getWeddings, useSiteSettings } from "@/lib/cms";
 import { EditorialHero } from "@/components/site/Hero";
 import { EditorialGrid } from "@/components/site/EditorialGrid";
 import { FeaturedWeddingStories } from "@/components/site/FeaturedWeddingStories";
@@ -23,10 +23,13 @@ export const Route = createFileRoute("/")({
     films: await getFilms(),
     page: await getHomePage(),
   }),
-  head: () =>
+  head: ({ loaderData }) =>
     seo({
-      title: "Best Photographer in Calicut | Best Photographer in Kerala | Oriana Weddings",
+      title:
+        loaderData?.page.seoTitle ||
+        "Best Photographer in Calicut | Best Photographer in Kerala | Oriana Weddings",
       description:
+        loaderData?.page.seoDescription ||
         "Oriana Weddings is a 12+ year wedding photography and filmmaking brand based in Calicut and Ahmedabad, managing personalised weddings across Kerala, Gujarat, India and international destinations.",
       path: "/",
     }),
@@ -34,10 +37,12 @@ export const Route = createFileRoute("/")({
 });
 function Home() {
   const { weddings, films, page } = Route.useLoaderData();
+  const settings = useSiteSettings();
   return (
     <>
       {/* 01 — Full-bleed Hero header (Pure image, no text clutter) */}
       <EditorialHero
+        image={asImageKey(page.heroImageKey, "home-hero-user")}
         alt="A newlywed couple sharing a quiet moment, photographed in classic black and white"
         eyebrow={page.heroEyebrow}
         title={page.heroTitle}
@@ -53,13 +58,13 @@ function Home() {
       </section>
 
       {/* 02 — Full-width image-led photography collections */}
-      <PhotographyRow />
+      <PhotographyRow items={page.collections} />
 
       {/* 03 — Couture & Press Logos plainly placed right under first section after Hero */}
-      <CouturePressStrip />
+      <CouturePressStrip items={settings.affiliations} />
 
       {/* 04 — Full-bleed 15-cell image mosaic */}
-      <EditorialGrid />
+      <EditorialGrid photos={page.mosaicKeys} titleLines={page.mosaicLines} />
 
       {/* 05 — Four featured wedding stories */}
       <FeaturedWeddingStories weddings={weddings} />
@@ -68,13 +73,18 @@ function Home() {
       <SoulCinemaBanner />
 
       {/* 07 — Award Leaf Badges */}
-      <Awards />
+      <Awards eyebrow={page.awardsEyebrow} title={page.awardsTitle} badges={page.awardsBadges} />
 
       {/* 08 — Film portraits and image-only editorial covers */}
-      <FilmsGrid films={films} />
+      <FilmsGrid
+        films={films}
+        eyebrow={page.filmsEyebrow}
+        title={page.filmsTitle}
+        covers={page.filmCoverKeys}
+      />
 
       {/* 09 — Camera and post-production marks sit between the film images and CTA */}
-      <TechGearStrip />
+      <TechGearStrip camerasLabel={page.gearCamerasLabel} postLabel={page.gearPostLabel} />
 
       {/* 10 — Fine Art Class Closing CTA matching Image 2 */}
       <ClosingCTA />

@@ -1,6 +1,7 @@
 import { ResponsiveImage } from "@/lib/images";
 import { Reveal } from "@/components/site/Reveal";
 import { business } from "@/lib/site";
+import type { TeamMemberContent } from "@/lib/cms";
 import type { ImageKey } from "@/lib/image-manifest";
 
 /**
@@ -29,7 +30,7 @@ type Member = {
   offset: string;
 };
 
-const TEAM: Member[] = [
+const DEFAULT_TEAM: Member[] = [
   {
     name: business.director,
     role: "Founder & Director",
@@ -64,11 +65,27 @@ export function TeamEditorial({
   eyebrow = "The team",
   heading = "Meet the team",
   body = "The people you are trusting with a day that cannot be repeated. You meet them before the wedding, and the same team photographs it.",
+  members,
 }: {
   eyebrow?: string;
   heading?: string;
   body?: string;
+  members?: TeamMemberContent[];
 }) {
+  // CMS members win when configured; stagger/align follow position so the
+  // editorial rhythm holds whatever the names are.
+  const aligns = ["left", "right"] as const;
+  const offsets = ["lg:mt-0", "lg:mt-10", "lg:mt-6", "lg:mt-14"];
+  const team: Member[] =
+    members && members.length > 0
+      ? members.slice(0, 4).map((m, i) => ({
+          name: m.name,
+          role: m.role,
+          image: m.key,
+          align: aligns[i % aligns.length]!,
+          offset: offsets[i % offsets.length]!,
+        }))
+      : DEFAULT_TEAM;
   return (
     <section className="section surface-cream" aria-labelledby="team-heading">
       <div className="shell">
@@ -81,7 +98,7 @@ export function TeamEditorial({
         </Reveal>
 
         <ul className="mt-14 grid grid-cols-2 gap-x-6 gap-y-10 sm:gap-x-8 lg:grid-cols-4">
-          {TEAM.map((member, i) => (
+          {team.map((member, i) => (
             <Reveal key={member.name} delay={(i % 4) * 0.06} className={member.offset}>
               <li>
                 <figure>

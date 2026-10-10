@@ -300,6 +300,9 @@ export type GroupBrand = {
   cover: ImageKey;
   /** Gallery frames on the detail page. */
   images: readonly ImageKey[];
+  /** Optional CMS search overrides; fall back to the built-in copy. */
+  seoTitle?: string;
+  seoDescription?: string;
 };
 
 export const groupBrands: readonly GroupBrand[] = [

@@ -3,17 +3,19 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Reveal } from "@/components/site/Reveal";
 import { ResponsiveImage } from "@/lib/images";
 import { business } from "@/lib/site";
-import { getWeddings } from "@/lib/cms";
+import { getPhotographyPage, getWeddings } from "@/lib/cms";
 import { photoAlt } from "@/lib/photos";
 import { getImage } from "@/lib/image-manifest";
 import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/wedding-photography")({
-  loader: async () => ({ weddings: await getWeddings() }),
-  head: () =>
+  loader: async () => ({ weddings: await getWeddings(), page: await getPhotographyPage() }),
+  head: ({ loaderData }) =>
     seo({
-      title: `Wedding Photography Stories | ${business.name}`,
-      description: "A collection of wedding photography stories from Oriana Weddings.",
+      title: loaderData?.page.seoTitle || `Wedding Photography Stories | ${business.name}`,
+      description:
+        loaderData?.page.seoDescription ||
+        "A collection of wedding photography stories from Oriana Weddings.",
       path: "/wedding-photography",
     }),
   component: PhotographyStories,

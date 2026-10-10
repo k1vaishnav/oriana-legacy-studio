@@ -21,7 +21,7 @@ import { weddings } from "@/lib/portfolio";
  */
 const BACKDROP_VIDEO = "";
 
-const BACKDROP_STILLS: readonly ImageKey[] = [
+const DEFAULT_STILLS: readonly ImageKey[] = [
   "kerala-cinematic-wedding-film-still",
   "calicut-cinematic-wedding-hero",
   "hero-traditional-intimate",
@@ -42,7 +42,7 @@ const BACKDROP_STILLS: readonly ImageKey[] = [
  * about films and the photographs of weddings are the same argument, so they
  * belong in the same frame instead of eleven screens apart.
  */
-export function FeaturedStories() {
+export function FeaturedStories({ stills }: { stills?: ImageKey[] }) {
   const stories = weddings.slice(0, 2);
 
   return (
@@ -50,7 +50,7 @@ export function FeaturedStories() {
       className="relative isolate overflow-hidden on-ink text-paper"
       aria-labelledby="featured-heading"
     >
-      <FilmBackdrop {...(BACKDROP_VIDEO ? { src: BACKDROP_VIDEO } : {})} stills={BACKDROP_STILLS} />
+      <FilmBackdrop {...(BACKDROP_VIDEO ? { src: BACKDROP_VIDEO } : {})} stills={stills && stills.length > 0 ? stills : DEFAULT_STILLS} />
 
       <div className="shell relative py-24 sm:py-32">
         <Reveal>

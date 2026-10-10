@@ -1,10 +1,12 @@
 import { Link } from "@tanstack/react-router";
 import { ResponsiveImage } from "@/lib/images";
+import { photoAlt } from "@/lib/photos";
+import type { HomeCollection } from "@/lib/cms";
 import type { Photo } from "@/lib/photos";
 
 type PhotoFilter = "candid" | "traditional" | "intimate" | "pre";
 
-const COLLECTIONS: readonly {
+const DEFAULT_COLLECTIONS: readonly {
   id: PhotoFilter;
   title: string;
   photo: Photo;
@@ -43,7 +45,16 @@ const COLLECTIONS: readonly {
   },
 ];
 
-export function PhotographyRow() {
+/** Four collection cards — CMS chooses the title, photo and filter per card. */
+export function PhotographyRow({ items }: { items?: HomeCollection[] }) {
+  const collections =
+    items && items.length > 0
+      ? items.map((item) => ({
+          id: item.id as PhotoFilter,
+          title: item.title,
+          photo: { key: item.key, alt: photoAlt(item.key) ?? item.title } as Photo,
+        }))
+      : DEFAULT_COLLECTIONS;
   return (
     <section
       id="photography-collections"
@@ -54,7 +65,7 @@ export function PhotographyRow() {
         Wedding photography collections
       </h2>
       <div className="photography-collections-grid">
-        {COLLECTIONS.map((item, index) => (
+        {collections.map((item, index) => (
           <Link
             key={item.id}
             to="/portfolio"

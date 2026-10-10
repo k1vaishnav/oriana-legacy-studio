@@ -25,6 +25,9 @@ export type Wedding = {
   story: string[];
   frames: ImageKey[];
   services: string[];
+  /** Optional CMS search overrides; fall back to the built-in title/summary. */
+  seoTitle?: string;
+  seoDescription?: string;
 };
 
 export const weddings: Wedding[] = [

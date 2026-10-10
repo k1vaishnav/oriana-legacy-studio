@@ -4,16 +4,19 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Lightbox } from "@/components/site/Lightbox";
 import { ResponsiveImage } from "@/lib/images";
 import { FILTERS, GROUPS, PAGE_SIZE, parseFilter, type FilterId } from "@/lib/photoFilters";
+import { fillCount, fillRemaining, getPortfolioPage } from "@/lib/cms";
 import type { Photo } from "@/lib/photos";
 import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/portfolio/")({
   validateSearch: (search: Record<string, unknown>): { filter?: FilterId } =>
     parseFilter(search["filter"]),
-  head: () =>
+  loader: async () => ({ page: await getPortfolioPage() }),
+  head: ({ loaderData }) =>
     seo({
-      title: "Wedding Photography Portfolio | Oriana Weddings",
+      title: loaderData?.page.seoTitle || "Wedding Photography Portfolio | Oriana Weddings",
       description:
+        loaderData?.page.seoDescription ||
         "Browse wedding photographs by Oriana Weddings. Explore candid, traditional, intimate, pre-wedding and other photography styles.",
       path: "/portfolio",
     }),
@@ -23,6 +26,7 @@ export const Route = createFileRoute("/portfolio/")({
 function PortfolioPage() {
   const navigate = useNavigate();
   const search = Route.useSearch();
+  const { page } = Route.useLoaderData();
   // Deep-linkable filter: home collections land here preselected (?filter=candid).
   const [photoFilter, setPhotoFilter] = useState<FilterId>(search.filter ?? "all");
   const [activePhoto, setActivePhoto] = useState<number | null>(null);
@@ -38,6 +42,12 @@ function PortfolioPage() {
   const visiblePhotos: readonly Photo[] = GROUPS[photoFilter];
   const shownPhotos = visiblePhotos.slice(0, visibleCount);
 
+  // CMS renames a filter button by id; unknown ids and blanks keep the built-in.
+  const labelFor = (id: FilterId) =>
+    page.filterLabels.find((f) => f.id === id)?.label ||
+    FILTERS.find((f) => f.id === id)?.label ||
+    id;
+
   const pickFilter = (id: FilterId) => {
     setPhotoFilter(id);
     setActivePhoto(null);
@@ -50,11 +60,11 @@ function PortfolioPage() {
       <main className="portfolio-showcase">
         <section className="portfolio-showcase-inner" aria-labelledby="portfolio-title">
           <header className="portfolio-showcase-header">
-            <p className="portfolio-showcase-eyebrow">ORIANA WEDDINGS · PORTFOLIO</p>
+            <p className="portfolio-showcase-eyebrow">{page.eyebrow}</p>
             <h1 id="portfolio-title" className="sr-only">
               Portfolio
             </h1>
-            <p>A few moments, held in still frames.</p>
+            <p>{page.sub}</p>
           </header>
 
           <div className="portfolio-showcase-toolbar">
@@ -68,12 +78,12 @@ function PortfolioPage() {
                   aria-pressed={photoFilter === tag.id}
                   onClick={() => pickFilter(tag.id)}
                 >
-                  {tag.label}
+                  {labelFor(tag.id)}
                 </button>
               ))}
             </div>
             <p className="portfolio-showcase-count">
-              Showing {shownPhotos.length} of {visiblePhotos.length} images
+              {fillCount(page.countTemplate, shownPhotos.length, visiblePhotos.length)}
             </p>
           </div>
 
@@ -106,7 +116,7 @@ function PortfolioPage() {
                 className="portfolio-show-more"
                 onClick={() => setVisibleCount((count) => count + PAGE_SIZE)}
               >
-                Show more ({visiblePhotos.length - visibleCount} remaining)
+                {fillRemaining(page.showMoreTemplate, visiblePhotos.length - visibleCount)}
               </button>
             </div>
           ) : null}

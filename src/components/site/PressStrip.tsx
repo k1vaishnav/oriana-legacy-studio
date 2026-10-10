@@ -73,11 +73,32 @@ const affiliations: Affiliation[] = [
   },
 ];
 
-export function CouturePressStrip() {
+export function CouturePressStrip({ items }: { items?: { name: string; href: string }[] }) {
+  // CMS names/links win when configured; the built-in wall (with its bespoke
+  // per-name marks and two image tiles) stands in until then. A renamed entry
+  // keeps its look only if the name still matches — otherwise it renders as
+  // plain text, never blank.
+  const wall: Affiliation[] =
+    items && items.length > 0
+      ? items.map((item) => {
+          const builtin = affiliations.find((a) => a.name === item.name);
+          return {
+            ...item,
+            style: builtin?.style ?? "",
+            ...(builtin?.image
+              ? {
+                  image: builtin.image,
+                  imageWidth: builtin.imageWidth,
+                  imageHeight: builtin.imageHeight,
+                }
+              : {}),
+          };
+        })
+      : affiliations;
   return (
     <section className="affiliations-section" aria-label="Bridal couture and press affiliations">
       <div className="affiliations-grid">
-        {affiliations.map(({ name, style, href, image, imageWidth, imageHeight }) => {
+        {wall.map(({ name, style, href, image, imageWidth, imageHeight }) => {
           const mark = (
             <span className={`affiliation-mark ${style}`}>
               {image ? (
@@ -173,7 +194,13 @@ export function CouturePressStrip() {
   );
 }
 
-export function TechGearStrip() {
+export function TechGearStrip({
+  camerasLabel = "Camera systems",
+  postLabel = "Post production",
+}: {
+  camerasLabel?: string;
+  postLabel?: string;
+}) {
   return (
     <section
       className="py-6 sm:py-8 bg-[#E9E2D9] border-b border-[#DDD3C8]"
@@ -181,11 +208,11 @@ export function TechGearStrip() {
     >
       <div className="shell gear-strip-inner">
         <div className="gear-logo-set">
-          <p className="gear-row-label">Camera systems</p>
+          <p className="gear-row-label">{camerasLabel}</p>
           <CameraLogos />
         </div>
         <div className="gear-logo-set">
-          <p className="gear-row-label">Post production</p>
+          <p className="gear-row-label">{postLabel}</p>
           <SoftwareLogos />
         </div>
       </div>

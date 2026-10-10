@@ -12,7 +12,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "@/lib/lovable-error-reporting";
-import { getSiteSettings } from "@/lib/cms";
+import { getSiteSettings, useSiteSettings } from "@/lib/cms";
 import { useIsStudio } from "@/lib/use-is-studio";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -20,20 +20,18 @@ import { FloatingWhatsApp } from "@/components/site/FloatingWhatsApp";
 import { SITE_URL, organizationSchema } from "@/lib/site";
 
 function NotFoundComponent() {
+  const { notFound } = useSiteSettings();
   return (
     <div className="shell flex min-h-[70svh] flex-col justify-center py-32">
-      <p className="eyebrow">404</p>
-      <h1 className="text-h1 mt-6 max-w-[14ch]">This page has moved on.</h1>
-      <p className="lede mt-6">
-        The page you are looking for doesn&rsquo;t exist. Browse our wedding stories, or start a
-        conversation with the studio.
-      </p>
+      <p className="eyebrow">{notFound.eyebrow}</p>
+      <h1 className="text-h1 mt-6 max-w-[14ch]">{notFound.title}</h1>
+      <p className="lede mt-6">{notFound.body}</p>
       <div className="mt-10 flex flex-wrap gap-3">
         <Link to="/portfolio" className="btn btn-ink hover:btn-ink-hover">
-          View portfolio
+          {notFound.primaryLabel}
         </Link>
         <Link to="/" className="btn btn-line hover:btn-line-hover">
-          Go home
+          {notFound.secondaryLabel}
         </Link>
       </div>
     </div>
@@ -43,15 +41,16 @@ function NotFoundComponent() {
 function ErrorComponent({ error, reset }: { error: unknown; reset: () => void }) {
   console.error(error);
   const router = useRouter();
+  const { errorPage } = useSiteSettings();
   useEffect(() => {
     reportLovableError(error, { boundary: "tanstack_root_error_component" });
   }, [error]);
 
   return (
     <div className="shell flex min-h-[70svh] flex-col justify-center py-32">
-      <p className="eyebrow">Error</p>
-      <h1 className="text-h1 mt-6 max-w-[16ch]">This page didn&rsquo;t load</h1>
-      <p className="lede mt-6">Something went wrong on our end. Try again, or head back home.</p>
+      <p className="eyebrow">{errorPage.eyebrow}</p>
+      <h1 className="text-h1 mt-6 max-w-[16ch]">{errorPage.title}</h1>
+      <p className="lede mt-6">{errorPage.body}</p>
       <div className="mt-10 flex flex-wrap gap-3">
         <button
           type="button"
@@ -61,10 +60,10 @@ function ErrorComponent({ error, reset }: { error: unknown; reset: () => void })
           }}
           className="btn btn-ink hover:btn-ink-hover"
         >
-          Try again
+          {errorPage.primaryLabel}
         </button>
         <a href="/" className="btn btn-line hover:btn-line-hover">
-          Go home
+          {errorPage.secondaryLabel}
         </a>
       </div>
     </div>

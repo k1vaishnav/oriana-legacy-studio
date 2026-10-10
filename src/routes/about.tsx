@@ -17,7 +17,7 @@ import {
   TextLink,
 } from "@/components/site/ui";
 import { PageHero } from "@/components/site/PageHero";
-import { getAboutPage, useSiteSettings } from "@/lib/cms";
+import { getAboutPage, asImageKey, useSiteSettings } from "@/lib/cms";
 import {
   coverage as fallbackCoverage,
   differenceCards as fallbackDifferenceCards,
@@ -27,10 +27,13 @@ import {
 
 export const Route = createFileRoute("/about")({
   loader: async () => ({ page: await getAboutPage() }),
-  head: () =>
+  head: ({ loaderData }) =>
     seo({
-      title: "About Oriana Weddings | Best Photographer in Calicut | Best Photographer in Kerala",
+      title:
+        loaderData?.page.seoTitle ||
+        "About Oriana Weddings | Best Photographer in Calicut | Best Photographer in Kerala",
       description:
+        loaderData?.page.seoDescription ||
         "Discover Oriana Weddings, a 12+ year wedding photography and filmmaking brand based in Calicut and Ahmedabad, managing weddings across Kerala, Gujarat, India and beyond.",
       path: "/about",
     }),
@@ -121,8 +124,8 @@ function AboutPage() {
         eyebrow={page.heroEyebrow}
         title={page.heroTitle}
         lead={page.heroLead}
-        image="calicut-church-wedding-ceremony"
-        alt="Wedding ceremony with family and friends, photographed by Oriana Weddings"
+        image={asImageKey(page.heroImageKey, "calicut-church-wedding-ceremony")}
+        alt={page.heroImageAlt}
         meta={[
           { label: "Founded", value: "12+ years experience" },
           { label: "Main office", value: "Calicut, Kerala" },
@@ -133,27 +136,23 @@ function AboutPage() {
       {/* The team goes first. An entity page should answer "who" before it
           starts explaining "how" — and the team is the most human thing on
           the page, so it is the right thing to meet first. */}
-      <TeamEditorial eyebrow={page.teamEyebrow} heading={page.teamHeading} body={page.teamBody} />
+      <TeamEditorial
+        eyebrow={page.teamEyebrow}
+        heading={page.teamHeading}
+        body={page.teamBody}
+        members={page.teamMembers}
+      />
 
       <section className="section surface-paper">
         <div className="shell">
           <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">
             <Reveal className="lg:col-span-7">
-              <p className="eyebrow mb-5">The right team for the right wedding</p>
-              <h2 className="text-h1 max-w-[16ch]">
-                We don&apos;t believe one photographer is right for every couple.
-              </h2>
+              <p className="eyebrow mb-5">{page.rightEyebrow}</p>
+              <h2 className="text-h1 max-w-[16ch]">{page.rightTitle}</h2>
             </Reveal>
             <Reveal delay={0.08} className="flex flex-col gap-6 lg:col-span-5 lg:pt-12">
-              <p className="lede">
-                Every photographer has a different visual language, personality, technical ability
-                and experience. We understand the client first. Then we select the team.
-              </p>
-              <p className="text-sm mute">
-                Oriana retains the professional decision-making responsibility for selecting the
-                photography and filmmaking team. That is not a way of avoiding accountability — it
-                is how we take responsibility for the result.
-              </p>
+              <p className="lede">{page.rightLead}</p>
+              <p className="text-sm mute">{page.rightBody}</p>
             </Reveal>
           </div>
 

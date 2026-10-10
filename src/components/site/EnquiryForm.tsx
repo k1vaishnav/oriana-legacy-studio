@@ -1,7 +1,8 @@
 import { useState } from "react";
 
 import { Arrow } from "@/components/site/ui";
-import { business, whatsappHref } from "@/lib/site";
+import { business as fallbackBusiness, whatsappHref as fallbackWhatsappHref } from "@/lib/site";
+import { useSiteSettings, whatsappHrefFor } from "@/lib/cms";
 
 /**
  * The enquiry form.
@@ -47,7 +48,7 @@ import { business, whatsappHref } from "@/lib/site";
  * path on which a person presses send and is quietly lost.
  */
 
-const SERVICES = [
+const DEFAULT_SERVICES = [
   { value: "Photography", note: "Candid, traditional, destination" },
   { value: "Wedding Films", note: "Feature films, teasers, reels" },
   { value: "Photography + Films", note: "Both teams, structured together" },
@@ -88,7 +89,7 @@ const MESSAGES = {
 type Errors = Partial<Record<keyof Fields, string>>;
 
 /** The same body in both paths, so nothing is dropped on the way to WhatsApp. */
-const compose = (values: Fields) =>
+const compose = (values: Fields, phone: string) =>
   [
     "Hi Oriana, I'd like to talk about my wedding.",
     "",
@@ -100,10 +101,15 @@ const compose = (values: Fields) =>
     values.query,
     "",
     "Sent from the website.",
-    business.phone,
+    phone,
   ].join("\n");
 
-export function EnquiryForm() {
+export function EnquiryForm({ services }: { services?: { value: string; note: string }[] }) {
+  const settings = useSiteSettings();
+  const business = settings.business ?? fallbackBusiness;
+  const whatsappHref = (message: string) =>
+    settings.business ? whatsappHrefFor(settings, message) : fallbackWhatsappHref(message);
+  const options = services && services.length > 0 ? services : DEFAULT_SERVICES;
   const [fields, setFields] = useState<Fields>(EMPTY);
   const [errors, setErrors] = useState<Errors>({});
   const [state, setState] = useState<"idle" | "sending" | "sent">("idle");
@@ -142,7 +148,11 @@ export function EnquiryForm() {
    * that return value is how a blocked hand-off becomes a silent success.
    */
   const handOff = () => {
-    const win = window.open(whatsappHref(compose(fields)), "_blank", "noopener,noreferrer");
+    const win = window.open(
+      whatsappHref(compose(fields, business.phone)),
+      "_blank",
+      "noopener,noreferrer",
+    );
     setBlocked(win === null);
   };
 
@@ -180,11 +190,11 @@ export function EnquiryForm() {
 
     setState("sending");
     try {
-      const payload: any = { ...fields };
+      const payload: Record<string, string> = { ...fields };
       let url = endpoint;
-      
+
       if (web3formsKey) {
-        payload.access_key = web3formsKey;
+        payload["access_key"] = web3formsKey;
         url = "https://api.web3forms.com/submit";
       }
 
@@ -222,7 +232,7 @@ export function EnquiryForm() {
             </p>
             <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
               <a
-                href={whatsappHref(compose(fields))}
+                href={whatsappHref(compose(fields, business.phone))}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn btn-ink"
@@ -330,7 +340,7 @@ export function EnquiryForm() {
             What do you need? <span className="text-gold-ink">*</span>
           </legend>
           <div className="mt-4 grid gap-3 sm:grid-cols-3">
-            {SERVICES.map((option) => {
+            {options.map((option) => {
               const on = fields.service === option.value;
               return (
                 <label

@@ -91,8 +91,11 @@ async function fetchDoc<T>(query: string, fallback: T): Promise<T> {
 const isImageKey = (value: unknown): value is ImageKey =>
   typeof value === "string" && value in manifest;
 
-const validKey = (value: unknown, fallback: ImageKey): ImageKey =>
+export const validKey = (value: unknown, fallback: ImageKey): ImageKey =>
   isImageKey(value) ? value : fallback;
+
+/** A CMS image-key field, validated — falls back when blank or mistyped. */
+export const asImageKey = validKey;
 
 const validKeys = (values: unknown, fallback: readonly ImageKey[]): ImageKey[] => {
   if (!Array.isArray(values)) return [...fallback];
@@ -106,15 +109,34 @@ const validKeys = (values: unknown, fallback: readonly ImageKey[]): ImageKey[] =
 
 export type SiteSettings = {
   business: typeof localBusiness;
+  establishedYear: number;
+  brandLines: readonly string[];
   offices: typeof localOffices;
   coverage: typeof localCoverage;
   soulCinema: typeof localSoulCinema;
   stats: typeof localStats;
   closingCta: { kicker: string; heading: string; button: string };
+  affiliations: { name: string; href: string }[];
+  notFound: {
+    eyebrow: string;
+    title: string;
+    body: string;
+    primaryLabel: string;
+    secondaryLabel: string;
+  };
+  errorPage: {
+    eyebrow: string;
+    title: string;
+    body: string;
+    primaryLabel: string;
+    secondaryLabel: string;
+  };
 };
 
 const defaultSettings: SiteSettings = {
   business: localBusiness,
+  establishedYear: 1996,
+  brandLines: ["Indian Wedding Film Award Winner", "Couple Choice Award Winner"],
   offices: localOffices,
   coverage: localCoverage,
   soulCinema: localSoulCinema,
@@ -124,7 +146,25 @@ const defaultSettings: SiteSettings = {
     heading: "A day, held forever.",
     button: "Enquire on WhatsApp",
   },
+  affiliations: [],
+  notFound: {
+    eyebrow: "404",
+    title: "This page has moved on.",
+    body: "The page you are looking for doesn’t exist. Browse our wedding stories, or start a conversation with the studio.",
+    primaryLabel: "View portfolio",
+    secondaryLabel: "Go home",
+  },
+  errorPage: {
+    eyebrow: "Error",
+    title: "This page didn’t load",
+    body: "Something went wrong on our end. Try again, or head back home.",
+    primaryLabel: "Try again",
+    secondaryLabel: "Go home",
+  },
 };
+
+/** `Est. 1996` — the footer mark, from the CMS year. */
+export const establishedMarkFor = (settings: SiteSettings) => `Est. ${settings.establishedYear}`;
 
 type RawSettings = {
   tagline?: string;
@@ -137,11 +177,16 @@ type RawSettings = {
   instagram?: string;
   youtube?: string;
   facebook?: string;
+  establishedYear?: number;
+  brandLines?: string[];
   offices?: SiteSettings["offices"];
   coverage?: string[];
   stats?: { value?: string; label?: string }[];
   soulCinema?: { title?: string; body?: string };
   closingCta?: { kicker?: string; heading?: string; button?: string };
+  affiliations?: { name?: string; href?: string }[];
+  notFound?: Partial<SiteSettings["notFound"]>;
+  errorPage?: Partial<SiteSettings["errorPage"]>;
 };
 
 export function getSiteSettings(): Promise<SiteSettings> {
@@ -168,6 +213,14 @@ export function getSiteSettings(): Promise<SiteSettings> {
     } as SiteSettings["business"];
     return {
       business,
+      establishedYear:
+        typeof doc.establishedYear === "number" && doc.establishedYear > 0
+          ? Math.floor(doc.establishedYear)
+          : defaultSettings.establishedYear,
+      brandLines:
+        Array.isArray(doc.brandLines) && doc.brandLines.length > 0
+          ? doc.brandLines.filter(Boolean)
+          : [...defaultSettings.brandLines],
       offices: Array.isArray(doc.offices) && doc.offices.length > 0 ? doc.offices : localOffices,
       coverage:
         Array.isArray(doc.coverage) && doc.coverage.length > 0 ? doc.coverage : localCoverage,
@@ -185,6 +238,14 @@ export function getSiteSettings(): Promise<SiteSettings> {
         heading: doc.closingCta?.heading || defaultSettings.closingCta.heading,
         button: doc.closingCta?.button || defaultSettings.closingCta.button,
       },
+      affiliations:
+        Array.isArray(doc.affiliations) && doc.affiliations.length > 0
+          ? doc.affiliations
+              .filter((a) => a?.name)
+              .map((a) => ({ name: a.name as string, href: a.href || "" }))
+          : [],
+      notFound: { ...defaultSettings.notFound, ...(doc.notFound ?? {}) },
+      errorPage: { ...defaultSettings.errorPage, ...(doc.errorPage ?? {}) },
     };
   });
 }
@@ -208,38 +269,126 @@ export function whatsappHrefFor(settings: SiteSettings, message: string) {
 /* Page copy (singletons, merged over the built-in words)              */
 /* ------------------------------------------------------------------ */
 
+export type CollectionFilterId = "candid" | "traditional" | "intimate" | "pre";
+
+export type HomeCollection = { id: CollectionFilterId; title: string; key: ImageKey };
+
+export type AwardBadgeContent = {
+  subtitle?: string;
+  title: string;
+  year: string;
+  organization?: string;
+};
+
 export type HomePageContent = {
+  seoTitle: string;
+  seoDescription: string;
+  heroImageKey: ImageKey;
   heroEyebrow: string;
   heroTitle: string;
   heroSub: string;
   introEyebrow: string;
   introHeading: string;
   introBody: string;
+  collections: HomeCollection[];
+  mosaicLines: string[];
+  mosaicKeys: ImageKey[];
+  filmsEyebrow: string;
+  filmsTitle: string;
+  filmCoverKeys: ImageKey[];
+  backdropKeys: ImageKey[];
+  awardsEyebrow: string;
+  awardsTitle: string;
+  awardsBadges: AwardBadgeContent[];
+  gearCamerasLabel: string;
+  gearPostLabel: string;
 };
 
 const defaultHome: HomePageContent = {
+  seoTitle: "Best Photographer in Calicut | Best Photographer in Kerala | Oriana Weddings",
+  seoDescription:
+    "Oriana Weddings is a 12+ year wedding photography and filmmaking brand based in Calicut and Ahmedabad, managing personalised weddings across Kerala, Gujarat, India and international destinations.",
+  heroImageKey: "home-hero-user",
   heroEyebrow: "Oriana Weddings · Photography & Films",
   heroTitle: "Your wedding, our responsibility.",
   heroSub: "Candid, traditional & cinematic — managed by Oriana.",
   introEyebrow: "ORIANAWEDDINGS · PHOTOGRAPHY & CINEMA",
   introHeading: "Every story has its own rhythm.",
   introBody: "We hold on to the rituals, the in-between moments, and the joy.",
+  collections: [],
+  mosaicLines: [],
+  mosaicKeys: [],
+  filmsEyebrow: "WEDDING FILMS",
+  filmsTitle: "Stories, in motion.",
+  filmCoverKeys: [],
+  backdropKeys: [],
+  awardsEyebrow: "DECADE OF EXCELLENCE",
+  awardsTitle: "Awards & Accolades",
+  awardsBadges: [],
+  gearCamerasLabel: "Camera systems",
+  gearPostLabel: "Post production",
 };
+
+const COLLECTION_IDS = ["candid", "traditional", "intimate", "pre"] as const;
 
 export function getHomePage(): Promise<HomePageContent> {
   return fetchDoc<Partial<HomePageContent> | null>(
     `*[_type == "homePage" && _id == "homePage"][0]`,
     null,
-  ).then((doc) => ({ ...defaultHome, ...(doc ?? {}) }));
+  ).then((doc) => {
+    if (!doc) return defaultHome;
+    const rawCollections = Array.isArray(doc.collections) ? doc.collections : [];
+    return {
+      ...defaultHome,
+      ...doc,
+      heroImageKey: validKey(doc.heroImageKey, defaultHome.heroImageKey),
+      collections: rawCollections
+        .filter(
+          (c): c is HomeCollection =>
+            !!c &&
+            (COLLECTION_IDS as readonly string[]).includes(c.id) &&
+            !!c.title &&
+            isImageKey(c.key),
+        )
+        .map((c) => ({ id: c.id, title: c.title, key: c.key })),
+      mosaicLines:
+        Array.isArray(doc.mosaicLines) && doc.mosaicLines.length > 0 ? doc.mosaicLines : [],
+      mosaicKeys: validKeys(doc.mosaicKeys, []),
+      filmCoverKeys: validKeys(doc.filmCoverKeys, []),
+      backdropKeys: validKeys(doc.backdropKeys, []),
+      awardsBadges:
+        Array.isArray(doc.awardsBadges) && doc.awardsBadges.length > 0
+          ? doc.awardsBadges
+              .filter((b) => b?.title && b?.year)
+              .map((b) => ({
+                ...(b.subtitle ? { subtitle: b.subtitle } : {}),
+                title: b.title as string,
+                year: b.year as string,
+                ...(b.organization ? { organization: b.organization } : {}),
+              }))
+          : [],
+    };
+  });
 }
 
+export type TeamMemberContent = { name: string; role: string; key: ImageKey };
+
 export type AboutPageContent = {
+  seoTitle: string;
+  seoDescription: string;
+  heroImageKey: ImageKey;
+  heroImageAlt: string;
   heroEyebrow: string;
   heroTitle: string;
   heroLead: string;
   teamEyebrow: string;
   teamHeading: string;
   teamBody: string;
+  teamMembers: TeamMemberContent[];
+  rightEyebrow: string;
+  rightTitle: string;
+  rightLead: string;
+  rightBody: string;
   differenceEyebrow: string;
   differenceTitle: string;
   differenceLead: string;
@@ -251,6 +400,11 @@ export type AboutPageContent = {
 };
 
 const defaultAbout: AboutPageContent = {
+  seoTitle: "About Oriana Weddings | Best Photographer in Calicut | Best Photographer in Kerala",
+  seoDescription:
+    "Discover Oriana Weddings, a 12+ year wedding photography and filmmaking brand based in Calicut and Ahmedabad, managing weddings across Kerala, Gujarat, India and beyond.",
+  heroImageKey: "calicut-church-wedding-ceremony",
+  heroImageAlt: "Wedding ceremony with family and friends, photographed by Oriana Weddings",
   heroEyebrow: "About Oriana",
   heroTitle: "More than wedding photographers",
   heroLead:
@@ -259,6 +413,13 @@ const defaultAbout: AboutPageContent = {
   teamHeading: "Meet the team",
   teamBody:
     "The people you are trusting with a day that cannot be repeated. You meet them before the wedding, and the same team photographs it.",
+  teamMembers: [],
+  rightEyebrow: "The right team for the right wedding",
+  rightTitle: "We don't believe one photographer is right for every couple.",
+  rightLead:
+    "Every photographer has a different visual language, personality, technical ability and experience. We understand the client first. Then we select the team.",
+  rightBody:
+    "Oriana retains the professional decision-making responsibility for selecting the photography and filmmaking team. That is not a way of avoiding accountability — it is how we take responsibility for the result.",
   differenceEyebrow: "Why we retain selection",
   differenceTitle: "The decision stays with Oriana, on purpose",
   differenceLead:
@@ -275,10 +436,29 @@ export function getAboutPage(): Promise<AboutPageContent> {
   return fetchDoc<Partial<AboutPageContent> | null>(
     `*[_type == "aboutPage" && _id == "aboutPage"][0]`,
     null,
-  ).then((doc) => ({ ...defaultAbout, ...(doc ?? {}) }));
+  ).then((doc) => {
+    if (!doc) return defaultAbout;
+    const members = Array.isArray(doc.teamMembers) ? doc.teamMembers : [];
+    return {
+      ...defaultAbout,
+      ...doc,
+      heroImageKey: validKey(doc.heroImageKey, defaultAbout.heroImageKey),
+      teamMembers: members
+        .filter((m) => m?.name && m?.role)
+        .map((m) => ({
+          name: m.name as string,
+          role: m.role as string,
+          key: validKey(m.key, "portrait-bride-sunlight"),
+        })),
+    };
+  });
 }
 
 export type BrandsPageContent = {
+  seoTitle: string;
+  seoDescription: string;
+  heroImageKey: ImageKey;
+  heroImageAlt: string;
   heroEyebrow: string;
   heroTitle: string;
   heroLead: string;
@@ -291,6 +471,11 @@ export type BrandsPageContent = {
 };
 
 const defaultBrands: BrandsPageContent = {
+  seoTitle: "Our Brands | Oriana Weddings | Creative Brands",
+  seoDescription:
+    "Meet the creative brands of Oriana — Oriana Weddings, Baby Crew Studios, DEOR Fashion, ORION Events and Odonata Republic.",
+  heroImageKey: "detail-reception-monochrome",
+  heroImageAlt: "Newlywed couple in a quiet moment at home, photographed by Oriana Weddings",
   heroEyebrow: "Our brands",
   heroTitle: "Five brands, one house",
   heroLead: groupStatement,
@@ -307,29 +492,150 @@ export function getBrandsPage(): Promise<BrandsPageContent> {
   return fetchDoc<Partial<BrandsPageContent> | null>(
     `*[_type == "brandsPage" && _id == "brandsPage"][0]`,
     null,
-  ).then((doc) => ({ ...defaultBrands, ...(doc ?? {}) }));
+  ).then((doc) => {
+    if (!doc) return defaultBrands;
+    return {
+      ...defaultBrands,
+      ...doc,
+      heroImageKey: validKey(doc.heroImageKey, defaultBrands.heroImageKey),
+    };
+  });
 }
 
 export type ContactPageContent = {
+  seoTitle: string;
+  seoDescription: string;
   eyebrow: string;
   heading: string;
   lead: string;
+  serviceOptions: { value: string; note: string }[];
   nextSteps: { title: string; body: string }[];
+  stepsEyebrow: string;
+  asideEyebrow: string;
+  asideTitle: string;
+  asideBody: string;
+  asideButton: string;
+  asideCallLabel: string;
+  whereEyebrow: string;
+  whereTitle: string;
+  pinnedCall: string;
+  pinnedWhatsapp: string;
 };
 
 const defaultContact: ContactPageContent = {
+  seoTitle:
+    "Contact the Best Photographer in Calicut | Contact the Best Photographer in Kerala | Oriana Weddings",
+  seoDescription:
+    "Contact Oriana Weddings for wedding photography, videography and cinematic wedding films in Calicut, Kerala, Ahmedabad, Gujarat, India and destination locations.",
   eyebrow: "Contact",
   heading: "Tell us the date. We will tell you the rest.",
   lead: "Write what you know and leave the rest blank. We read every enquiry ourselves and reply the same day, usually the same evening.",
+  serviceOptions: [],
   nextSteps: [],
+  stepsEyebrow: "What happens next",
+  asideEyebrow: "Faster than the form",
+  asideTitle: "Message us on WhatsApp.",
+  asideBody:
+    "One message is enough — send the date, or a voice note, or nothing more than “are you free in February”. We read them ourselves.",
+  asideButton: "Open WhatsApp",
+  asideCallLabel: "Or call the studio",
+  whereEyebrow: "Where we are",
+  whereTitle: "Two offices. One studio, whichever one you visit.",
+  pinnedCall: "Call",
+  pinnedWhatsapp: "WhatsApp",
 };
 
 export function getContactPage(): Promise<ContactPageContent> {
   return fetchDoc<Partial<ContactPageContent> | null>(
     `*[_type == "contactPage" && _id == "contactPage"][0]`,
     null,
-  ).then((doc) => ({ ...defaultContact, ...(doc ?? {}) }));
+  ).then((doc) => {
+    if (!doc) return defaultContact;
+    const options = Array.isArray(doc.serviceOptions) ? doc.serviceOptions : [];
+    return {
+      ...defaultContact,
+      ...doc,
+      serviceOptions: options
+        .filter((o) => o?.value)
+        .map((o) => ({ value: o.value as string, note: o.note || "" })),
+    };
+  });
 }
+
+export type FilmsPageContent = { seoTitle: string; seoDescription: string };
+
+const defaultFilms: FilmsPageContent = {
+  seoTitle: "Wedding Films | Oriana Weddings",
+  seoDescription:
+    "Watch wedding films, teasers, highlights and storytelling films by Oriana Weddings.",
+};
+
+export function getFilmsPage(): Promise<FilmsPageContent> {
+  return fetchDoc<Partial<FilmsPageContent> | null>(
+    `*[_type == "filmsPage" && _id == "filmsPage"][0]`,
+    null,
+  ).then((doc) => ({ ...defaultFilms, ...(doc ?? {}) }));
+}
+
+export type PhotographyPageContent = { seoTitle: string; seoDescription: string };
+
+const defaultPhotography: PhotographyPageContent = {
+  seoTitle: "Wedding Photography Stories | Oriana Weddings",
+  seoDescription: "A collection of wedding photography stories from Oriana Weddings.",
+};
+
+export function getPhotographyPage(): Promise<PhotographyPageContent> {
+  return fetchDoc<Partial<PhotographyPageContent> | null>(
+    `*[_type == "photographyPage" && _id == "photographyPage"][0]`,
+    null,
+  ).then((doc) => ({ ...defaultPhotography, ...(doc ?? {}) }));
+}
+
+export type PortfolioPageContent = {
+  seoTitle: string;
+  seoDescription: string;
+  eyebrow: string;
+  sub: string;
+  countTemplate: string;
+  showMoreTemplate: string;
+  filterLabels: { id: string; label: string }[];
+};
+
+const defaultPortfolio: PortfolioPageContent = {
+  seoTitle: "Wedding Photography Portfolio | Oriana Weddings",
+  seoDescription:
+    "Browse wedding photographs by Oriana Weddings. Explore candid, traditional, intimate, pre-wedding and other photography styles.",
+  eyebrow: "ORIANA WEDDINGS · PORTFOLIO",
+  sub: "A few moments, held in still frames.",
+  countTemplate: "Showing {shown} of {total} images",
+  showMoreTemplate: "Show more ({remaining} remaining)",
+  filterLabels: [],
+};
+
+export function getPortfolioPage(): Promise<PortfolioPageContent> {
+  return fetchDoc<Partial<PortfolioPageContent> | null>(
+    `*[_type == "portfolioPage" && _id == "portfolioPage"][0]`,
+    null,
+  ).then((doc) => {
+    if (!doc) return defaultPortfolio;
+    const labels = Array.isArray(doc.filterLabels) ? doc.filterLabels : [];
+    return {
+      ...defaultPortfolio,
+      ...doc,
+      filterLabels: labels
+        .filter((f) => f?.id && f?.label)
+        .map((f) => ({ id: f.id as string, label: f.label as string })),
+    };
+  });
+}
+
+/** "Showing 12 of 30 images" — fills {shown} and {total}. */
+export const fillCount = (template: string, shown: number, total: number) =>
+  template.replace("{shown}", String(shown)).replace("{total}", String(total));
+
+/** "Show more (18 remaining)" — fills {remaining}. */
+export const fillRemaining = (template: string, remaining: number) =>
+  template.replace("{remaining}", String(remaining));
 
 /* ------------------------------------------------------------------ */
 /* Collections                                                         */
@@ -359,6 +665,8 @@ type RawWedding = {
   services?: string[];
   coverKey?: string;
   frameKeys?: string[];
+  seoTitle?: string;
+  seoDescription?: string;
   order?: number;
 };
 
@@ -394,6 +702,8 @@ function mapWedding(raw: RawWedding, fallback: Wedding): Wedding | null {
       Array.isArray(raw.services) && raw.services.length > 0
         ? raw.services.filter(Boolean)
         : [...fallback.services],
+    ...(raw.seoTitle ? { seoTitle: raw.seoTitle } : {}),
+    ...(raw.seoDescription ? { seoDescription: raw.seoDescription } : {}),
   };
 }
 
@@ -428,6 +738,8 @@ type RawBrand = {
   offerings?: string[];
   coverKey?: string;
   galleryKeys?: string[];
+  seoTitle?: string;
+  seoDescription?: string;
   order?: number;
 };
 
@@ -447,6 +759,8 @@ function mapBrand(raw: RawBrand, fallback: GroupBrand): GroupBrand | null {
         : [...fallback.offerings],
     cover: validKey(raw.coverKey, fallback.cover),
     images: validKeys(raw.galleryKeys, fallback.images),
+    ...(raw.seoTitle ? { seoTitle: raw.seoTitle } : {}),
+    ...(raw.seoDescription ? { seoDescription: raw.seoDescription } : {}),
   };
 }
 

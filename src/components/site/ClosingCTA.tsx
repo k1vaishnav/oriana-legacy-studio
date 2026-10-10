@@ -1,4 +1,4 @@
-import { getImage, srcSet } from "@/lib/image-manifest";
+import { getImage, srcSet, type ImageKey } from "@/lib/image-manifest";
 import { useSiteSettings, whatsappHrefFor } from "@/lib/cms";
 
 /**
@@ -17,12 +17,12 @@ import { useSiteSettings, whatsappHrefFor } from "@/lib/cms";
  * and desktops fetch a large one. It is decorative (`aria-hidden`, empty alt):
  * the heading carries the message.
  */
-const CTA_IMAGE = "closing-cta-user" as const;
+const DEFAULT_CTA_IMAGE: ImageKey = "closing-cta-user";
 
-export function ClosingCTA() {
+export function ClosingCTA({ image = DEFAULT_CTA_IMAGE }: { image?: ImageKey }) {
   const settings = useSiteSettings();
   const { closingCta } = settings;
-  const entry = getImage(CTA_IMAGE);
+  const entry = getImage(image);
 
   return (
     <section className="closing-cta closing-cta-banner" aria-labelledby="closing-cta-heading">
@@ -36,11 +36,11 @@ export function ClosingCTA() {
           backgroundPosition: "center",
         }}
       >
-        <source type="image/avif" srcSet={srcSet(CTA_IMAGE, "avif")} sizes="100vw" />
-        <source type="image/webp" srcSet={srcSet(CTA_IMAGE, "webp")} sizes="100vw" />
+        <source type="image/avif" srcSet={srcSet(image, "avif")} sizes="100vw" />
+        <source type="image/webp" srcSet={srcSet(image, "webp")} sizes="100vw" />
         <img
           src={entry.src}
-          srcSet={srcSet(CTA_IMAGE, "jpeg")}
+          srcSet={srcSet(image, "jpeg")}
           sizes="100vw"
           alt=""
           width={entry.width}

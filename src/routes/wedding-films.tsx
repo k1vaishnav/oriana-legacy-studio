@@ -3,16 +3,17 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { ClosingCTA } from "@/components/site/ClosingCTA";
 import { VideoPlayer } from "@/components/site/VideoPlayer";
-import { getFilms } from "@/lib/cms";
+import { getFilms, getFilmsPage } from "@/lib/cms";
 import type { Film } from "@/lib/films";
 import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/wedding-films")({
-  loader: async () => ({ films: await getFilms() }),
-  head: () =>
+  loader: async () => ({ films: await getFilms(), page: await getFilmsPage() }),
+  head: ({ loaderData }) =>
     seo({
-      title: "Wedding Films | Oriana Weddings",
+      title: loaderData?.page.seoTitle || "Wedding Films | Oriana Weddings",
       description:
+        loaderData?.page.seoDescription ||
         "Watch wedding films, teasers, highlights and storytelling films by Oriana Weddings.",
       path: "/wedding-films",
     }),

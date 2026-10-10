@@ -9,11 +9,13 @@ import { getContactPage, useSiteSettings, whatsappHrefFor } from "@/lib/cms";
 
 export const Route = createFileRoute("/contact")({
   loader: async () => ({ page: await getContactPage() }),
-  head: () =>
+  head: ({ loaderData }) =>
     seo({
       title:
+        loaderData?.page.seoTitle ||
         "Contact the Best Photographer in Calicut | Contact the Best Photographer in Kerala | Oriana Weddings",
       description:
+        loaderData?.page.seoDescription ||
         "Contact Oriana Weddings for wedding photography, videography and cinematic wedding films in Calicut, Kerala, Ahmedabad, Gujarat, India and destination locations.",
       path: "/contact",
     }),
@@ -125,7 +127,7 @@ function ContactPage() {
       <section id="enquiry" className="surface-cream pb-32 sm:pb-20">
         <div className="shell grid gap-10 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-7">
-            <EnquiryForm />
+            <EnquiryForm services={page.serviceOptions} />
 
             {/*
               Where we are, on the left under the form.
@@ -149,9 +151,9 @@ function ContactPage() {
             */}
             <div className="mt-10 lg:mt-12">
               <div className="rounded-card border border-line bg-bone p-6 sm:p-9">
-                <p className="eyebrow">Where we are</p>
+                <p className="eyebrow">{page.whereEyebrow}</p>
                 <h2 className="mt-4 max-w-[28ch] font-display text-h3 leading-[1.15] text-ink">
-                  Two offices. One studio, whichever one you visit.
+                  {page.whereTitle}
                 </h2>
 
                 <dl className="mt-8 grid gap-9 sm:grid-cols-2 sm:gap-12">
@@ -183,13 +185,12 @@ function ContactPage() {
                 form is a real studio that answers messages. A visitor who
                 would rather talk than type should not have to scroll. */}
             <div className="rounded-card border border-ink bg-bone p-7">
-              <p className="eyebrow">Faster than the form</p>
+              <p className="eyebrow">{page.asideEyebrow}</p>
               <p className="mt-5 max-w-[30ch] font-display text-h3 leading-[1.15] text-ink">
-                Message us on WhatsApp.
+                {page.asideTitle}
               </p>
               <p className="mt-4 max-w-[34ch] text-sm leading-relaxed text-mute">
-                One message is enough — send the date, or a voice note, or nothing more than
-                &ldquo;are you free in February&rdquo;. We read them ourselves.
+                {page.asideBody}
               </p>
               <a
                 href={whatsappHref("Hi Oriana, I'd like to talk about my wedding.")}
@@ -197,14 +198,14 @@ function ContactPage() {
                 rel="noopener noreferrer"
                 className="btn btn-ink mt-7 w-full justify-center"
               >
-                Open WhatsApp
+                {page.asideButton}
               </a>
               <div className="mt-6 border-t border-line pt-5">
                 <a
                   href={business.phoneHref}
                   className="flex items-baseline justify-between gap-4 text-sm text-ink"
                 >
-                  <span className="text-mute">Or call the studio</span>
+                  <span className="text-mute">{page.asideCallLabel}</span>
                   <span className="underline decoration-line underline-offset-4 transition-colors hover:decoration-ink">
                     {business.phone}
                   </span>
@@ -212,7 +213,7 @@ function ContactPage() {
               </div>
             </div>
 
-            <p className="eyebrow mt-12">What happens next</p>
+            <p className="eyebrow mt-12">{page.stepsEyebrow}</p>
 
             <ol className="mt-6 flex flex-col gap-6">
               {steps.map((item, index) => (
@@ -248,7 +249,7 @@ function ContactPage() {
             href={business.phoneHref}
             className="flex items-center justify-center gap-2 bg-paper px-4 py-4 text-sm text-ink"
           >
-            Call
+            {page.pinnedCall}
             <span className="text-xs text-mute">{business.phone}</span>
           </a>
           <a
@@ -257,7 +258,7 @@ function ContactPage() {
             rel="noopener noreferrer"
             className="flex items-center justify-center bg-ink px-4 py-3.5 text-sm text-paper"
           >
-            WhatsApp
+            {page.pinnedWhatsapp}
           </a>
         </div>
       </div>

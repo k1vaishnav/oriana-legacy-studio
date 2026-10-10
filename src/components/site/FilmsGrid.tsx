@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ResponsiveImage } from "@/lib/images";
-import { ceremonies, details, originals, portraits, preWedding } from "@/lib/photos";
+import { ceremonies, details, originals, portraits, preWedding, photoAlt } from "@/lib/photos";
+import type { ImageKey } from "@/lib/image-manifest";
 import type { Photo } from "@/lib/photos";
 import { films as localFilms, type Film } from "@/lib/films";
 
@@ -24,7 +25,7 @@ const toCard = (film: Film): FilmCardData => ({
   youtubeId: film.youtubeId ?? "",
 });
 
-const editorialCovers: readonly Photo[] = [
+const DEFAULT_COVERS: readonly Photo[] = [
   originals[0]!,
   originals[1]!,
   portraits[0]!,
@@ -38,10 +39,25 @@ const editorialCovers: readonly Photo[] = [
  *
  * `films` comes from the CMS via the home loader when configured (newest four
  * win); otherwise the built-in catalogue's last four — the same four frames as
- * before, so the section looks identical until the CMS takes over.
+ * before, so the section looks identical until the CMS takes over. Headings
+ * and the six cover frames are CMS-editable the same way.
  */
-export function FilmsGrid({ films = localFilms.slice(-4) }: { films?: Film[] }) {
+export function FilmsGrid({
+  films = localFilms.slice(-4),
+  eyebrow = "WEDDING FILMS",
+  title = "Stories, in motion.",
+  covers,
+}: {
+  films?: Film[];
+  eyebrow?: string;
+  title?: string;
+  covers?: ImageKey[];
+}) {
   const featuredFilms = films.slice(-4).map(toCard);
+  const editorialCovers: readonly Photo[] =
+    covers && covers.length > 0
+      ? covers.slice(0, 6).map((key) => ({ key, alt: photoAlt(key) ?? "Wedding story" }))
+      : DEFAULT_COVERS;
   // Which card is playing inline. The film opens right inside its own
   // frame — no popup, no page change.
   const [playingCouple, setPlayingCouple] = useState<string | null>(null);
@@ -52,8 +68,8 @@ export function FilmsGrid({ films = localFilms.slice(-4) }: { films?: Film[] }) 
         Wedding films
       </h2>
       <div className="film-editorial-heading">
-        <p>WEDDING FILMS</p>
-        <h3>Stories, in motion.</h3>
+        <p>{eyebrow}</p>
+        <h3>{title}</h3>
       </div>
       <div className="films-feature-grid">
         {featuredFilms.map((film) => {

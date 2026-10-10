@@ -7,7 +7,7 @@ import { Marquee } from "@/components/site/Marquee";
 import { Arrow, SectionHead, SplitHead } from "@/components/site/ui";
 import { PageHero } from "@/components/site/PageHero";
 import { BrandMark } from "@/lib/BrandMark";
-import { getBrands, getBrandsPage } from "@/lib/cms";
+import { asImageKey, getBrands, getBrandsPage } from "@/lib/cms";
 import type { GroupBrand } from "@/lib/site";
 
 export const Route = createFileRoute("/brands")({
@@ -15,10 +15,11 @@ export const Route = createFileRoute("/brands")({
     brands: await getBrands(),
     page: await getBrandsPage(),
   }),
-  head: () =>
+  head: ({ loaderData }) =>
     seo({
-      title: "Our Brands | Oriana Weddings | Creative Brands",
+      title: loaderData?.page.seoTitle || "Our Brands | Oriana Weddings | Creative Brands",
       description:
+        loaderData?.page.seoDescription ||
         "Meet the creative brands of Oriana — Oriana Weddings, Baby Crew Studios, DEOR Fashion, ORION Events and Odonata Republic.",
       path: "/brands",
     }),
@@ -41,8 +42,8 @@ function BrandsPage() {
         eyebrow={page.heroEyebrow}
         title={page.heroTitle}
         lead={page.heroLead}
-        image="detail-reception-monochrome"
-        alt="Newlywed couple in a quiet moment at home, photographed by Oriana Weddings"
+        image={asImageKey(page.heroImageKey, "detail-reception-monochrome")}
+        alt={page.heroImageAlt}
         meta={[
           { label: "Brands", value: `${brands.length}` },
           { label: "Offices", value: "Calicut & Ahmedabad" },

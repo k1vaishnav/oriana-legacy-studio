@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 
-import { brandLines, establishedMark, nav } from "@/lib/site";
-import { useSiteSettings } from "@/lib/cms";
+import { nav } from "@/lib/site";
+import { establishedMarkFor, useSiteSettings } from "@/lib/cms";
 
 /**
  * The footer is a directory, and now only a directory.
@@ -19,7 +19,9 @@ import { useSiteSettings } from "@/lib/cms";
  * which are the pages that own them.
  */
 export function Footer() {
-  const { business, coverage, offices } = useSiteSettings();
+  const settings = useSiteSettings();
+  const { business, coverage, offices, brandLines } = settings;
+  const establishedMark = establishedMarkFor(settings);
   const sections = nav.filter((item) => item.to !== "/");
 
   return (
