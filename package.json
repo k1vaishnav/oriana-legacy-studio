@@ -14,7 +14,8 @@
     "assets:fonts": "node scripts/build-fonts.mjs",
     "check:content": "node scripts/check-content.mjs",
     "check:form": "node scripts/check-form.mjs",
-    "check:layout": "node scripts/check-layout.mjs"
+    "check:layout": "node scripts/check-layout.mjs",
+    "cms:seed": "node scripts/seed-sanity.mjs"
   },
   "dependencies": {
     "@sanity/client": "^8.9.0",
