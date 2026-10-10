@@ -1,4 +1,5 @@
 import type { ImageKey } from "./image-manifest";
+import { photoAlt, type Photo } from "./photos";
 
 export const SITE_URL = "https://orianaweddings.com";
 
@@ -297,15 +298,26 @@ export type GroupBrand = {
   /** What the brand does, as a short list on the detail page. */
   offerings: readonly string[];
   /** Card cover on the brands index. */
-  cover: ImageKey;
+  cover: Photo;
   /** Gallery frames on the detail page. */
-  images: readonly ImageKey[];
+  images: readonly Photo[];
   /** Optional CMS search overrides; fall back to the built-in copy. */
   seoTitle?: string;
   seoDescription?: string;
 };
 
-export const groupBrands: readonly GroupBrand[] = [
+type RawGroupBrand = Omit<GroupBrand, "cover" | "images"> & {
+  cover: ImageKey;
+  images: readonly ImageKey[];
+};
+
+const pic = (key: ImageKey, fallbackAlt: string): Photo => ({
+  key,
+  alt: photoAlt(key) ?? fallbackAlt,
+  asset: null,
+});
+
+export const rawGroupBrands: readonly RawGroupBrand[] = [
   {
     slug: "oriana-weddings",
     name: "Oriana Weddings",
@@ -387,6 +399,12 @@ export const groupBrands: readonly GroupBrand[] = [
     ],
   },
 ];
+
+export const groupBrands: readonly GroupBrand[] = rawGroupBrands.map((b) => ({
+  ...b,
+  cover: pic(b.cover, b.tagline),
+  images: b.images.map((key) => pic(key, b.tagline)),
+}));
 
 export const findBrand = (slug: string) => groupBrands.find((b) => b.slug === slug);
 

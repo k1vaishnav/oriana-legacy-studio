@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { ResponsiveImage } from "@/lib/images";
+import { PhotoImage } from "@/lib/images";
 import { Lightbox } from "@/components/site/Lightbox";
-import { originals, ceremonies, photoAlt } from "@/lib/photos";
-import type { ImageKey } from "@/lib/image-manifest";
+import { originals, ceremonies } from "@/lib/photos";
 import type { Photo } from "@/lib/photos";
 
 const DEFAULT_PHOTOS: readonly Photo[] = [...originals, ...ceremonies];
@@ -13,17 +12,9 @@ const GRID_CELLS = Array.from({ length: 15 }, (_, index) => index);
  * The 15-cell mosaic — CMS picks the 14 photographs and the 3 title lines.
  * The middle cell (index 7) is always the title, so 14 photos fill 14 cells.
  */
-export function EditorialGrid({
-  photos,
-  titleLines,
-}: {
-  photos?: ImageKey[];
-  titleLines?: string[];
-}) {
+export function EditorialGrid({ photos, titleLines }: { photos?: Photo[]; titleLines?: string[] }) {
   const gridPhotos: readonly Photo[] =
-    photos && photos.length > 0
-      ? photos.slice(0, 14).map((key) => ({ key, alt: photoAlt(key) ?? "Wedding photograph" }))
-      : DEFAULT_PHOTOS;
+    photos && photos.length > 0 ? photos.slice(0, 14) : DEFAULT_PHOTOS;
   const lines =
     titleLines && titleLines.length >= 3
       ? [titleLines[0]!, titleLines[1]!, titleLines[2]!]
@@ -53,15 +44,14 @@ export function EditorialGrid({
 
           return (
             <button
-              key={photo.key}
+              key={`${photo.key ?? "cms"}-${photoIndex}`}
               type="button"
               onClick={() => setLightbox(photoIndex)}
               className="editorial-grid-photo"
               aria-label={`Open photograph: ${photo.alt}`}
             >
-              <ResponsiveImage
-                image={photo.key}
-                alt={photo.alt}
+              <PhotoImage
+                photo={photo}
                 ratio="1 / 1"
                 sizes="(min-width: 1024px) 20vw, (min-width: 640px) 33vw, 50vw"
                 className="editorial-grid-image"

@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 
-import { PriorityImage } from "@/lib/images";
-import { type ImageKey } from "@/lib/image-manifest";
+import { PhotoImage } from "@/lib/images";
+import type { Photo } from "@/lib/photos";
 
 /**
  * The opener for every route except the home page.
@@ -22,8 +22,7 @@ export function PageHero({
   eyebrow,
   title,
   lead,
-  image,
-  alt,
+  photo,
   meta,
   crumb,
   ratio = "16 / 9",
@@ -32,8 +31,8 @@ export function PageHero({
   eyebrow: string;
   title: string;
   lead: string;
-  image: ImageKey;
-  alt: string;
+  /** Hero photograph: archive fallback with a CMS asset when set. */
+  photo: Photo;
   meta?: readonly { label: string; value: string }[];
   crumb: { name: string; to?: string }[];
   ratio?: string;
@@ -101,22 +100,16 @@ export function PageHero({
       {inset ? (
         <div className="shell pb-12 sm:pb-16">
           <div className="max-h-[22rem] overflow-hidden border border-line">
-            <PriorityImage
-              image={image}
-              alt={alt}
+            <PhotoImage
+              photo={photo}
               ratio="21 / 9"
               sizes="(min-width: 1024px) 68rem, 92vw"
+              eager
             />
           </div>
         </div>
       ) : (
-        <PriorityImage
-          image={image}
-          alt={alt}
-          ratio={ratio}
-          sizes="100vw"
-          className="rounded-none"
-        />
+        <PhotoImage photo={photo} ratio={ratio} sizes="100vw" className="rounded-none" eager />
       )}
     </header>
   );

@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { ResponsiveImage } from "@/lib/images";
-import { ceremonies, details, originals, portraits, preWedding, photoAlt } from "@/lib/photos";
-import type { ImageKey } from "@/lib/image-manifest";
+import { PhotoImage } from "@/lib/images";
+import { ceremonies, details, originals, portraits, preWedding } from "@/lib/photos";
 import type { Photo } from "@/lib/photos";
 import { films as localFilms, type Film } from "@/lib/films";
 
@@ -51,13 +50,11 @@ export function FilmsGrid({
   films?: Film[];
   eyebrow?: string;
   title?: string;
-  covers?: ImageKey[];
+  covers?: Photo[];
 }) {
   const featuredFilms = films.slice(-4).map(toCard);
   const editorialCovers: readonly Photo[] =
-    covers && covers.length > 0
-      ? covers.slice(0, 6).map((key) => ({ key, alt: photoAlt(key) ?? "Wedding story" }))
-      : DEFAULT_COVERS;
+    covers && covers.length > 0 ? covers.slice(0, 6) : DEFAULT_COVERS;
   // Which card is playing inline. The film opens right inside its own
   // frame — no popup, no page change.
   const [playingCouple, setPlayingCouple] = useState<string | null>(null);
@@ -123,11 +120,10 @@ export function FilmsGrid({
       </div>
 
       <div className="film-cover-row" role="list" aria-label="More wedding stories">
-        {editorialCovers.map((photo) => (
-          <div className="film-cover" key={photo.key} role="listitem">
-            <ResponsiveImage
-              image={photo.key}
-              alt={photo.alt}
+        {editorialCovers.map((photo, index) => (
+          <div className="film-cover" key={`${photo.key ?? "cms"}-${index}`} role="listitem">
+            <PhotoImage
+              photo={photo}
               ratio="2 / 3"
               sizes="(min-width: 900px) 8rem, 6rem"
               className="film-cover-image"

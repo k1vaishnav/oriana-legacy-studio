@@ -6,21 +6,19 @@
  * or before the CMS exists) nothing is fetched and the site renders exactly as
  * it does today — the CMS can never blank a page.
  *
- * Image fields in Sanity hold keys into the 30-frame local archive, never
- * uploads, so CMS-chosen photographs stay inside the pre-generated
- * AVIF/WebP/JPEG ladder. Keys are validated at the boundary; a bad key falls
- * back per-field rather than failing the whole document.
- *
- * Fetches are memoized per session, so a root loader plus a page loader asking
- * for the same document costs one request.
+ * Photographs arrive as Sanity image assets (upload/replace/remove/reorder in
+ * the Studio) and render from Sanity's CDN; every slot keeps a local-archive
+ * fallback, so a removed photograph degrades to the built-in frame rather than
+ * a hole. Fetches are memoized per session, so a root loader plus a page
+ * loader asking for the same document costs one request.
  */
-import type { SanityClient } from "@sanity/client";
+import { createClient, type SanityClient } from "@sanity/client";
 import { getRouteApi } from "@tanstack/react-router";
 
 import { films as localFilms, type Film } from "./films";
-import manifest from "./images.json";
-import type { ImageKey } from "./image-manifest";
 import { weddings as localWeddings, type Wedding } from "./portfolio";
+import { getImage } from "./image-manifest";
+import { photoAlt, type Photo } from "./photos";
 import {
   business as localBusiness,
   coverage as localCoverage,
@@ -31,6 +29,7 @@ import {
   stats as localStats,
   type GroupBrand,
 } from "./site";
+import { cmsImageSrc, type CmsAsset, type CmsCrop, type CmsHotspot } from "./sanity-image";
 
 export const isCmsConfigured =
   Boolean(import.meta.env?.["VITE_SANITY_PROJECT_ID"]) &&
@@ -40,8 +39,8 @@ let client: SanityClient | null = null;
 async function getClient(): Promise<SanityClient | null> {
   if (!isCmsConfigured) return null;
   if (!client) {
-    // Dynamic import: the client (~100 KB) stays out of the main bundle and
-    // downloads only when the CMS is actually configured.
+    // Dynamic import: the client stays out of the main bundle and downloads
+    // only when the CMS is actually configured.
     const { createClient } = await import("@sanity/client");
     client = createClient({
       projectId: import.meta.env["VITE_SANITY_PROJECT_ID"] as string,
@@ -85,23 +84,51 @@ async function fetchDoc<T>(query: string, fallback: T): Promise<T> {
 }
 
 /* ------------------------------------------------------------------ */
-/* Image keys                                                          */
+/* Sanity image values                                                 */
 /* ------------------------------------------------------------------ */
 
-const isImageKey = (value: unknown): value is ImageKey =>
-  typeof value === "string" && value in manifest;
+type RawImage =
+  | {
+      crop?: CmsCrop | null;
+      hotspot?: CmsHotspot | null;
+      asset?: {
+        _ref?: string;
+        metadata?: {
+          dimensions?: { width?: number; height?: number };
+          lqip?: string;
+        } | null;
+      } | null;
+    }
+  | null
+  | undefined;
 
-export const validKey = (value: unknown, fallback: ImageKey): ImageKey =>
-  isImageKey(value) ? value : fallback;
+/** Image fragment: the asset reference plus everything rendering needs. */
+const IMG = `{crop,hotspot,asset->{_ref,metadata{dimensions{width,height},lqip}}}`;
 
-/** A CMS image-key field, validated — falls back when blank or mistyped. */
-export const asImageKey = validKey;
-
-const validKeys = (values: unknown, fallback: readonly ImageKey[]): ImageKey[] => {
-  if (!Array.isArray(values)) return [...fallback];
-  const keys = values.filter(isImageKey);
-  return keys.length > 0 ? keys : [...fallback];
+const mapAsset = (raw: RawImage): CmsAsset | null => {
+  const ref = raw?.asset?._ref;
+  const width = raw?.asset?.metadata?.dimensions?.width;
+  const height = raw?.asset?.metadata?.dimensions?.height;
+  if (!ref || !width || !height) return null;
+  return {
+    ref,
+    width,
+    height,
+    lqip: raw?.asset?.metadata?.lqip,
+    crop: raw?.crop ?? null,
+    hotspot: raw?.hotspot ?? null,
+  };
 };
+
+/** Absolute display URL: CDN asset when present, else the archive fallback. */
+export function photoSrc(photo: Photo): string {
+  if (photo.asset) {
+    const url = cmsImageSrc(photo.asset);
+    if (url) return url;
+  }
+  if (photo.key) return getImage(photo.key).src;
+  return "";
+}
 
 /* ------------------------------------------------------------------ */
 /* Site settings                                                       */
@@ -113,9 +140,9 @@ export type SiteSettings = {
   brandLines: readonly string[];
   offices: typeof localOffices;
   coverage: typeof localCoverage;
-  soulCinema: typeof localSoulCinema & { videoSrc: string };
+  soulCinema: typeof localSoulCinema & { videoSrc: string; poster: Photo };
   stats: typeof localStats;
-  closingCta: { kicker: string; heading: string; button: string; imageKey: ImageKey };
+  closingCta: { kicker: string; heading: string; button: string; image: Photo };
   affiliations: { name: string; href: string }[];
   chatbot: { greeting: string; prompt: string; handoff: string };
   footerExplore: string;
@@ -143,13 +170,21 @@ const defaultSettings: SiteSettings = {
   brandLines: ["Indian Wedding Film Award Winner", "Couple Choice Award Winner"],
   offices: localOffices,
   coverage: localCoverage,
-  soulCinema: { ...localSoulCinema, videoSrc: "/video/soul-cinema-stock.mp4" },
+  soulCinema: {
+    ...localSoulCinema,
+    videoSrc: "/video/soul-cinema-stock.mp4",
+    poster: {
+      key: "kerala-cinematic-wedding-film-still",
+      alt: "",
+      asset: null,
+    },
+  },
   stats: localStats,
   closingCta: {
     kicker: "ORIANAWEDDINGS · WEDDING PHOTOGRAPHY & FILMS",
     heading: "A day, held forever.",
     button: "Enquire on WhatsApp",
-    imageKey: "closing-cta-user",
+    image: { key: "closing-cta-user", alt: "", asset: null },
   },
   affiliations: [],
   chatbot: {
@@ -195,8 +230,8 @@ type RawSettings = {
   offices?: SiteSettings["offices"];
   coverage?: string[];
   stats?: { value?: string; label?: string }[];
-  soulCinema?: { title?: string; body?: string; videoSrc?: string };
-  closingCta?: { kicker?: string; heading?: string; button?: string; imageKey?: string };
+  soulCinema?: { title?: string; body?: string; videoSrc?: string; poster?: RawImage };
+  closingCta?: { kicker?: string; heading?: string; button?: string; image?: RawImage };
   affiliations?: { name?: string; href?: string }[];
   chatbot?: Partial<SiteSettings["chatbot"]>;
   footerExplore?: string;
@@ -208,7 +243,14 @@ type RawSettings = {
 
 export function getSiteSettings(): Promise<SiteSettings> {
   return fetchDoc<RawSettings | null>(
-    `*[_type == "siteSettings" && _id == "siteSettings"][0]`,
+    `*[_type == "siteSettings" && _id == "siteSettings"][0]{
+      tagline, phone, phoneHref, phoneSecondary, phoneSecondaryHref, whatsapp,
+      email, instagram, youtube, facebook, establishedYear, brandLines, offices,
+      coverage, stats, chatbot, footerExplore, footerStudios, footerCoverage,
+      notFound, errorPage,
+      soulCinema{title, body, videoSrc, poster${IMG}},
+      closingCta{kicker, heading, button, image${IMG}}
+    }`,
     null,
   ).then((doc) => {
     if (!doc) return defaultSettings;
@@ -250,23 +292,30 @@ export function getSiteSettings(): Promise<SiteSettings> {
         title: doc.soulCinema?.title || localSoulCinema.title,
         body: doc.soulCinema?.body || localSoulCinema.body,
         videoSrc: doc.soulCinema?.videoSrc || "/video/soul-cinema-stock.mp4",
+        poster: {
+          ...defaultSettings.soulCinema.poster,
+          asset: mapAsset(doc.soulCinema?.poster),
+        },
       } as SiteSettings["soulCinema"],
       closingCta: {
         kicker: doc.closingCta?.kicker || defaultSettings.closingCta.kicker,
         heading: doc.closingCta?.heading || defaultSettings.closingCta.heading,
         button: doc.closingCta?.button || defaultSettings.closingCta.button,
-        imageKey: validKey(doc.closingCta?.imageKey, defaultSettings.closingCta.imageKey),
+        image: {
+          ...defaultSettings.closingCta.image,
+          asset: mapAsset(doc.closingCta?.image),
+        },
       },
-      chatbot: { ...defaultSettings.chatbot, ...(doc.chatbot ?? {}) },
-      footerExplore: doc.footerExplore || defaultSettings.footerExplore,
-      footerStudios: doc.footerStudios || defaultSettings.footerStudios,
-      footerCoverage: doc.footerCoverage || defaultSettings.footerCoverage,
       affiliations:
         Array.isArray(doc.affiliations) && doc.affiliations.length > 0
           ? doc.affiliations
               .filter((a) => a?.name)
               .map((a) => ({ name: a.name as string, href: a.href || "" }))
           : [],
+      chatbot: { ...defaultSettings.chatbot, ...(doc.chatbot ?? {}) },
+      footerExplore: doc.footerExplore || defaultSettings.footerExplore,
+      footerStudios: doc.footerStudios || defaultSettings.footerStudios,
+      footerCoverage: doc.footerCoverage || defaultSettings.footerCoverage,
       notFound: { ...defaultSettings.notFound, ...(doc.notFound ?? {}) },
       errorPage: { ...defaultSettings.errorPage, ...(doc.errorPage ?? {}) },
     };
@@ -294,7 +343,11 @@ export function whatsappHrefFor(settings: SiteSettings, message: string) {
 
 export type CollectionFilterId = "candid" | "traditional" | "intimate" | "pre";
 
-export type HomeCollection = { id: CollectionFilterId; title: string; key: ImageKey };
+export type HomeCollection = {
+  id: CollectionFilterId;
+  title: string;
+  photo: Photo;
+};
 
 export type AwardBadgeContent = {
   subtitle?: string;
@@ -306,7 +359,7 @@ export type AwardBadgeContent = {
 export type HomePageContent = {
   seoTitle: string;
   seoDescription: string;
-  heroImageKey: ImageKey;
+  heroImage: Photo;
   heroEyebrow: string;
   heroTitle: string;
   heroSub: string;
@@ -317,11 +370,10 @@ export type HomePageContent = {
   introBody: string;
   collections: HomeCollection[];
   mosaicLines: string[];
-  mosaicKeys: ImageKey[];
+  mosaic: Photo[];
   filmsEyebrow: string;
   filmsTitle: string;
-  filmCoverKeys: ImageKey[];
-  backdropKeys: ImageKey[];
+  filmCovers: Photo[];
   awardsEyebrow: string;
   awardsTitle: string;
   awardsBadges: AwardBadgeContent[];
@@ -333,7 +385,7 @@ const defaultHome: HomePageContent = {
   seoTitle: "Best Photographer in Calicut | Best Photographer in Kerala | Oriana Weddings",
   seoDescription:
     "Oriana Weddings is a 12+ year wedding photography and filmmaking brand based in Calicut and Ahmedabad, managing personalised weddings across Kerala, Gujarat, India and international destinations.",
-  heroImageKey: "home-hero-user",
+  heroImage: { key: "home-hero-user", alt: "", asset: null },
   heroEyebrow: "Oriana Weddings · Photography & Films",
   heroTitle: "Your wedding, our responsibility.",
   heroSub: "Candid, traditional & cinematic — managed by Oriana.",
@@ -344,11 +396,10 @@ const defaultHome: HomePageContent = {
   introBody: "We hold on to the rituals, the in-between moments, and the joy.",
   collections: [],
   mosaicLines: [],
-  mosaicKeys: [],
+  mosaic: [],
   filmsEyebrow: "WEDDING FILMS",
   filmsTitle: "Stories, in motion.",
-  filmCoverKeys: [],
-  backdropKeys: [],
+  filmCovers: [],
   awardsEyebrow: "DECADE OF EXCELLENCE",
   awardsTitle: "Awards & Accolades",
   awardsBadges: [],
@@ -358,31 +409,73 @@ const defaultHome: HomePageContent = {
 
 const COLLECTION_IDS = ["candid", "traditional", "intimate", "pre"] as const;
 
+type RawHomeCollection = {
+  id?: string;
+  title?: string;
+  image?: RawImage;
+};
+
+type RawHome = Partial<
+  Omit<HomePageContent, "collections" | "mosaic" | "filmCovers" | "heroImage">
+> & {
+  heroImage?: RawImage;
+  collections?: RawHomeCollection[];
+  mosaic?: RawImage[];
+  filmCovers?: RawImage[];
+};
+
 export function getHomePage(): Promise<HomePageContent> {
-  return fetchDoc<Partial<HomePageContent> | null>(
-    `*[_type == "homePage" && _id == "homePage"][0]`,
+  return fetchDoc<RawHome | null>(
+    `*[_type == "homePage" && _id == "homePage"][0]{
+      seoTitle, seoDescription, heroEyebrow, heroTitle, heroSub,
+      heroPrimaryLabel, heroSecondaryLabel, introEyebrow, introHeading, introBody,
+      mosaicLines, filmsEyebrow, filmsTitle, awardsEyebrow, awardsTitle,
+      awardsBadges, gearCamerasLabel, gearPostLabel,
+      heroImage${IMG}, collections[]{id, title, image${IMG}},
+      mosaic[]${IMG}, filmCovers[]${IMG}
+    }`,
     null,
   ).then((doc) => {
     if (!doc) return defaultHome;
     const rawCollections = Array.isArray(doc.collections) ? doc.collections : [];
+    const toPhoto = (raw: RawImage | null | undefined, alt: string): Photo | null => {
+      const asset = mapAsset(raw);
+      return asset ? { key: null, alt, asset } : null;
+    };
     return {
       ...defaultHome,
       ...doc,
-      heroImageKey: validKey(doc.heroImageKey, defaultHome.heroImageKey),
+      heroImage: {
+        ...defaultHome.heroImage,
+        asset: mapAsset(doc.heroImage),
+      },
       collections: rawCollections
         .filter(
-          (c): c is HomeCollection =>
-            !!c &&
-            (COLLECTION_IDS as readonly string[]).includes(c.id) &&
-            !!c.title &&
-            isImageKey(c.key),
+          (c) => !!c && (COLLECTION_IDS as readonly string[]).includes(c.id ?? "") && !!c.title,
         )
-        .map((c) => ({ id: c.id, title: c.title, key: c.key })),
+        .map((c) => {
+          const asset = mapAsset(c.image);
+          return asset
+            ? {
+                id: c.id as CollectionFilterId,
+                title: c.title as string,
+                photo: {
+                  key: null,
+                  alt: `${c.title} wedding photography`,
+                  asset,
+                } as Photo,
+              }
+            : null;
+        })
+        .filter((c): c is HomeCollection => c !== null),
       mosaicLines:
         Array.isArray(doc.mosaicLines) && doc.mosaicLines.length > 0 ? doc.mosaicLines : [],
-      mosaicKeys: validKeys(doc.mosaicKeys, []),
-      filmCoverKeys: validKeys(doc.filmCoverKeys, []),
-      backdropKeys: validKeys(doc.backdropKeys, []),
+      mosaic: (Array.isArray(doc.mosaic) ? doc.mosaic : [])
+        .map((raw) => toPhoto(raw, "Wedding photograph"))
+        .filter((p): p is Photo => p !== null),
+      filmCovers: (Array.isArray(doc.filmCovers) ? doc.filmCovers : [])
+        .map((raw) => toPhoto(raw, "Wedding story"))
+        .filter((p): p is Photo => p !== null),
       awardsBadges:
         Array.isArray(doc.awardsBadges) && doc.awardsBadges.length > 0
           ? doc.awardsBadges
@@ -398,12 +491,12 @@ export function getHomePage(): Promise<HomePageContent> {
   });
 }
 
-export type TeamMemberContent = { name: string; role: string; key: ImageKey };
+export type TeamMemberContent = { name: string; role: string; photo: Photo };
 
 export type AboutPageContent = {
   seoTitle: string;
   seoDescription: string;
-  heroImageKey: ImageKey;
+  heroImage: Photo;
   heroImageAlt: string;
   heroEyebrow: string;
   heroTitle: string;
@@ -431,7 +524,11 @@ const defaultAbout: AboutPageContent = {
   seoTitle: "About Oriana Weddings | Best Photographer in Calicut | Best Photographer in Kerala",
   seoDescription:
     "Discover Oriana Weddings, a 12+ year wedding photography and filmmaking brand based in Calicut and Ahmedabad, managing weddings across Kerala, Gujarat, India and beyond.",
-  heroImageKey: "calicut-church-wedding-ceremony",
+  heroImage: {
+    key: "calicut-church-wedding-ceremony",
+    alt: "Wedding ceremony with family and friends, photographed by Oriana Weddings",
+    asset: null,
+  },
   heroImageAlt: "Wedding ceremony with family and friends, photographed by Oriana Weddings",
   heroEyebrow: "About Oriana",
   heroTitle: "More than wedding photographers",
@@ -464,24 +561,58 @@ const defaultAbout: AboutPageContent = {
     "Our main office is in Calicut, Kerala. Our Gujarat office is in Law Garden, Ahmedabad. With strong wedding heritage in both states, we work across India and undertake destination and international shoots.",
 };
 
+type RawTeamMember = { name?: string; role?: string; image?: RawImage };
+
+type RawAbout = Partial<Omit<AboutPageContent, "heroImage" | "heroMeta" | "teamMembers">> & {
+  heroImage?: RawImage;
+  heroMeta?: { label?: string; value?: string }[];
+  teamMembers?: RawTeamMember[];
+};
+
 export function getAboutPage(): Promise<AboutPageContent> {
-  return fetchDoc<Partial<AboutPageContent> | null>(
-    `*[_type == "aboutPage" && _id == "aboutPage"][0]`,
+  return fetchDoc<RawAbout | null>(
+    `*[_type == "aboutPage" && _id == "aboutPage"][0]{
+      seoTitle, seoDescription, heroImageAlt, heroEyebrow, heroTitle, heroLead,
+      heroMeta, teamEyebrow, teamHeading, teamBody, rightEyebrow, rightTitle,
+      rightLead, rightBody, differenceEyebrow, differenceTitle, differenceLead,
+      differenceCards, marqueeItems, placesEyebrow, placesTitle, placesLead,
+      heroImage${IMG}, teamMembers[]{name, role, image${IMG}}
+    }`,
     null,
   ).then((doc) => {
     if (!doc) return defaultAbout;
     const members = Array.isArray(doc.teamMembers) ? doc.teamMembers : [];
+    const meta = Array.isArray(doc.heroMeta) ? doc.heroMeta : [];
     return {
       ...defaultAbout,
       ...doc,
-      heroImageKey: validKey(doc.heroImageKey, defaultAbout.heroImageKey),
+      heroImage: {
+        ...defaultAbout.heroImage,
+        asset: mapAsset(doc.heroImage),
+      },
+      heroMeta:
+        meta.length > 0
+          ? meta
+              .filter((m) => m?.label && m?.value)
+              .map((m) => ({ label: m.label as string, value: m.value as string }))
+          : [...defaultAbout.heroMeta],
       teamMembers: members
         .filter((m) => m?.name && m?.role)
-        .map((m) => ({
-          name: m.name as string,
-          role: m.role as string,
-          key: validKey(m.key, "portrait-bride-sunlight"),
-        })),
+        .map((m) => {
+          const asset = mapAsset(m.image);
+          return asset
+            ? {
+                name: m.name as string,
+                role: m.role as string,
+                photo: {
+                  key: null,
+                  alt: `${m.name}, ${m.role} at Oriana Weddings`,
+                  asset,
+                } as Photo,
+              }
+            : null;
+        })
+        .filter((m): m is TeamMemberContent => m !== null),
     };
   });
 }
@@ -489,7 +620,7 @@ export function getAboutPage(): Promise<AboutPageContent> {
 export type BrandsPageContent = {
   seoTitle: string;
   seoDescription: string;
-  heroImageKey: ImageKey;
+  heroImage: Photo;
   heroImageAlt: string;
   heroEyebrow: string;
   heroTitle: string;
@@ -510,7 +641,11 @@ const defaultBrands: BrandsPageContent = {
   seoTitle: "Our Brands | Oriana Weddings | Creative Brands",
   seoDescription:
     "Meet the creative brands of Oriana — Oriana Weddings, Baby Crew Studios, DEOR Fashion, ORION Events and Odonata Republic.",
-  heroImageKey: "detail-reception-monochrome",
+  heroImage: {
+    key: "detail-reception-monochrome",
+    alt: "Newlywed couple in a quiet moment at home, photographed by Oriana Weddings",
+    asset: null,
+  },
   heroImageAlt: "Newlywed couple in a quiet moment at home, photographed by Oriana Weddings",
   heroEyebrow: "Our brands",
   heroTitle: "Five brands, one house",
@@ -530,14 +665,22 @@ const defaultBrands: BrandsPageContent = {
 
 export function getBrandsPage(): Promise<BrandsPageContent> {
   return fetchDoc<Partial<BrandsPageContent> | null>(
-    `*[_type == "brandsPage" && _id == "brandsPage"][0]`,
+    `*[_type == "brandsPage" && _id == "brandsPage"][0]{
+      seoTitle, seoDescription, heroImageAlt, heroEyebrow, heroTitle, heroLead,
+      metaFirstLabel, metaSecondLabel, metaSecondValue, backLabel,
+      whyEyebrow, whyTitle, whyLead, approachEyebrow, approachTitle, approachCards,
+      heroImage${IMG}
+    }`,
     null,
   ).then((doc) => {
     if (!doc) return defaultBrands;
+    const { heroImage: rawHero, ...rest } = doc as Partial<BrandsPageContent> & {
+      heroImage?: RawImage;
+    };
     return {
       ...defaultBrands,
-      ...doc,
-      heroImageKey: validKey(doc.heroImageKey, defaultBrands.heroImageKey),
+      ...rest,
+      heroImage: { ...defaultBrands.heroImage, asset: mapAsset(rawHero) },
     };
   });
 }
@@ -662,6 +805,7 @@ export type PortfolioPageContent = {
   countTemplate: string;
   showMoreTemplate: string;
   filterLabels: { id: string; label: string }[];
+  library: Photo[];
 };
 
 const defaultPortfolio: PortfolioPageContent = {
@@ -675,21 +819,43 @@ const defaultPortfolio: PortfolioPageContent = {
   countTemplate: "Showing {shown} of {total} images",
   showMoreTemplate: "Show more ({remaining} remaining)",
   filterLabels: [],
+  library: [],
 };
 
+type RawLibraryItem = { photo?: RawImage; caption?: string };
+
 export function getPortfolioPage(): Promise<PortfolioPageContent> {
-  return fetchDoc<Partial<PortfolioPageContent> | null>(
-    `*[_type == "portfolioPage" && _id == "portfolioPage"][0]`,
+  return fetchDoc<
+    (Partial<Omit<PortfolioPageContent, "library">> & { library?: RawLibraryItem[] }) | null
+  >(
+    `*[_type == "portfolioPage" && _id == "portfolioPage"][0]{
+      seoTitle, seoDescription, eyebrow, sub, storyBackLabel, storiesBackLabel,
+      countTemplate, showMoreTemplate, filterLabels,
+      library[]{caption, photo${IMG}}
+    }`,
     null,
   ).then((doc) => {
     if (!doc) return defaultPortfolio;
     const labels = Array.isArray(doc.filterLabels) ? doc.filterLabels : [];
+    const library = Array.isArray(doc.library) ? doc.library : [];
     return {
       ...defaultPortfolio,
       ...doc,
       filterLabels: labels
         .filter((f) => f?.id && f?.label)
         .map((f) => ({ id: f.id as string, label: f.label as string })),
+      library: library
+        .map((item) => {
+          const asset = mapAsset(item?.photo);
+          return asset
+            ? ({
+                key: null,
+                alt: item?.caption || "Wedding photograph",
+                asset,
+              } as Photo)
+            : null;
+        })
+        .filter((p): p is Photo => p !== null),
     };
   });
 }
@@ -728,8 +894,8 @@ type RawWedding = {
   summary?: string;
   story?: string[];
   services?: string[];
-  coverKey?: string;
-  frameKeys?: string[];
+  cover?: RawImage;
+  frames?: RawImage[];
   seoTitle?: string;
   seoDescription?: string;
   order?: number;
@@ -747,6 +913,8 @@ function mapWedding(raw: RawWedding, fallback: Wedding): Wedding | null {
   const coverage = (COVERAGES as readonly string[]).includes(raw.coverage ?? "")
     ? (raw.coverage as Wedding["coverage"])
     : fallback.coverage;
+  const coverAsset = mapAsset(raw.cover);
+  const rawFrames = Array.isArray(raw.frames) ? raw.frames : [];
   return {
     slug,
     title: raw.title || fallback.title,
@@ -756,13 +924,31 @@ function mapWedding(raw: RawWedding, fallback: Wedding): Wedding | null {
     type,
     coverage,
     season: raw.season || fallback.season,
-    cover: validKey(raw.coverKey, fallback.cover),
+    cover: {
+      key: fallback.cover.key,
+      alt: (fallback.cover.key ? photoAlt(fallback.cover.key) : undefined) ?? fallback.title,
+      asset: coverAsset,
+    },
     summary: raw.summary || fallback.summary,
     story:
       Array.isArray(raw.story) && raw.story.length > 0
         ? raw.story.filter(Boolean)
         : [...fallback.story],
-    frames: validKeys(raw.frameKeys, fallback.frames),
+    frames:
+      rawFrames.length > 0
+        ? rawFrames
+            .map((frame) => {
+              const asset = mapAsset(frame);
+              return asset
+                ? ({
+                    key: null,
+                    alt: `${raw.couple || fallback.couple} wedding photography`,
+                    asset,
+                  } as Photo)
+                : null;
+            })
+            .filter((p): p is Photo => p !== null)
+        : [...fallback.frames],
     services:
       Array.isArray(raw.services) && raw.services.length > 0
         ? raw.services.filter(Boolean)
@@ -773,20 +959,25 @@ function mapWedding(raw: RawWedding, fallback: Wedding): Wedding | null {
 }
 
 export function getWeddings(): Promise<Wedding[]> {
-  return fetchDoc<RawWedding[] | null>(`*[_type == "wedding"] | order(order asc)`, null).then(
-    (docs) => {
-      if (!docs || docs.length === 0) return localWeddings;
-      const bySlug = new Map(localWeddings.map((w) => [w.slug, w]));
-      const mapped = docs
-        .map((raw, index) => {
-          const slug = slugOf(raw.slug);
-          const fallback = bySlug.get(slug) ?? localWeddings[index % localWeddings.length]!;
-          return mapWedding(raw, fallback);
-        })
-        .filter((w): w is Wedding => w !== null);
-      return mapped.length > 0 ? mapped : localWeddings;
-    },
-  );
+  return fetchDoc<RawWedding[] | null>(
+    `*[_type == "wedding"] | order(order asc){
+      "slug": slug.current, title, couple, venue, location, type, coverage,
+      season, summary, story, services, seoTitle, seoDescription,
+      cover${IMG}, frames[]${IMG}
+    }`,
+    null,
+  ).then((docs) => {
+    if (!docs || docs.length === 0) return localWeddings;
+    const bySlug = new Map(localWeddings.map((w) => [w.slug, w]));
+    const mapped = docs
+      .map((raw, index) => {
+        const slug = slugOf(raw.slug);
+        const fallback = bySlug.get(slug) ?? localWeddings[index % localWeddings.length]!;
+        return mapWedding(raw, fallback);
+      })
+      .filter((w): w is Wedding => w !== null);
+    return mapped.length > 0 ? mapped : localWeddings;
+  });
 }
 
 export async function getWedding(slug: string): Promise<Wedding | undefined> {
@@ -801,8 +992,8 @@ type RawBrand = {
   description?: string;
   audience?: string;
   offerings?: string[];
-  coverKey?: string;
-  galleryKeys?: string[];
+  cover?: RawImage;
+  gallery?: RawImage[];
   seoTitle?: string;
   seoDescription?: string;
   order?: number;
@@ -812,6 +1003,7 @@ function mapBrand(raw: RawBrand, fallback: GroupBrand): GroupBrand | null {
   const slug = typeof raw.slug === "string" ? raw.slug : (raw.slug?.current ?? "");
   const name = raw.name || fallback.name;
   if (!slug || !name) return null;
+  const rawGallery = Array.isArray(raw.gallery) ? raw.gallery : [];
   return {
     slug,
     name,
@@ -822,28 +1014,50 @@ function mapBrand(raw: RawBrand, fallback: GroupBrand): GroupBrand | null {
       Array.isArray(raw.offerings) && raw.offerings.length > 0
         ? raw.offerings.filter(Boolean)
         : [...fallback.offerings],
-    cover: validKey(raw.coverKey, fallback.cover),
-    images: validKeys(raw.galleryKeys, fallback.images),
+    cover: {
+      key: fallback.cover.key,
+      alt: (fallback.cover.key ? photoAlt(fallback.cover.key) : undefined) ?? fallback.tagline,
+      asset: mapAsset(raw.cover),
+    },
+    images:
+      rawGallery.length > 0
+        ? rawGallery
+            .map((frame) => {
+              const asset = mapAsset(frame);
+              return asset
+                ? ({
+                    key: null,
+                    alt: `${name} — ${raw.tagline || fallback.tagline}`,
+                    asset,
+                  } as Photo)
+                : null;
+            })
+            .filter((p): p is Photo => p !== null)
+        : [...fallback.images],
     ...(raw.seoTitle ? { seoTitle: raw.seoTitle } : {}),
     ...(raw.seoDescription ? { seoDescription: raw.seoDescription } : {}),
   };
 }
 
 export function getBrands(): Promise<readonly GroupBrand[]> {
-  return fetchDoc<RawBrand[] | null>(`*[_type == "brand"] | order(order asc)`, null).then(
-    (docs) => {
-      if (!docs || docs.length === 0) return localBrands;
-      const bySlug = new Map(localBrands.map((b) => [b.slug, b]));
-      const mapped = docs
-        .map((raw, index) => {
-          const slug = typeof raw.slug === "string" ? raw.slug : (raw.slug?.current ?? "");
-          const fallback = bySlug.get(slug) ?? localBrands[index % localBrands.length]!;
-          return mapBrand(raw, fallback);
-        })
-        .filter((b): b is GroupBrand => b !== null);
-      return mapped.length > 0 ? mapped : localBrands;
-    },
-  );
+  return fetchDoc<RawBrand[] | null>(
+    `*[_type == "brand"] | order(order asc){
+      "slug": slug.current, name, tagline, description, audience, offerings,
+      seoTitle, seoDescription, cover${IMG}, gallery[]${IMG}
+    }`,
+    null,
+  ).then((docs) => {
+    if (!docs || docs.length === 0) return localBrands;
+    const bySlug = new Map(localBrands.map((b) => [b.slug, b]));
+    const mapped = docs
+      .map((raw, index) => {
+        const slug = typeof raw.slug === "string" ? raw.slug : (raw.slug?.current ?? "");
+        const fallback = bySlug.get(slug) ?? localBrands[index % localBrands.length]!;
+        return mapBrand(raw, fallback);
+      })
+      .filter((b): b is GroupBrand => b !== null);
+    return mapped.length > 0 ? mapped : localBrands;
+  });
 }
 
 export async function getBrand(slug: string): Promise<GroupBrand | undefined> {
@@ -886,7 +1100,12 @@ function mapFilm(raw: RawFilm, fallback: Film): Film | null {
 }
 
 export function getFilms(): Promise<Film[]> {
-  return fetchDoc<RawFilm[] | null>(`*[_type == "film"] | order(order asc)`, null).then((docs) => {
+  return fetchDoc<RawFilm[] | null>(
+    `*[_type == "film"] | order(order asc){
+      "slug": slug.current, title, location, duration, description, youtubeId
+    }`,
+    null,
+  ).then((docs) => {
     if (!docs || docs.length === 0) return localFilms;
     const bySlug = new Map(localFilms.map((f) => [f.slug, f]));
     const mapped = docs

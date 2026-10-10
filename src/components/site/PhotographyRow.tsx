@@ -1,6 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ResponsiveImage } from "@/lib/images";
-import { photoAlt } from "@/lib/photos";
+import { PhotoImage } from "@/lib/images";
 import type { HomeCollection } from "@/lib/cms";
 import type { Photo } from "@/lib/photos";
 
@@ -17,6 +16,7 @@ const DEFAULT_COLLECTIONS: readonly {
     photo: {
       key: "portrait-bride-sunlight",
       alt: "Kerala bride in gold jewellery at a doorway, photographed by Oriana Weddings",
+      asset: null,
     },
   },
   {
@@ -25,6 +25,7 @@ const DEFAULT_COLLECTIONS: readonly {
     photo: {
       key: "ceremony-temple-ritual",
       alt: "Bride in red and gold jewellery, photographed by Oriana Weddings",
+      asset: null,
     },
   },
   {
@@ -33,6 +34,7 @@ const DEFAULT_COLLECTIONS: readonly {
     photo: {
       key: "hero-traditional-intimate",
       alt: "Bride and groom together in wedding attire, photographed by Oriana Weddings",
+      asset: null,
     },
   },
   {
@@ -41,6 +43,7 @@ const DEFAULT_COLLECTIONS: readonly {
     photo: {
       key: "haldi-bride-with-friends",
       alt: "Bride and groom in vibrant wedding attire, photographed by Oriana Weddings",
+      asset: null,
     },
   },
 ];
@@ -52,7 +55,7 @@ export function PhotographyRow({ items }: { items?: HomeCollection[] }) {
       ? items.map((item) => ({
           id: item.id as PhotoFilter,
           title: item.title,
-          photo: { key: item.key, alt: photoAlt(item.key) ?? item.title } as Photo,
+          photo: item.photo,
         }))
       : DEFAULT_COLLECTIONS;
   return (
@@ -73,9 +76,8 @@ export function PhotographyRow({ items }: { items?: HomeCollection[] }) {
             className="photography-collection"
             aria-label={`View ${item.title} wedding photography`}
           >
-            <ResponsiveImage
-              image={item.photo.key}
-              alt={item.photo.alt}
+            <PhotoImage
+              photo={item.photo}
               ratio="2 / 3"
               sizes="(min-width: 900px) 25vw, 50vw"
               className="photography-collection-image"

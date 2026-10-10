@@ -6,37 +6,34 @@
  * weddings, films). The Studio at `/studio` groups them the same way, so
  * editing the site reads like reading the site.
  *
- * Image fields never upload files — they pick a key from the 30-frame local
- * archive (see `imageKeys.ts`), keeping every photograph inside the
- * pre-generated responsive ladder. Third-party artwork (camera/software marks,
- * press seals) stays in the repo: those are other companies' trademarks, not
- * content, so only their names/links are editable.
+ * Image fields are real uploads (full CRUD: upload, replace, remove,
+ * reorder, hotspot-crop) served from Sanity's CDN. Third-party artwork
+ * (camera/software marks, press seals) stays in the repo: those are other
+ * companies' trademarks, not content, so only their names/links are editable.
  */
-import { IMAGE_KEYS } from "./imageKeys";
-import { ImageKeyInput, ImageKeysInput } from "./ImageKeyInput";
-
 type Rule = { required: () => unknown };
 const required = (r: Rule) => r.required();
 
-const imageKeyField = (title: string, description?: string) => ({
+/**
+ * Real uploadable photograph fields (full CRUD in the Studio: upload new,
+ * replace, remove, reorder, hotspot-crop). Anything these address renders
+ * from Sanity's CDN; the archive keys in code remain as offline fallback.
+ */
+const photoField = (title: string, description?: string, optional = false) => ({
   title,
   ...(description ? { description } : {}),
-  name: "key",
-  type: "string",
-  options: { list: [...IMAGE_KEYS] },
-  // Live thumbnail under the dropdown (see ImageKeyInput).
-  components: { input: ImageKeyInput },
-  validation: required,
+  name: "photo",
+  type: "image",
+  options: { hotspot: true },
+  ...(optional ? {} : { validation: required }),
 });
 
-const imageKeysField = (title: string, description?: string) => ({
+const photoListField = (title: string, description?: string) => ({
   title,
   ...(description ? { description } : {}),
-  name: "keys",
+  name: "photos",
   type: "array",
-  of: [{ type: "string", options: { list: [...IMAGE_KEYS] } }],
-  // Thumbnail strip under the list editor (see ImageKeysInput).
-  components: { input: ImageKeysInput },
+  of: [{ type: "image", options: { hotspot: true } }],
   validation: required,
 });
 
@@ -139,6 +136,10 @@ export const schemaTypes = [
           description: "Path or URL of the ambient film. Leave blank to keep the built-in one.",
           type: "string",
         },
+        {
+          ...photoField("Still poster (blank = built-in)", "Shown until the film loads.", true),
+          name: "poster",
+        },
       ],
     },
     {
@@ -149,13 +150,7 @@ export const schemaTypes = [
         { name: "kicker", title: "Kicker", type: "string" },
         { name: "heading", title: "Heading", type: "string" },
         { name: "button", title: "Button label", type: "string" },
-        {
-          name: "imageKey",
-          title: "Backdrop photograph",
-          type: "string",
-          options: { list: [...IMAGE_KEYS] },
-          components: { input: ImageKeyInput },
-        },
+        { ...photoField("Backdrop photograph", undefined, true), name: "image" },
       ],
     },
     {
@@ -214,7 +209,7 @@ export const schemaTypes = [
 
   singleton("homePage", "🏠 Home page", [
     ...seoFields,
-    { ...imageKeyField("Hero photograph", "Full-screen opener."), name: "heroImageKey" },
+    { ...photoField("Hero photograph", "Full-screen opener."), name: "heroImage" },
     { name: "heroEyebrow", title: "Hero eyebrow", type: "string" },
     { name: "heroTitle", title: "Hero title", type: "string" },
     { name: "heroSub", title: "Hero sub-line", type: "string" },
@@ -239,7 +234,7 @@ export const schemaTypes = [
               validation: required,
             },
             { name: "title", title: "Card title", type: "string", validation: required },
-            { ...imageKeyField("Card photograph"), name: "imageKey" },
+            { ...photoField("Card photograph"), name: "image" },
           ],
         },
       ],
@@ -252,18 +247,14 @@ export const schemaTypes = [
       of: [{ type: "string" }],
     },
     {
-      ...imageKeysField("Mosaic photographs (14)", "The image mosaic tiles."),
-      name: "mosaicKeys",
+      ...photoListField("Mosaic photographs (14)", "The image mosaic tiles."),
+      name: "mosaic",
     },
     { name: "filmsEyebrow", title: "Films eyebrow", type: "string" },
     { name: "filmsTitle", title: "Films title", type: "string" },
     {
-      ...imageKeysField("Film cover row (6 small frames)"),
-      name: "filmCoverKeys",
-    },
-    {
-      ...imageKeysField("Stories backdrop (4 cross-fading frames)"),
-      name: "backdropKeys",
+      ...photoListField("Film cover row (6 small frames)"),
+      name: "filmCovers",
     },
     { name: "awardsEyebrow", title: "Awards eyebrow", type: "string" },
     { name: "awardsTitle", title: "Awards title", type: "string" },
@@ -289,7 +280,7 @@ export const schemaTypes = [
 
   singleton("aboutPage", "📖 About page", [
     ...seoFields,
-    { ...imageKeyField("Hero photograph"), name: "heroImageKey" },
+    { ...photoField("Hero photograph"), name: "heroImage" },
     { name: "heroImageAlt", title: "Hero photo description", type: "string" },
     { name: "heroEyebrow", title: "Hero eyebrow", type: "string" },
     { name: "heroTitle", title: "Hero title", type: "string" },
@@ -321,7 +312,7 @@ export const schemaTypes = [
           fields: [
             { name: "name", title: "Name", type: "string", validation: required },
             { name: "role", title: "Role", type: "string", validation: required },
-            { ...imageKeyField("Portrait"), name: "imageKey" },
+            { ...photoField("Portrait"), name: "image" },
           ],
         },
       ],
@@ -347,7 +338,7 @@ export const schemaTypes = [
 
   singleton("brandsPage", "🏷️ Brands page", [
     ...seoFields,
-    { ...imageKeyField("Hero photograph"), name: "heroImageKey" },
+    { ...photoField("Hero photograph"), name: "heroImage" },
     { name: "heroImageAlt", title: "Hero photo description", type: "string" },
     { name: "heroEyebrow", title: "Hero eyebrow", type: "string" },
     { name: "heroTitle", title: "Hero title", type: "string" },
@@ -428,6 +419,31 @@ export const schemaTypes = [
     ...seoFields,
     { name: "eyebrow", title: "Eyebrow", type: "string" },
     { name: "sub", title: "Sub-line under the title", type: "string" },
+    {
+      name: "library",
+      title: "The portfolio wall (30 frames)",
+      description:
+        "What the “All work” wall shows, in order — add, remove, reorder, replace. Filtered views (Candid, Traditional, …) stay curated.",
+      type: "array",
+      of: [
+        {
+          type: "object",
+          fields: [
+            {
+              name: "photo",
+              title: "Photograph",
+              type: "image",
+              options: { hotspot: true },
+              validation: required,
+            },
+            { name: "caption", title: "Caption under the frame", type: "string" },
+          ],
+          preview: {
+            select: { title: "caption", media: "photo" },
+          },
+        },
+      ],
+    },
     { name: "storyBackLabel", title: "Story page “back” link", type: "string" },
     { name: "storiesBackLabel", title: "Stories footer “back” link", type: "string" },
     {
@@ -498,12 +514,12 @@ export const schemaTypes = [
       { name: "audience", title: "Who it is for", type: "text" },
       { name: "offerings", title: "What it does (list)", type: "array", of: [{ type: "string" }] },
       {
-        ...imageKeyField("Card + hero photograph", "One of the 30 archive frames."),
-        name: "coverKey",
+        ...photoField("Card + hero photograph", "One of the 30 archive frames."),
+        name: "cover",
       },
       {
-        ...imageKeysField("Detail-page gallery", "Frames shown on the brand's own page."),
-        name: "galleryKeys",
+        ...photoListField("Detail-page gallery", "Frames shown on the brand's own page."),
+        name: "gallery",
       },
       { name: "seoTitle", title: "Search title override", type: "string" },
       { name: "seoDescription", title: "Search description override", type: "text" },
@@ -557,12 +573,12 @@ export const schemaTypes = [
       { name: "story", title: "Story paragraphs", type: "array", of: [{ type: "text" }] },
       { name: "services", title: "Services delivered", type: "array", of: [{ type: "string" }] },
       {
-        ...imageKeyField("Cover photograph", "Card + share image for this story."),
-        name: "coverKey",
+        ...photoField("Cover photograph", "Card + share image for this story."),
+        name: "cover",
       },
       {
-        ...imageKeysField("Story frames", "Photographs on the story page."),
-        name: "frameKeys",
+        ...photoListField("Story frames", "Photographs on the story page."),
+        name: "frames",
       },
       { name: "seoTitle", title: "Search title override", type: "string" },
       { name: "seoDescription", title: "Search description override", type: "text" },

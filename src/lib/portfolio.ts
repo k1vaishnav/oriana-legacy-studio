@@ -1,4 +1,5 @@
 import type { ImageKey } from "./image-manifest";
+import { photoAlt, type Photo } from "./photos";
 
 /**
  * Individual wedding stories.
@@ -20,17 +21,34 @@ export type Wedding = {
   type: "Candid" | "Traditional" | "Church" | "Pre-wedding" | "Destination" | "Intimate";
   coverage: "Photography" | "Videography" | "Photography + Videography";
   season: string;
-  cover: ImageKey;
+  /** Card + share photograph: archive fallback with a CMS asset when set. */
+  cover: Photo;
   summary: string;
   story: string[];
-  frames: ImageKey[];
+  /** Story frames, same pairing as the cover. */
+  frames: Photo[];
   services: string[];
   /** Optional CMS search overrides; fall back to the built-in title/summary. */
   seoTitle?: string;
   seoDescription?: string;
 };
 
-export const weddings: Wedding[] = [
+/**
+ * Built-in catalogue, written as archive keys and paired with their registry
+ * alt text once, here — so the stories read identically with or without CMS.
+ */
+type RawWeddingStatic = Omit<Wedding, "cover" | "frames"> & {
+  cover: ImageKey;
+  frames: ImageKey[];
+};
+
+const pic = (key: ImageKey, fallbackAlt: string): Photo => ({
+  key,
+  alt: photoAlt(key) ?? fallbackAlt,
+  asset: null,
+});
+
+const rawWeddings: RawWeddingStatic[] = [
   {
     slug: "calicut-church-wedding",
     title: "A Calicut Church Wedding",
@@ -192,6 +210,12 @@ export const weddings: Wedding[] = [
     services: ["Drone shoots", "Cinematic wedding film", "Candid photography"],
   },
 ];
+
+export const weddings: Wedding[] = rawWeddings.map((w) => ({
+  ...w,
+  cover: pic(w.cover, w.title),
+  frames: w.frames.map((key) => pic(key, `${w.couple} wedding photography`)),
+}));
 
 /**
  * "Church wedding photography", "Pre-wedding photography" — the phrase the

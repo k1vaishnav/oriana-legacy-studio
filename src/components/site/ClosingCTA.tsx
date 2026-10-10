@@ -1,4 +1,4 @@
-import { getImage, srcSet, type ImageKey } from "@/lib/image-manifest";
+import { PhotoImage } from "@/lib/images";
 import { useSiteSettings, whatsappHrefFor } from "@/lib/cms";
 
 /**
@@ -17,41 +17,13 @@ import { useSiteSettings, whatsappHrefFor } from "@/lib/cms";
  * and desktops fetch a large one. It is decorative (`aria-hidden`, empty alt):
  * the heading carries the message. The photograph itself is CMS-selectable.
  */
-export function ClosingCTA({ image }: { image?: ImageKey }) {
+export function ClosingCTA() {
   const settings = useSiteSettings();
   const { closingCta } = settings;
-  const key = image ?? closingCta.imageKey;
-  const entry = getImage(key);
 
   return (
     <section className="closing-cta closing-cta-banner" aria-labelledby="closing-cta-heading">
-      <picture
-        className="closing-cta-photo"
-        aria-hidden="true"
-        style={{
-          backgroundColor: entry.color,
-          backgroundImage: `url("${entry.lqip}")`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
-        <source type="image/avif" srcSet={srcSet(key, "avif")} sizes="100vw" />
-        <source type="image/webp" srcSet={srcSet(key, "webp")} sizes="100vw" />
-        <img
-          src={entry.src}
-          srcSet={srcSet(key, "jpeg")}
-          sizes="100vw"
-          alt=""
-          width={entry.width}
-          height={entry.height}
-          loading="lazy"
-          decoding="async"
-          ref={(node) => {
-            if (node?.complete) node.classList.add("is-loaded");
-          }}
-          onLoad={(event) => event.currentTarget.classList.add("is-loaded")}
-        />
-      </picture>
+      <PhotoImage photo={closingCta.image} alt="" sizes="100vw" className="closing-cta-photo" />
       <div className="closing-cta-inner shell">
         <div className="closing-cta-copy">
           <p className="closing-cta-kicker">{closingCta.kicker}</p>

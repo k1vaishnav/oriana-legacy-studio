@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
 import { Lightbox } from "@/components/site/Lightbox";
-import { ResponsiveImage } from "@/lib/images";
+import { PhotoImage } from "@/lib/images";
 import { FILTERS, GROUPS, PAGE_SIZE, parseFilter, type FilterId } from "@/lib/photoFilters";
 import { fillCount, fillRemaining, getPortfolioPage } from "@/lib/cms";
 import type { Photo } from "@/lib/photos";
@@ -39,7 +39,10 @@ function PortfolioPage() {
     setVisibleCount(PAGE_SIZE);
   }, [search.filter]);
 
-  const visiblePhotos: readonly Photo[] = GROUPS[photoFilter];
+  // "All work" shows the CMS library when it has frames (full CRUD: add,
+  // remove, reorder, replace); curated filters keep their archive slices.
+  const allPhotos: readonly Photo[] = page.library.length > 0 ? page.library : GROUPS.all;
+  const visiblePhotos: readonly Photo[] = photoFilter === "all" ? allPhotos : GROUPS[photoFilter];
   const shownPhotos = visiblePhotos.slice(0, visibleCount);
 
   // CMS renames a filter button by id; unknown ids and blanks keep the built-in.
@@ -89,16 +92,15 @@ function PortfolioPage() {
 
           <div className="portfolio-showcase-grid">
             {shownPhotos.map((photo, index) => (
-              <article className="portfolio-work-card" key={`${photo.key}-${index}`}>
+              <article className="portfolio-work-card" key={`${photo.key ?? "cms"}-${index}`}>
                 <button
                   type="button"
                   className="portfolio-work-button"
                   onClick={() => setActivePhoto(index)}
                   aria-label={`View portfolio image: ${photo.alt}`}
                 >
-                  <ResponsiveImage
-                    image={photo.key}
-                    alt={photo.alt}
+                  <PhotoImage
+                    photo={photo}
                     ratio="1.18 / 1"
                     sizes="(min-width: 1024px) 25vw, 50vw"
                     className="portfolio-work-picture"

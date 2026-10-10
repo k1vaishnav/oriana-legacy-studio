@@ -7,7 +7,7 @@ import { Marquee } from "@/components/site/Marquee";
 import { Arrow, SectionHead, SplitHead } from "@/components/site/ui";
 import { PageHero } from "@/components/site/PageHero";
 import { BrandMark } from "@/lib/BrandMark";
-import { asImageKey, getBrands, getBrandsPage } from "@/lib/cms";
+import { getBrands, getBrandsPage } from "@/lib/cms";
 import type { GroupBrand } from "@/lib/site";
 
 export const Route = createFileRoute("/brands")({
@@ -42,8 +42,7 @@ function BrandsPage() {
         eyebrow={page.heroEyebrow}
         title={page.heroTitle}
         lead={page.heroLead}
-        image={asImageKey(page.heroImageKey, "detail-reception-monochrome")}
-        alt={page.heroImageAlt}
+        photo={{ ...page.heroImage, alt: page.heroImageAlt }}
         meta={[
           { label: page.metaFirstLabel, value: `${brands.length}` },
           { label: page.metaSecondLabel, value: page.metaSecondValue },

@@ -1,6 +1,8 @@
 import type { CSSProperties } from "react";
 
 import { getImage, srcSet, type ImageKey } from "./image-manifest";
+import { assetWidths, cmsImageUrl, type CmsAsset } from "./sanity-image";
+import type { Photo } from "./photos";
 
 type CommonProps = {
   image: ImageKey;
@@ -11,7 +13,9 @@ type CommonProps = {
   ratio?: string | undefined;
   sizes?: string;
   className?: string;
-  style?: CSSProperties;
+  /** Classes for the `<img>` itself (layout shells that style the img directly). */
+  imgClassName?: string;
+  style?: CSSProperties | undefined;
   /** Opt-in slow zoom on load / hover. Used to give a wall of images some life. */
   zoom?: boolean;
 };
@@ -37,6 +41,7 @@ export function ResponsiveImage({
   ratio,
   sizes = "100vw",
   className = "",
+  imgClassName = "",
   style,
   zoom = false,
 }: ResponsiveImageProps) {
@@ -67,6 +72,7 @@ export function ResponsiveImage({
           height={entry.height}
           decoding="async"
           loading="lazy"
+          className={imgClassName}
           ref={(node) => {
             // A warm cache can finish decoding before React attaches onLoad.
             if (node?.complete) node.classList.add("is-loaded");
@@ -120,6 +126,99 @@ export function PriorityImage(props: ResponsiveImageProps) {
           fetchPriority="high"
           decoding="sync"
           loading="eager"
+          className={props.imgClassName ?? ""}
+          ref={(node) => {
+            if (node?.complete) node.classList.add("is-loaded");
+          }}
+          onLoad={(event) => event.currentTarget.classList.add("is-loaded")}
+        />
+      </picture>
+    </div>
+  );
+}
+
+export type PhotoImageProps = {
+  photo: Photo;
+  alt?: string | undefined;
+  ratio?: string | undefined;
+  sizes?: string;
+  /** Classes for the shell box. Use `"contents"` to let a parent lay out the img directly. */
+  className?: string;
+  /** Classes for the `<img>` itself. */
+  imgClassName?: string;
+  style?: CSSProperties | undefined;
+  zoom?: boolean;
+  /** Above-the-fold: eager, synchronous decode, high fetch priority. */
+  eager?: boolean;
+};
+
+/**
+ * A photograph that may live in Sanity, in the local archive, or both.
+ *
+ * CMS asset present → Sanity CDN across the same width ladder, `auto=format`
+ * negotiating AVIF/WebP per browser, the asset's blur-up placeholder behind
+ * it. Otherwise (or when the CMS is unconfigured) → the local responsive
+ * ladder. Same shell, same fade-in, same reserved space either way.
+ */
+export function PhotoImage({
+  photo,
+  alt,
+  ratio,
+  sizes = "100vw",
+  className = "",
+  imgClassName = "",
+  style,
+  zoom = false,
+  eager = false,
+}: PhotoImageProps) {
+  const text = alt ?? photo.alt;
+  const asset: CmsAsset | null = photo.asset ?? null;
+
+  if (!asset) {
+    if (!photo.key) return null;
+    const shared = {
+      image: photo.key,
+      alt: text,
+      ratio,
+      sizes,
+      className,
+      imgClassName,
+      style,
+      zoom,
+    };
+    return eager ? <PriorityImage {...shared} /> : <ResponsiveImage {...shared} />;
+  }
+
+  const widths = assetWidths(asset);
+  const src = (w: number) => cmsImageUrl(asset, w) ?? "";
+  const lqip = asset.lqip ? `url("data:image/jpeg;base64,${asset.lqip}")` : undefined;
+
+  return (
+    <div
+      className={`img-shell ${className}`.trim()}
+      {...(zoom ? { "data-zoom": "" } : {})}
+      style={{
+        aspectRatio: ratio ?? `${asset.width} / ${asset.height}`,
+        backgroundColor: "#e8e2d8",
+        ...(lqip
+          ? { backgroundImage: lqip, backgroundSize: "cover", backgroundPosition: "center" }
+          : {}),
+        ...style,
+      }}
+    >
+      <picture>
+        <img
+          src={src(widths[widths.length - 1]!)}
+          srcSet={widths.map((w) => `${src(w)} ${w}w`).join(", ")}
+          sizes={sizes}
+          alt={text}
+          width={asset.width}
+          height={asset.height}
+          loading={eager ? "eager" : "lazy"}
+          {...(eager
+            ? { fetchPriority: "high" as const, decoding: "sync" as const }
+            : { decoding: "async" as const })}
+          className={imgClassName}
           ref={(node) => {
             if (node?.complete) node.classList.add("is-loaded");
           }}

@@ -3,10 +3,8 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 
 import { Lightbox } from "@/components/site/Lightbox";
 import { Reveal } from "@/components/site/Reveal";
-import { ResponsiveImage } from "@/lib/images";
-import { getImage } from "@/lib/image-manifest";
-import { getPortfolioPage, getWedding } from "@/lib/cms";
-import { photoAlt, type Photo } from "@/lib/photos";
+import { PhotoImage } from "@/lib/images";
+import { getPortfolioPage, getWedding, photoSrc } from "@/lib/cms";
 import { business } from "@/lib/site";
 import { seo } from "@/lib/seo";
 
@@ -27,7 +25,7 @@ export const Route = createFileRoute("/portfolio/real-weddings/$slug")({
       title: wedding.seoTitle ?? `${wedding.couple} — Wedding Story | ${business.name}`,
       description: wedding.seoDescription ?? wedding.summary,
       path: `/portfolio/real-weddings/${wedding.slug}`,
-      image: getImage(wedding.cover).src,
+      image: photoSrc(wedding.cover),
     });
   },
   component: StoryPage,
@@ -36,10 +34,7 @@ export const Route = createFileRoute("/portfolio/real-weddings/$slug")({
 function StoryPage() {
   const { wedding, storyBackLabel, storiesBackLabel } = Route.useLoaderData();
   const [lightbox, setLightbox] = useState<number | null>(null);
-  const photos: Photo[] = wedding.frames.map((key) => ({
-    key,
-    alt: photoAlt(key) ?? `${wedding.couple} wedding photography`,
-  }));
+  const photos = wedding.frames;
 
   return (
     <main className="story-page">
@@ -55,19 +50,17 @@ function StoryPage() {
       </header>
       <section className="story-gallery" aria-label={`${wedding.couple} wedding photographs`}>
         {photos.map((photo, index) => (
-          <Reveal key={`${photo.key}-${index}`} className={index === 0 ? "story-gallery-lead" : ""}>
+          <Reveal
+            key={`${photo.key ?? "cms"}-${index}`}
+            className={index === 0 ? "story-gallery-lead" : ""}
+          >
             <button
               type="button"
               onClick={() => setLightbox(index)}
               className="block w-full cursor-zoom-in"
               aria-label={`View ${photo.alt} full-screen`}
             >
-              <ResponsiveImage
-                image={photo.key}
-                alt={photo.alt}
-                sizes="(min-width: 900px) 48vw, 100vw"
-                zoom
-              />
+              <PhotoImage photo={photo} sizes="(min-width: 900px) 48vw, 100vw" zoom />
             </button>
           </Reveal>
         ))}

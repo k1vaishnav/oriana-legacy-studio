@@ -1,8 +1,8 @@
-import { ResponsiveImage } from "@/lib/images";
+import { PhotoImage } from "@/lib/images";
 import { Reveal } from "@/components/site/Reveal";
 import { business } from "@/lib/site";
 import type { TeamMemberContent } from "@/lib/cms";
-import type { ImageKey } from "@/lib/image-manifest";
+import type { Photo } from "@/lib/photos";
 
 /**
  * The people behind the studio.
@@ -23,7 +23,7 @@ import type { ImageKey } from "@/lib/image-manifest";
 type Member = {
   name: string;
   role: string;
-  image: ImageKey;
+  photo: Photo;
   /** Which side the caption sits on at desktop. */
   align: "left" | "right";
   /** How far the portrait is dropped down the column, for the stagger. */
@@ -34,28 +34,44 @@ const DEFAULT_TEAM: Member[] = [
   {
     name: business.director,
     role: "Founder & Director",
-    image: "portrait-bride-sunlight",
+    photo: {
+      key: "portrait-bride-sunlight",
+      alt: "Team member at Oriana Weddings",
+      asset: null,
+    },
     align: "left",
     offset: "lg:mt-0",
   },
   {
     name: "Fathima Abdul Samad",
     role: "Photography",
-    image: "detail-bride-henna-face",
+    photo: {
+      key: "detail-bride-henna-face",
+      alt: "Team member at Oriana Weddings",
+      asset: null,
+    },
     align: "right",
     offset: "lg:mt-10",
   },
   {
     name: "Ravi Malhotra",
     role: "Film & Cinematography",
-    image: "kerala-cinematic-wedding-film-still",
+    photo: {
+      key: "kerala-cinematic-wedding-film-still",
+      alt: "Team member at Oriana Weddings",
+      asset: null,
+    },
     align: "left",
     offset: "lg:mt-6",
   },
   {
     name: "Vinesh Pandian",
     role: "Post-Production",
-    image: "detail-reception-monochrome",
+    photo: {
+      key: "detail-reception-monochrome",
+      alt: "Team member at Oriana Weddings",
+      asset: null,
+    },
     align: "right",
     offset: "lg:mt-14",
   },
@@ -81,7 +97,7 @@ export function TeamEditorial({
       ? members.slice(0, 4).map((m, i) => ({
           name: m.name,
           role: m.role,
-          image: m.key,
+          photo: m.photo,
           align: aligns[i % aligns.length]!,
           offset: offsets[i % offsets.length]!,
         }))
@@ -102,8 +118,8 @@ export function TeamEditorial({
             <Reveal key={member.name} delay={(i % 4) * 0.06} className={member.offset}>
               <li>
                 <figure>
-                  <ResponsiveImage
-                    image={member.image}
+                  <PhotoImage
+                    photo={member.photo}
                     alt={`${member.name}, ${member.role} at Oriana Weddings`}
                     ratio="3 / 4"
                     sizes="(min-width: 1024px) 22rem, (min-width: 640px) 45vw, 90vw"

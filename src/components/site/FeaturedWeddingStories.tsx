@@ -1,8 +1,7 @@
 import { Link } from "@tanstack/react-router";
 
 import { weddings as localWeddings, type Wedding } from "@/lib/portfolio";
-import { photoAlt } from "@/lib/photos";
-import { ResponsiveImage } from "@/lib/images";
+import { PhotoImage } from "@/lib/images";
 
 /** Four featured stories — CMS weddings when configured, else the built-in four. */
 export function FeaturedWeddingStories({ weddings = localWeddings }: { weddings?: Wedding[] }) {
@@ -18,9 +17,8 @@ export function FeaturedWeddingStories({ weddings = localWeddings }: { weddings?
               className="featured-story-link"
               aria-label={`Read ${wedding.couple}'s wedding story`}
             >
-              <ResponsiveImage
-                image={wedding.cover}
-                alt={photoAlt(wedding.cover) ?? wedding.title}
+              <PhotoImage
+                photo={wedding.cover}
                 ratio="3 / 4"
                 sizes="(min-width: 1200px) 22vw, (min-width: 700px) 46vw, 88vw"
                 className="featured-story-image"

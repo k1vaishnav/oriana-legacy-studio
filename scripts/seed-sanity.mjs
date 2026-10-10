@@ -3,14 +3,22 @@
  *
  * Run AFTER creating the project + dataset and generating an Editor token:
  *
- *   SANITY_API_TOKEN=<editor-token> node scripts/seed-sanity.mjs
+ *   SANITY_API_TOKEN=<editor-token> npm run cms:seed
  *
  * Project/dataset resolve from SANITY_PROJECT_ID / SANITY_DATASET (or the
  * VITE_SANITY_* equivalents in `.env`). Everything uses `createOrReplace`,
  * so re-running is safe — it rewrites, never duplicates. Afterwards the
  * Studio at `/studio` shows the real copy, editable page by page.
+ *
+ * Images: the 30 archive frames are uploaded once as Sanity assets (skipped
+ * when an asset with the same filename already exists) and every image slot
+ * in the documents below is wired to its asset — so each photo arrives in the
+ * Studio pre-filled AND fully CRUD-able (replace, remove, reorder, upload
+ * new). Docs below keep readable archive keys; the transform before upload
+ * converts them to asset references.
  */
 import { createClient } from "@sanity/client";
+import { createReadStream, readFileSync } from "node:fs";
 
 const projectId = process.env.SANITY_PROJECT_ID ?? process.env.VITE_SANITY_PROJECT_ID;
 const dataset = process.env.SANITY_DATASET ?? process.env.VITE_SANITY_DATASET ?? "production";
@@ -20,6 +28,165 @@ if (!projectId) throw new Error("Set SANITY_PROJECT_ID (or VITE_SANITY_PROJECT_I
 if (!token) throw new Error("Set SANITY_API_TOKEN (Editor role, from sanity.io/manage).");
 
 const client = createClient({ projectId, dataset, apiVersion: "2025-01-01", token });
+
+/* ------------------------------------------------------------------ */
+/* Photo assets: upload once, reference everywhere                      */
+/* ------------------------------------------------------------------ */
+
+const manifest = JSON.parse(readFileSync("src/lib/images.json", "utf8"));
+
+// Largest generated derivative per archive key — the best upload source.
+const largestFile = (key) => {
+  const widths = manifest[key]?.widths ?? [];
+  const max = widths[widths.length - 1];
+  return `public/img/${key}-${max}.jpg`;
+};
+
+const imageRef = (ref) => ({ _type: "image", asset: { _type: "reference", _ref: ref } });
+
+// Upload the 30 frames unless an asset with the same filename already exists
+// (idempotent: re-running never duplicates assets).
+const existingAssets = await client.fetch(
+  `*[_type == "sanity.imageAsset"]{ _id, originalFilename }`,
+);
+const assetIdByFile = new Map((existingAssets ?? []).map((a) => [a.originalFilename, a._id]));
+const refByKey = {};
+for (const key of Object.keys(manifest).sort()) {
+  const filename = `${key}.jpg`;
+  let id = assetIdByFile.get(filename);
+  if (!id) {
+    const file = largestFile(key);
+    console.log(`upload ${key} ← ${file}`);
+    const uploaded = await client.assets.upload("image", createReadStream(file), { filename });
+    id = uploaded._id;
+  }
+  refByKey[key] = id;
+}
+console.log(`assets ready (${Object.keys(refByKey).length} frames)`);
+
+const img = (key) => imageRef(refByKey[key]);
+const imgs = (keys) => keys.map(img);
+
+// The portfolio wall in wall order, with the registry captions.
+const LIBRARY = [
+  ["home-hero-user", "Newlywed couple sharing a quiet moment, photographed by Oriana Weddings"],
+  [
+    "hero-traditional-intimate",
+    "Bride and groom together in wedding attire, photographed by Oriana Weddings",
+  ],
+  [
+    "calicut-cinematic-wedding-hero",
+    "Bride in a red veil at night, photographed by Oriana Weddings",
+  ],
+  [
+    "kerala-cinematic-wedding-film-still",
+    "Bride celebrating with sparklers among loved ones, photographed by Oriana Weddings",
+  ],
+  [
+    "calicut-church-wedding-ceremony",
+    "Wedding ceremony with family and friends, photographed by Oriana Weddings",
+  ],
+  [
+    "church-golden-altar",
+    "Bride in a gold veil and temple jewellery, photographed by Oriana Weddings",
+  ],
+  [
+    "portrait-bride-sunlight",
+    "Kerala bride in gold jewellery at a doorway, photographed by Oriana Weddings",
+  ],
+  ["closing-cta-user", "Newlywed couple at home, photographed by Oriana Weddings"],
+  ["ceremony-temple-ritual", "Bride in red and gold jewellery, photographed by Oriana Weddings"],
+  [
+    "ceremony-south-asian-prewedding",
+    "Newlywed couple sharing a quiet moment outdoors, photographed by Oriana Weddings",
+  ],
+  ["church-altar-candid", "Veiled bride with the groom, photographed by Oriana Weddings"],
+  [
+    "church-outside-joy",
+    "Newlywed couple laughing together outdoors, photographed by Oriana Weddings",
+  ],
+  [
+    "haldi-bride-with-friends",
+    "Bride and groom in vibrant wedding attire, photographed by Oriana Weddings",
+  ],
+  ["detail-bride-henna-face", "Bride during the haldi ceremony, photographed by Oriana Weddings"],
+  ["detail-bouquet", "Wedding bouquet detail, photographed by Oriana Weddings"],
+  ["detail-bride-groom-feet", "Couple dancing at their wedding, photographed by Oriana Weddings"],
+  ["detail-reception-cake", "Wedding reception details, photographed by Oriana Weddings"],
+  [
+    "detail-reception-monochrome",
+    "Newlywed couple in a quiet moment at home, photographed by Oriana Weddings",
+  ],
+  ["instagram-01", "Wedding moment, photographed by Oriana Weddings"],
+  ["instagram-02", "Wedding moment, photographed by Oriana Weddings"],
+  ["instagram-07", "Wedding moment, photographed by Oriana Weddings"],
+  ["instagram-08", "Wedding moment, photographed by Oriana Weddings"],
+  ["instagram-03", "Wedding moment, photographed by Oriana Weddings"],
+  ["instagram-04", "Wedding moment, photographed by Oriana Weddings"],
+  ["instagram-05", "Wedding moment, photographed by Oriana Weddings"],
+  ["instagram-06", "Wedding moment, photographed by Oriana Weddings"],
+  ["instagram-09", "Wedding moment, photographed by Oriana Weddings"],
+  ["instagram-10", "Wedding moment, photographed by Oriana Weddings"],
+  ["instagram-11", "Wedding moment, photographed by Oriana Weddings"],
+  ["instagram-12", "Wedding moment, photographed by Oriana Weddings"],
+];
+
+/**
+ * Docs below keep readable archive keys (`coverKey`, `frameKeys`, …); this
+ * converts them to image-asset references before upload, so the source stays
+ * reviewable while Sanity gets real CRUD-able photographs. Unknown keys fall
+ * back to no image rather than a broken reference.
+ */
+const toImageFields = (doc) => {
+  const out = { ...doc };
+  const single = (from, to) => {
+    if (typeof out[from] === "string") {
+      if (refByKey[out[from]]) out[to] = img(out[from]);
+      delete out[from];
+    }
+  };
+  const plural = (from, to) => {
+    if (Array.isArray(out[from])) {
+      out[to] = out[from].filter((k) => refByKey[k]).map(img);
+      delete out[from];
+    }
+  };
+  single("coverKey", "cover");
+  single("heroImageKey", "heroImage");
+  plural("galleryKeys", "gallery");
+  plural("frameKeys", "frames");
+  plural("mosaicKeys", "mosaic");
+  plural("filmCoverKeys", "filmCovers");
+  if (out.closingCta && typeof out.closingCta.imageKey === "string") {
+    out.closingCta = { ...out.closingCta };
+    if (refByKey[out.closingCta.imageKey]) out.closingCta.image = img(out.closingCta.imageKey);
+    delete out.closingCta.imageKey;
+  }
+  if (Array.isArray(out.collections)) {
+    out.collections = out.collections.map((c) => {
+      const next = { ...c };
+      if (typeof next.imageKey === "string" && refByKey[next.imageKey]) {
+        next.image = img(next.imageKey);
+      }
+      delete next.imageKey;
+      return next;
+    });
+  }
+  if (Array.isArray(out.teamMembers)) {
+    out.teamMembers = out.teamMembers.map((m) => {
+      const next = { ...m };
+      if (typeof next.imageKey === "string" && refByKey[next.imageKey]) {
+        next.image = img(next.imageKey);
+      }
+      delete next.imageKey;
+      return next;
+    });
+  }
+  if (out._id === "portfolioPage") {
+    out.library = LIBRARY.map(([key, caption]) => ({ photo: img(key), caption }));
+  }
+  return out;
+};
 
 /**
  * Sanity requires every OBJECT inside an array to carry a `_key` — without
@@ -201,12 +368,6 @@ const docs = [
       "ceremony-temple-ritual",
       "haldi-bride-with-friends",
       "detail-bouquet",
-    ],
-    backdropKeys: [
-      "kerala-cinematic-wedding-film-still",
-      "calicut-cinematic-wedding-hero",
-      "hero-traditional-intimate",
-      "portrait-bride-sunlight",
     ],
     awardsEyebrow: "DECADE OF EXCELLENCE",
     awardsTitle: "Awards & Accolades",
@@ -859,7 +1020,7 @@ const docs = [
 ];
 
 for (const doc of docs) {
-  await client.createOrReplace(assignKeys(doc));
+  await client.createOrReplace(assignKeys(toImageFields(doc)));
   console.log(`ok   ${doc._type} ${doc._id}`);
 }
 console.log(`\nSeeded ${docs.length} documents into "${dataset}". Open /studio to edit.`);

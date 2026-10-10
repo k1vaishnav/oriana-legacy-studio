@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
-import { getImage, srcSet } from "@/lib/image-manifest";
-import { useSiteSettings } from "@/lib/cms";
+import { photoSrc, useSiteSettings } from "@/lib/cms";
+import { PhotoImage } from "@/lib/images";
 
 /**
  * Soul + Cinema — a wide editorial strip, not a full-screen block.
@@ -16,20 +16,17 @@ import { useSiteSettings } from "@/lib/cms";
  * behind the manifesto — and it only loads when the band scrolls near,
  * so it costs nothing on initial page load.
  *
- * The still poster is a real generated derivative from the local archive, with
- * a full responsive ladder and reserved dimensions, so the band never flashes
- * a broken frame before the video arrives.
+ * The still poster is CMS-replaceable with the archive frame as fallback,
+ * so the band never flashes a broken frame before the video arrives.
  *
- * The copy comes from `soulCinema` in `@/lib/site` rather than being written
- * here, so the manifesto is the same sentence everywhere it appears.
+ * The copy comes from the CMS rather than being written here, so the
+ * manifesto is the same sentence everywhere it appears.
  */
-const POSTER_KEY = "kerala-cinematic-wedding-film-still" as const;
-
 export function SoulCinemaBanner() {
   const { soulCinema } = useSiteSettings();
   const frameRef = useRef<HTMLDivElement>(null);
   const [playVideo, setPlayVideo] = useState(false);
-  const poster = getImage(POSTER_KEY);
+  const still = { ...soulCinema.poster, alt: "" };
 
   // The film only starts loading when the band is close to the viewport.
   // Respects reduced-motion by staying on the still poster.
@@ -72,27 +69,18 @@ export function SoulCinemaBanner() {
                 loop
                 playsInline
                 preload="metadata"
-                poster={poster.src}
+                poster={photoSrc(still)}
                 aria-hidden="true"
               >
                 <source src={soulCinema.videoSrc} type="video/mp4" />
               </video>
             ) : (
-              <picture style={{ display: "contents" }}>
-                <source type="image/avif" srcSet={srcSet(POSTER_KEY, "avif")} sizes="100vw" />
-                <source type="image/webp" srcSet={srcSet(POSTER_KEY, "webp")} sizes="100vw" />
-                <img
-                  className="frame-video"
-                  src={poster.src}
-                  srcSet={srcSet(POSTER_KEY, "jpeg")}
-                  sizes="100vw"
-                  alt=""
-                  width={poster.width}
-                  height={poster.height}
-                  loading="lazy"
-                  decoding="async"
-                />
-              </picture>
+              <PhotoImage
+                photo={still}
+                sizes="100vw"
+                className="contents"
+                imgClassName="frame-video"
+              />
             )}
             <div className="frame-grade" />
           </div>

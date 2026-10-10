@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { Reveal } from "@/components/site/Reveal";
-import { ResponsiveImage } from "@/lib/images";
+import { PhotoImage } from "@/lib/images";
 import { business } from "@/lib/site";
 import { getPhotographyPage, getWeddings } from "@/lib/cms";
 import { photoAlt } from "@/lib/photos";
@@ -35,9 +35,8 @@ function PhotographyStories() {
                   params={{ slug: wedding.slug }}
                   className="story-card-link"
                 >
-                  <ResponsiveImage
-                    image={wedding.cover}
-                    alt={photoAlt(wedding.cover) ?? wedding.title}
+                  <PhotoImage
+                    photo={wedding.cover}
                     ratio="4 / 5"
                     sizes="(min-width: 1100px) 19rem, (min-width: 700px) 30vw, 88vw"
                     zoom

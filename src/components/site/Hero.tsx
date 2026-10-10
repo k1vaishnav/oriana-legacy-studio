@@ -1,7 +1,9 @@
 import { Link } from "@tanstack/react-router";
 
-import { getImage, srcSet, type ImageKey } from "@/lib/image-manifest";
+import { getImage, type ImageKey } from "@/lib/image-manifest";
 import { useSiteSettings, whatsappHrefFor } from "@/lib/cms";
+import { PhotoImage } from "@/lib/images";
+import type { CmsAsset } from "@/lib/sanity-image";
 
 /**
  * Quiet, full-bleed introduction for the homepage.
@@ -21,6 +23,7 @@ import { useSiteSettings, whatsappHrefFor } from "@/lib/cms";
 export function EditorialHero({
   image = "home-hero-user",
   alt,
+  asset,
   eyebrow = "Oriana Weddings · Photography & Films",
   title = "Your wedding, our responsibility.",
   sub = "Candid, traditional & cinematic — managed by Oriana.",
@@ -29,6 +32,8 @@ export function EditorialHero({
 }: {
   image?: ImageKey;
   alt: string;
+  /** CMS-uploaded replacement for `image`; the archive frame stays as fallback. */
+  asset?: CmsAsset | null | undefined;
   eyebrow?: string;
   title?: string;
   sub?: string;
@@ -37,7 +42,6 @@ export function EditorialHero({
 }) {
   const settings = useSiteSettings();
   const entry = getImage(image);
-  const jpeg = srcSet(image, "jpeg");
 
   return (
     <section className="home-hero-wrap" aria-label="Oriana Weddings Hero">
@@ -50,22 +54,13 @@ export function EditorialHero({
           backgroundPosition: "center",
         }}
       >
-        <picture style={{ display: "contents" }}>
-          <source type="image/avif" srcSet={srcSet(image, "avif")} sizes="100vw" />
-          <source type="image/webp" srcSet={srcSet(image, "webp")} sizes="100vw" />
-          <img
-            src={entry.src}
-            srcSet={jpeg}
-            sizes="100vw"
-            alt={alt}
-            width={entry.width}
-            height={entry.height}
-            loading="eager"
-            fetchPriority="high"
-            decoding="sync"
-            className="home-hero-image"
-          />
-        </picture>
+        <PhotoImage
+          photo={{ key: image, alt, asset: asset ?? null }}
+          sizes="100vw"
+          eager
+          className="contents"
+          imgClassName="home-hero-image"
+        />
         <div className="home-hero-scrim" aria-hidden="true" />
         <div className="home-hero-content">
           <p className="home-hero-eyebrow">{eyebrow}</p>

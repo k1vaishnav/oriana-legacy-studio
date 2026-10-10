@@ -17,10 +17,19 @@
  * at runtime, and the type of `getImage` turns it into a build error instead.
  */
 import { getImage } from "@/lib/image-manifest";
+import type { CmsAsset } from "@/lib/sanity-image";
 
 export type PhotoKey = Parameters<typeof getImage>[0];
 
-export type Photo = { key: PhotoKey; alt: string };
+/**
+ * One photograph anywhere on the site.
+ *
+ * `key` addresses the local 30-frame archive (offline fallback, always set
+ * for registry photos). `asset` carries a Sanity-uploaded replacement when
+ * the CMS provides one — `key` may then be null (e.g. brand-new uploads with
+ * no archive counterpart).
+ */
+export type Photo = { key: PhotoKey | null; alt: string; asset?: CmsAsset | null };
 
 /** A photograph with a short editorial line for the carousel captions. */
 

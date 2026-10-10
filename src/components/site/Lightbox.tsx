@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from "react";
 
-import { getImage, srcSet } from "@/lib/image-manifest";
+import { PhotoImage } from "@/lib/images";
 import type { Photo } from "@/lib/photos";
 
 /**
@@ -24,7 +24,6 @@ export function Lightbox({
   onStep: (next: number) => void;
 }) {
   const photo = photos[index];
-  const entry = photo ? getImage(photo.key) : undefined;
 
   const go = useCallback(
     (direction: 1 | -1) => {
@@ -49,7 +48,7 @@ export function Lightbox({
     };
   }, [go, onClose]);
 
-  if (!photo || !entry) return null;
+  if (!photo) return null;
 
   return (
     <div
@@ -113,17 +112,12 @@ export function Lightbox({
       ) : null}
 
       <figure className="lightbox-stage flex flex-col gap-4">
-        <img
-          key={photo.key}
-          src={entry.src}
-          srcSet={srcSet(photo.key, "jpeg")}
+        <PhotoImage
+          key={photo.key ?? photo.alt}
+          photo={photo}
           sizes="92vw"
-          alt={photo.alt}
-          width={entry.width}
-          height={entry.height}
-          decoding="async"
-          className="max-h-[74svh] w-auto max-w-full object-contain"
-          style={{ backgroundColor: entry.color }}
+          className="contents"
+          imgClassName="max-h-[74svh] w-auto max-w-full object-contain"
         />
         <figcaption className="flex items-baseline justify-between gap-6 text-sm text-paper/70">
           <span className="max-w-[60ch]">{photo.alt}</span>

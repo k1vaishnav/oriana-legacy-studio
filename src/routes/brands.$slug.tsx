@@ -4,11 +4,9 @@ import { createFileRoute, Link, notFound, redirect } from "@tanstack/react-route
 import { ClosingCTA } from "@/components/site/ClosingCTA";
 import { Lightbox } from "@/components/site/Lightbox";
 import { Reveal } from "@/components/site/Reveal";
-import { ResponsiveImage } from "@/lib/images";
-import { getImage } from "@/lib/image-manifest";
-import { photoAlt, type Photo } from "@/lib/photos";
+import { PhotoImage } from "@/lib/images";
 import { business } from "@/lib/site";
-import { getBrand, getBrandsPage, useSiteSettings, whatsappHrefFor } from "@/lib/cms";
+import { getBrand, getBrandsPage, photoSrc, useSiteSettings, whatsappHrefFor } from "@/lib/cms";
 import { PageHero } from "@/components/site/PageHero";
 import { seo } from "@/lib/seo";
 
@@ -27,7 +25,7 @@ export const Route = createFileRoute("/brands/$slug")({
       title: brand.seoTitle ?? `${brand.name} | Our Brands | ${business.name}`,
       description: brand.seoDescription ?? `${brand.tagline} ${brand.description}`,
       path: `/brands/${brand.slug}`,
-      image: getImage(brand.cover).src,
+      image: photoSrc(brand.cover),
     });
   },
   component: BrandPage,
@@ -38,10 +36,7 @@ function BrandPage() {
   const settings = useSiteSettings();
   const { business } = settings;
   const [lightbox, setLightbox] = useState<number | null>(null);
-  const photos: Photo[] = brand.images.map((key) => ({
-    key,
-    alt: photoAlt(key) ?? `${brand.name} — ${brand.tagline}`,
-  }));
+  const photos = brand.images;
 
   return (
     <>
@@ -49,8 +44,7 @@ function BrandPage() {
         eyebrow="Our brands"
         title={brand.name}
         lead={`${brand.tagline} ${brand.description}`}
-        image={brand.cover}
-        alt={photoAlt(brand.cover) ?? `${brand.name} — ${brand.tagline}`}
+        photo={brand.cover}
         meta={[{ label: "For", value: brand.audience }]}
         crumb={[{ name: "Brands", to: "/brands" }, { name: brand.name }]}
       />
@@ -100,7 +94,7 @@ function BrandPage() {
         <section className="story-gallery" aria-label={`${brand.name} photographs`}>
           {photos.map((photo, index) => (
             <Reveal
-              key={`${photo.key}-${index}`}
+              key={`${photo.key ?? "cms"}-${index}`}
               className={index === 0 ? "story-gallery-lead" : ""}
             >
               <button
@@ -109,12 +103,7 @@ function BrandPage() {
                 className="block w-full cursor-zoom-in"
                 aria-label={`View ${photo.alt} full-screen`}
               >
-                <ResponsiveImage
-                  image={photo.key}
-                  alt={photo.alt}
-                  sizes="(min-width: 900px) 48vw, 100vw"
-                  zoom
-                />
+                <PhotoImage photo={photo} sizes="(min-width: 900px) 48vw, 100vw" zoom />
               </button>
             </Reveal>
           ))}

@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { seo } from "@/lib/seo";
-import { asImageKey, getFilms, getHomePage, getWeddings, useSiteSettings } from "@/lib/cms";
+import { getFilms, getHomePage, getWeddings, useSiteSettings } from "@/lib/cms";
 import { EditorialHero } from "@/components/site/Hero";
 import { EditorialGrid } from "@/components/site/EditorialGrid";
 import { FeaturedWeddingStories } from "@/components/site/FeaturedWeddingStories";
@@ -42,7 +42,8 @@ function Home() {
     <>
       {/* 01 — Full-bleed Hero header (Pure image, no text clutter) */}
       <EditorialHero
-        image={asImageKey(page.heroImageKey, "home-hero-user")}
+        image={page.heroImage.key ?? "home-hero-user"}
+        asset={page.heroImage.asset}
         alt="A newlywed couple sharing a quiet moment, photographed in classic black and white"
         eyebrow={page.heroEyebrow}
         title={page.heroTitle}
@@ -66,7 +67,7 @@ function Home() {
       <CouturePressStrip items={settings.affiliations} />
 
       {/* 04 — Full-bleed 15-cell image mosaic */}
-      <EditorialGrid photos={page.mosaicKeys} titleLines={page.mosaicLines} />
+      <EditorialGrid photos={page.mosaic} titleLines={page.mosaicLines} />
 
       {/* 05 — Four featured wedding stories */}
       <FeaturedWeddingStories weddings={weddings} />
@@ -82,7 +83,7 @@ function Home() {
         films={films}
         eyebrow={page.filmsEyebrow}
         title={page.filmsTitle}
-        covers={page.filmCoverKeys}
+        covers={page.filmCovers}
       />
 
       {/* 09 — Camera and post-production marks sit between the film images and CTA */}

@@ -17,7 +17,7 @@ import {
   TextLink,
 } from "@/components/site/ui";
 import { PageHero } from "@/components/site/PageHero";
-import { getAboutPage, asImageKey, useSiteSettings } from "@/lib/cms";
+import { getAboutPage, useSiteSettings } from "@/lib/cms";
 import {
   coverage as fallbackCoverage,
   differenceCards as fallbackDifferenceCards,
@@ -124,8 +124,7 @@ function AboutPage() {
         eyebrow={page.heroEyebrow}
         title={page.heroTitle}
         lead={page.heroLead}
-        image={asImageKey(page.heroImageKey, "calicut-church-wedding-ceremony")}
-        alt={page.heroImageAlt}
+        photo={{ ...page.heroImage, alt: page.heroImageAlt }}
         meta={
           page.heroMeta.length > 0
             ? page.heroMeta
