@@ -38,21 +38,16 @@ export default defineConfig({
         S.list()
           .title("Oriana content")
           .items([
-            S.listItem()
-              .title("📄 Pages")
-              .child(
-                S.list()
-                  .title("Pages")
-                  .items([
-                    singleton(S, "homePage", "🏠 Home page"),
-                    singleton(S, "aboutPage", "📖 About page"),
-                    singleton(S, "brandsPage", "🏷️ Brands page"),
-                    singleton(S, "contactPage", "✉️ Contact page"),
-                    singleton(S, "portfolioPage", "🖼️ Portfolio page"),
-                    singleton(S, "filmsPage", "🎬 Films page"),
-                    singleton(S, "photographyPage", "📷 Photography page"),
-                  ]),
-              ),
+            // One section per page, in site order — each opens its page
+            // directly, so the thing you want to edit is always one click away.
+            singleton(S, "homePage", "🏠 Home"),
+            singleton(S, "photographyPage", "📷 Photography"),
+            singleton(S, "filmsPage", "🎬 Films"),
+            singleton(S, "portfolioPage", "🖼️ Portfolio"),
+            singleton(S, "brandsPage", "🏷️ Brands"),
+            singleton(S, "aboutPage", "📖 About"),
+            singleton(S, "contactPage", "✉️ Contact"),
+            S.divider(),
             S.listItem()
               .title("💍 Stories & work")
               .child(
