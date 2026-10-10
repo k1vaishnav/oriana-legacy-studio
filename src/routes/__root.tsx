@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -12,6 +13,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "@/lib/lovable-error-reporting";
 import { getSiteSettings } from "@/lib/cms";
+import { useIsStudio } from "@/lib/use-is-studio";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { FloatingWhatsApp } from "@/components/site/FloatingWhatsApp";
@@ -159,6 +161,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
+  const isStudio = useIsStudio();
   return (
     // The no-flash script above adds `class="js"` to <html> before React
     // hydrates, which React would otherwise report as a mismatch on every single
@@ -167,7 +170,8 @@ function RootShell({ children }: { children: ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body className="grain">
+      {/* No site background texture under the Studio — it brings its own theme. */}
+      <body className={isStudio ? undefined : "grain"}>
         {children}
         <Scripts />
       </body>
@@ -177,6 +181,18 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const isStudio = useIsStudio();
+
+  // `/studio` is Sanity alone: no header, footer, chatbot or site furniture.
+  if (isStudio) {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <main id="main" className="flex min-h-svh flex-col">
+          <Outlet />
+        </main>
+      </QueryClientProvider>
+    );
+  }
 
   return (
     <QueryClientProvider client={queryClient}>
