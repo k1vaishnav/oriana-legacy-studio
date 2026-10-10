@@ -1,0 +1,914 @@
+{
+  "calicut-church-wedding-ceremony": {
+    "width": 480,
+    "height": 600,
+    "ratio": 0.8,
+    "color": "#9c7666",
+    "lqip": "data:image/webp;base64,UklGRkYAAABXRUJQVlA4IDoAAADQAQCdASoNABAAA8BgJaACdACGH+2UAAD+3O/JBtEzI08cyl9lO53fpafVS1E9/Y9kx28FK0VnheAA",
+    "widths": [
+      320,
+      480
+    ],
+    "sources": {
+      "320": {
+        "avif": "/img/calicut-church-wedding-ceremony-320.avif",
+        "webp": "/img/calicut-church-wedding-ceremony-320.webp",
+        "jpeg": "/img/calicut-church-wedding-ceremony-320.jpg"
+      },
+      "480": {
+        "avif": "/img/calicut-church-wedding-ceremony-480.avif",
+        "webp": "/img/calicut-church-wedding-ceremony-480.webp",
+        "jpeg": "/img/calicut-church-wedding-ceremony-480.jpg"
+      }
+    },
+    "src": "/img/calicut-church-wedding-ceremony-480.jpg",
+    "avifSrc": "/img/calicut-church-wedding-ceremony-480.avif",
+    "webpSrc": "/img/calicut-church-wedding-ceremony-480.webp"
+  },
+  "calicut-cinematic-wedding-hero": {
+    "width": 480,
+    "height": 720,
+    "ratio": 0.6666666666666666,
+    "color": "#7d6966",
+    "lqip": "data:image/webp;base64,UklGRkYAAABXRUJQVlA4IDoAAADQAQCdASoLABAAA8BgJZACsADdHl3pVAD669PhpxxqjkNBjmxYr5dkMRxtiTzouxtZhAPacoaZCcAA",
+    "widths": [
+      320,
+      480
+    ],
+    "sources": {
+      "320": {
+        "avif": "/img/calicut-cinematic-wedding-hero-320.avif",
+        "webp": "/img/calicut-cinematic-wedding-hero-320.webp",
+        "jpeg": "/img/calicut-cinematic-wedding-hero-320.jpg"
+      },
+      "480": {
+        "avif": "/img/calicut-cinematic-wedding-hero-480.avif",
+        "webp": "/img/calicut-cinematic-wedding-hero-480.webp",
+        "jpeg": "/img/calicut-cinematic-wedding-hero-480.jpg"
+      }
+    },
+    "src": "/img/calicut-cinematic-wedding-hero-480.jpg",
+    "avifSrc": "/img/calicut-cinematic-wedding-hero-480.avif",
+    "webpSrc": "/img/calicut-cinematic-wedding-hero-480.webp"
+  },
+  "ceremony-south-asian-prewedding": {
+    "width": 480,
+    "height": 320,
+    "ratio": 1.5,
+    "color": "#8b776f",
+    "lqip": "data:image/webp;base64,UklGRkoAAABXRUJQVlA4ID4AAADwAQCdASoQAAsAA8BgJQBOgBh7o7olPoAA/u0JY2gsCkWGm8kX7CSDcZLB39HZLlncX1H4jEqb2WI4A0AAAA==",
+    "widths": [
+      320,
+      480
+    ],
+    "sources": {
+      "320": {
+        "avif": "/img/ceremony-south-asian-prewedding-320.avif",
+        "webp": "/img/ceremony-south-asian-prewedding-320.webp",
+        "jpeg": "/img/ceremony-south-asian-prewedding-320.jpg"
+      },
+      "480": {
+        "avif": "/img/ceremony-south-asian-prewedding-480.avif",
+        "webp": "/img/ceremony-south-asian-prewedding-480.webp",
+        "jpeg": "/img/ceremony-south-asian-prewedding-480.jpg"
+      }
+    },
+    "src": "/img/ceremony-south-asian-prewedding-480.jpg",
+    "avifSrc": "/img/ceremony-south-asian-prewedding-480.avif",
+    "webpSrc": "/img/ceremony-south-asian-prewedding-480.webp"
+  },
+  "ceremony-temple-ritual": {
+    "width": 480,
+    "height": 320,
+    "ratio": 1.5,
+    "color": "#5f4941",
+    "lqip": "data:image/webp;base64,UklGRkwAAABXRUJQVlA4IEAAAADwAQCdASoQAAsAA8BgJbACsAEfZMz+X2AA+pweS+gWNs2pJV/CMpnWtvmlNOjRKgDguxkwbxaDQk8yo0PwEAAA",
+    "widths": [
+      320,
+      480
+    ],
+    "sources": {
+      "320": {
+        "avif": "/img/ceremony-temple-ritual-320.avif",
+        "webp": "/img/ceremony-temple-ritual-320.webp",
+        "jpeg": "/img/ceremony-temple-ritual-320.jpg"
+      },
+      "480": {
+        "avif": "/img/ceremony-temple-ritual-480.avif",
+        "webp": "/img/ceremony-temple-ritual-480.webp",
+        "jpeg": "/img/ceremony-temple-ritual-480.jpg"
+      }
+    },
+    "src": "/img/ceremony-temple-ritual-480.jpg",
+    "avifSrc": "/img/ceremony-temple-ritual-480.avif",
+    "webpSrc": "/img/ceremony-temple-ritual-480.webp"
+  },
+  "church-altar-candid": {
+    "width": 480,
+    "height": 720,
+    "ratio": 0.6666666666666666,
+    "color": "#806f6f",
+    "lqip": "data:image/webp;base64,UklGRkYAAABXRUJQVlA4IDoAAACwAQCdASoLABAAA8BgJQBdgBuV37fYAP7b6yEjc1KfNmTjJWiqPdl05EvpEdndq1tvZNDKAt/ngAAA",
+    "widths": [
+      320,
+      480
+    ],
+    "sources": {
+      "320": {
+        "avif": "/img/church-altar-candid-320.avif",
+        "webp": "/img/church-altar-candid-320.webp",
+        "jpeg": "/img/church-altar-candid-320.jpg"
+      },
+      "480": {
+        "avif": "/img/church-altar-candid-480.avif",
+        "webp": "/img/church-altar-candid-480.webp",
+        "jpeg": "/img/church-altar-candid-480.jpg"
+      }
+    },
+    "src": "/img/church-altar-candid-480.jpg",
+    "avifSrc": "/img/church-altar-candid-480.avif",
+    "webpSrc": "/img/church-altar-candid-480.webp"
+  },
+  "church-golden-altar": {
+    "width": 480,
+    "height": 600,
+    "ratio": 0.8,
+    "color": "#946150",
+    "lqip": "data:image/webp;base64,UklGRk4AAABXRUJQVlA4IEIAAACwAQCdASoNABAAA8BgJbACdADyUSQAAP6fYt6LWqshHP96JvJEp0T7RGycqRSzACPRIQQaENoK9N+7elrDHci4AAA=",
+    "widths": [
+      320,
+      480
+    ],
+    "sources": {
+      "320": {
+        "avif": "/img/church-golden-altar-320.avif",
+        "webp": "/img/church-golden-altar-320.webp",
+        "jpeg": "/img/church-golden-altar-320.jpg"
+      },
+      "480": {
+        "avif": "/img/church-golden-altar-480.avif",
+        "webp": "/img/church-golden-altar-480.webp",
+        "jpeg": "/img/church-golden-altar-480.jpg"
+      }
+    },
+    "src": "/img/church-golden-altar-480.jpg",
+    "avifSrc": "/img/church-golden-altar-480.avif",
+    "webpSrc": "/img/church-golden-altar-480.webp"
+  },
+  "church-outside-joy": {
+    "width": 480,
+    "height": 320,
+    "ratio": 1.5,
+    "color": "#31161c",
+    "lqip": "data:image/webp;base64,UklGRkIAAABXRUJQVlA4IDYAAADQAQCdASoQAAsAA8BgJZgAAujfoVZpQAD+9otF5L8uIdWt/JMFoi78w4NPrhcKUyxrEaAAAAA=",
+    "widths": [
+      320,
+      480
+    ],
+    "sources": {
+      "320": {
+        "avif": "/img/church-outside-joy-320.avif",
+        "webp": "/img/church-outside-joy-320.webp",
+        "jpeg": "/img/church-outside-joy-320.jpg"
+      },
+      "480": {
+        "avif": "/img/church-outside-joy-480.avif",
+        "webp": "/img/church-outside-joy-480.webp",
+        "jpeg": "/img/church-outside-joy-480.jpg"
+      }
+    },
+    "src": "/img/church-outside-joy-480.jpg",
+    "avifSrc": "/img/church-outside-joy-480.avif",
+    "webpSrc": "/img/church-outside-joy-480.webp"
+  },
+  "closing-cta-user": {
+    "width": 2048,
+    "height": 1403,
+    "ratio": 1.459729151817534,
+    "color": "#7a7670",
+    "lqip": "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAAAwAgCdASoQAAsAA8BgJZQC7ADSR8XZuZ5AAAD+7/vnEXYqb3djltrNNiCE6dwqGmhUADsxN13PRwvfAAA=",
+    "widths": [
+      320,
+      480,
+      800,
+      1200,
+      1600
+    ],
+    "sources": {
+      "320": {
+        "avif": "/img/closing-cta-user-320.avif",
+        "webp": "/img/closing-cta-user-320.webp",
+        "jpeg": "/img/closing-cta-user-320.jpg"
+      },
+      "480": {
+        "avif": "/img/closing-cta-user-480.avif",
+        "webp": "/img/closing-cta-user-480.webp",
+        "jpeg": "/img/closing-cta-user-480.jpg"
+      },
+      "800": {
+        "avif": "/img/closing-cta-user-800.avif",
+        "webp": "/img/closing-cta-user-800.webp",
+        "jpeg": "/img/closing-cta-user-800.jpg"
+      },
+      "1200": {
+        "avif": "/img/closing-cta-user-1200.avif",
+        "webp": "/img/closing-cta-user-1200.webp",
+        "jpeg": "/img/closing-cta-user-1200.jpg"
+      },
+      "1600": {
+        "avif": "/img/closing-cta-user-1600.avif",
+        "webp": "/img/closing-cta-user-1600.webp",
+        "jpeg": "/img/closing-cta-user-1600.jpg"
+      }
+    },
+    "src": "/img/closing-cta-user-1600.jpg",
+    "avifSrc": "/img/closing-cta-user-1600.avif",
+    "webpSrc": "/img/closing-cta-user-1600.webp"
+  },
+  "detail-bouquet": {
+    "width": 480,
+    "height": 720,
+    "ratio": 0.6666666666666666,
+    "color": "#643214",
+    "lqip": "data:image/webp;base64,UklGRk4AAABXRUJQVlA4IEIAAADwAQCdASoLABAAA8BgJbACdADz8BkMIhAA/vGE3U1QYtgb2+gNrDbQM05OHEd6HkIU2R2FI2Lcv6/X7UzaOwz2AAA=",
+    "widths": [
+      320,
+      480
+    ],
+    "sources": {
+      "320": {
+        "avif": "/img/detail-bouquet-320.avif",
+        "webp": "/img/detail-bouquet-320.webp",
+        "jpeg": "/img/detail-bouquet-320.jpg"
+      },
+      "480": {
+        "avif": "/img/detail-bouquet-480.avif",
+        "webp": "/img/detail-bouquet-480.webp",
+        "jpeg": "/img/detail-bouquet-480.jpg"
+      }
+    },
+    "src": "/img/detail-bouquet-480.jpg",
+    "avifSrc": "/img/detail-bouquet-480.avif",
+    "webpSrc": "/img/detail-bouquet-480.webp"
+  },
+  "detail-bride-groom-feet": {
+    "width": 480,
+    "height": 320,
+    "ratio": 1.5,
+    "color": "#492f31",
+    "lqip": "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAADQAQCdASoQAAsAA8BgJagCdADce85eAAD+5a+ezLUuztG+fdmhkaOH6JpOcwGBmmSMCB3rDDnPWzC+AAA=",
+    "widths": [
+      320,
+      480
+    ],
+    "sources": {
+      "320": {
+        "avif": "/img/detail-bride-groom-feet-320.avif",
+        "webp": "/img/detail-bride-groom-feet-320.webp",
+        "jpeg": "/img/detail-bride-groom-feet-320.jpg"
+      },
+      "480": {
+        "avif": "/img/detail-bride-groom-feet-480.avif",
+        "webp": "/img/detail-bride-groom-feet-480.webp",
+        "jpeg": "/img/detail-bride-groom-feet-480.jpg"
+      }
+    },
+    "src": "/img/detail-bride-groom-feet-480.jpg",
+    "avifSrc": "/img/detail-bride-groom-feet-480.avif",
+    "webpSrc": "/img/detail-bride-groom-feet-480.webp"
+  },
+  "detail-bride-henna-face": {
+    "width": 480,
+    "height": 320,
+    "ratio": 1.5,
+    "color": "#4e5146",
+    "lqip": "data:image/webp;base64,UklGRkgAAABXRUJQVlA4IDwAAADQAQCdASoQAAsAA8BgJZQC7ADadOcAgAD+6f07wfMHU+OK4bkwSM8vzfrTWNNWEv4Q36mN/DkSK6XAAAA=",
+    "widths": [
+      320,
+      480
+    ],
+    "sources": {
+      "320": {
+        "avif": "/img/detail-bride-henna-face-320.avif",
+        "webp": "/img/detail-bride-henna-face-320.webp",
+        "jpeg": "/img/detail-bride-henna-face-320.jpg"
+      },
+      "480": {
+        "avif": "/img/detail-bride-henna-face-480.avif",
+        "webp": "/img/detail-bride-henna-face-480.webp",
+        "jpeg": "/img/detail-bride-henna-face-480.jpg"
+      }
+    },
+    "src": "/img/detail-bride-henna-face-480.jpg",
+    "avifSrc": "/img/detail-bride-henna-face-480.avif",
+    "webpSrc": "/img/detail-bride-henna-face-480.webp"
+  },
+  "detail-reception-cake": {
+    "width": 800,
+    "height": 533,
+    "ratio": 1.5009380863039399,
+    "color": "#92798a",
+    "lqip": "data:image/webp;base64,UklGRlAAAABXRUJQVlA4IEQAAACwAQCdASoQAAsAA8BgJbAC7ACxcfCgAP5qfv7bSiKjG5qCcmKizlt/CBgMNEVc/WxtWjMK1CO8y1DGO40cE+lMr1+AAA==",
+    "widths": [
+      320,
+      480,
+      800
+    ],
+    "sources": {
+      "320": {
+        "avif": "/img/detail-reception-cake-320.avif",
+        "webp": "/img/detail-reception-cake-320.webp",
+        "jpeg": "/img/detail-reception-cake-320.jpg"
+      },
+      "480": {
+        "avif": "/img/detail-reception-cake-480.avif",
+        "webp": "/img/detail-reception-cake-480.webp",
+        "jpeg": "/img/detail-reception-cake-480.jpg"
+      },
+      "800": {
+        "avif": "/img/detail-reception-cake-800.avif",
+        "webp": "/img/detail-reception-cake-800.webp",
+        "jpeg": "/img/detail-reception-cake-800.jpg"
+      }
+    },
+    "src": "/img/detail-reception-cake-800.jpg",
+    "avifSrc": "/img/detail-reception-cake-800.avif",
+    "webpSrc": "/img/detail-reception-cake-800.webp"
+  },
+  "detail-reception-monochrome": {
+    "width": 800,
+    "height": 1200,
+    "ratio": 0.6666666666666666,
+    "color": "#66463f",
+    "lqip": "data:image/webp;base64,UklGRkQAAABXRUJQVlA4IDgAAAAQAgCdASoLABAAA8BgJaACsAEPSCaq11PAAP1pLKBsCUbmG6EJpd6MPjtAsT1KuaLdi3vYJAAAAA==",
+    "widths": [
+      320,
+      480,
+      800
+    ],
+    "sources": {
+      "320": {
+        "avif": "/img/detail-reception-monochrome-320.avif",
+        "webp": "/img/detail-reception-monochrome-320.webp",
+        "jpeg": "/img/detail-reception-monochrome-320.jpg"
+      },
+      "480": {
+        "avif": "/img/detail-reception-monochrome-480.avif",
+        "webp": "/img/detail-reception-monochrome-480.webp",
+        "jpeg": "/img/detail-reception-monochrome-480.jpg"
+      },
+      "800": {
+        "avif": "/img/detail-reception-monochrome-800.avif",
+        "webp": "/img/detail-reception-monochrome-800.webp",
+        "jpeg": "/img/detail-reception-monochrome-800.jpg"
+      }
+    },
+    "src": "/img/detail-reception-monochrome-800.jpg",
+    "avifSrc": "/img/detail-reception-monochrome-800.avif",
+    "webpSrc": "/img/detail-reception-monochrome-800.webp"
+  },
+  "haldi-bride-with-friends": {
+    "width": 480,
+    "height": 600,
+    "ratio": 0.8,
+    "color": "#7e5b50",
+    "lqip": "data:image/webp;base64,UklGRkQAAABXRUJQVlA4IDgAAADwAQCdASoNABAAA8BgJZACdAEPN0oD6AAAzXOfD/k2A0THCvshpMXyLMFKOwJyfmqM14tX4AAAAA==",
+    "widths": [
+      320,
+      480
+    ],
+    "sources": {
+      "320": {
+        "avif": "/img/haldi-bride-with-friends-320.avif",
+        "webp": "/img/haldi-bride-with-friends-320.webp",
+        "jpeg": "/img/haldi-bride-with-friends-320.jpg"
+      },
+      "480": {
+        "avif": "/img/haldi-bride-with-friends-480.avif",
+        "webp": "/img/haldi-bride-with-friends-480.webp",
+        "jpeg": "/img/haldi-bride-with-friends-480.jpg"
+      }
+    },
+    "src": "/img/haldi-bride-with-friends-480.jpg",
+    "avifSrc": "/img/haldi-bride-with-friends-480.avif",
+    "webpSrc": "/img/haldi-bride-with-friends-480.webp"
+  },
+  "hero-traditional-intimate": {
+    "width": 1600,
+    "height": 2400,
+    "ratio": 0.6666666666666666,
+    "color": "#65665b",
+    "lqip": "data:image/webp;base64,UklGRkYAAABXRUJQVlA4IDoAAAAQAgCdASoLABAAA8BgJQBWACPqSyFXHpNAAP68X92hyOCRs5IJqKw8TlUgeI0q9eaIZ1E7WRljAAAA",
+    "widths": [
+      320,
+      480,
+      800,
+      1200,
+      1600
+    ],
+    "sources": {
+      "320": {
+        "avif": "/img/hero-traditional-intimate-320.avif",
+        "webp": "/img/hero-traditional-intimate-320.webp",
+        "jpeg": "/img/hero-traditional-intimate-320.jpg"
+      },
+      "480": {
+        "avif": "/img/hero-traditional-intimate-480.avif",
+        "webp": "/img/hero-traditional-intimate-480.webp",
+        "jpeg": "/img/hero-traditional-intimate-480.jpg"
+      },
+      "800": {
+        "avif": "/img/hero-traditional-intimate-800.avif",
+        "webp": "/img/hero-traditional-intimate-800.webp",
+        "jpeg": "/img/hero-traditional-intimate-800.jpg"
+      },
+      "1200": {
+        "avif": "/img/hero-traditional-intimate-1200.avif",
+        "webp": "/img/hero-traditional-intimate-1200.webp",
+        "jpeg": "/img/hero-traditional-intimate-1200.jpg"
+      },
+      "1600": {
+        "avif": "/img/hero-traditional-intimate-1600.avif",
+        "webp": "/img/hero-traditional-intimate-1600.webp",
+        "jpeg": "/img/hero-traditional-intimate-1600.jpg"
+      }
+    },
+    "src": "/img/hero-traditional-intimate-1600.jpg",
+    "avifSrc": "/img/hero-traditional-intimate-1600.avif",
+    "webpSrc": "/img/hero-traditional-intimate-1600.webp"
+  },
+  "home-hero-user": {
+    "width": 1500,
+    "height": 1315,
+    "ratio": 1.1406844106463878,
+    "color": "#858585",
+    "lqip": "data:image/webp;base64,UklGRlYAAABXRUJQVlA4IEoAAADwAQCdASoQAA4AA8BgJaQAAiFtDCcT8AAA/uuungfPdRXvx1VrKO43P6YlyN7MvWOq9rg3PJDgldc6D0BcF9cDkW3WXlgx+HUAAA==",
+    "widths": [
+      320,
+      480,
+      800,
+      1200,
+      1500
+    ],
+    "sources": {
+      "320": {
+        "avif": "/img/home-hero-user-320.avif",
+        "webp": "/img/home-hero-user-320.webp",
+        "jpeg": "/img/home-hero-user-320.jpg"
+      },
+      "480": {
+        "avif": "/img/home-hero-user-480.avif",
+        "webp": "/img/home-hero-user-480.webp",
+        "jpeg": "/img/home-hero-user-480.jpg"
+      },
+      "800": {
+        "avif": "/img/home-hero-user-800.avif",
+        "webp": "/img/home-hero-user-800.webp",
+        "jpeg": "/img/home-hero-user-800.jpg"
+      },
+      "1200": {
+        "avif": "/img/home-hero-user-1200.avif",
+        "webp": "/img/home-hero-user-1200.webp",
+        "jpeg": "/img/home-hero-user-1200.jpg"
+      },
+      "1500": {
+        "avif": "/img/home-hero-user-1500.avif",
+        "webp": "/img/home-hero-user-1500.webp",
+        "jpeg": "/img/home-hero-user-1500.jpg"
+      }
+    },
+    "src": "/img/home-hero-user-1500.jpg",
+    "avifSrc": "/img/home-hero-user-1500.avif",
+    "webpSrc": "/img/home-hero-user-1500.webp"
+  },
+  "instagram-01": {
+    "width": 514,
+    "height": 640,
+    "ratio": 0.803125,
+    "color": "#946151",
+    "lqip": "data:image/webp;base64,UklGRk4AAABXRUJQVlA4IEIAAADQAQCdASoNABAAA8BgJbACdAD0C6a2mAD+n2Lei1qrIRXveYVfLfaztxkDQvBKPzoE75xyyH8K/g3pawx3jFAAAAA=",
+    "widths": [
+      320,
+      480,
+      514
+    ],
+    "sources": {
+      "320": {
+        "avif": "/img/instagram-01-320.avif",
+        "webp": "/img/instagram-01-320.webp",
+        "jpeg": "/img/instagram-01-320.jpg"
+      },
+      "480": {
+        "avif": "/img/instagram-01-480.avif",
+        "webp": "/img/instagram-01-480.webp",
+        "jpeg": "/img/instagram-01-480.jpg"
+      },
+      "514": {
+        "avif": "/img/instagram-01-514.avif",
+        "webp": "/img/instagram-01-514.webp",
+        "jpeg": "/img/instagram-01-514.jpg"
+      }
+    },
+    "src": "/img/instagram-01-514.jpg",
+    "avifSrc": "/img/instagram-01-514.avif",
+    "webpSrc": "/img/instagram-01-514.webp"
+  },
+  "instagram-02": {
+    "width": 512,
+    "height": 640,
+    "ratio": 0.8,
+    "color": "#7a5d48",
+    "lqip": "data:image/webp;base64,UklGRkoAAABXRUJQVlA4ID4AAAAQAgCdASoNABAAA8BgJZgCdAEK9erDO2IAAP7xuStiNa0y3pHvfrgODNpnJTJn2qHZZBDnS1Pk9hkkSAAAAA==",
+    "widths": [
+      320,
+      480,
+      512
+    ],
+    "sources": {
+      "320": {
+        "avif": "/img/instagram-02-320.avif",
+        "webp": "/img/instagram-02-320.webp",
+        "jpeg": "/img/instagram-02-320.jpg"
+      },
+      "480": {
+        "avif": "/img/instagram-02-480.avif",
+        "webp": "/img/instagram-02-480.webp",
+        "jpeg": "/img/instagram-02-480.jpg"
+      },
+      "512": {
+        "avif": "/img/instagram-02-512.avif",
+        "webp": "/img/instagram-02-512.webp",
+        "jpeg": "/img/instagram-02-512.jpg"
+      }
+    },
+    "src": "/img/instagram-02-512.jpg",
+    "avifSrc": "/img/instagram-02-512.avif",
+    "webpSrc": "/img/instagram-02-512.webp"
+  },
+  "instagram-03": {
+    "width": 512,
+    "height": 640,
+    "ratio": 0.8,
+    "color": "#422937",
+    "lqip": "data:image/webp;base64,UklGRkoAAABXRUJQVlA4ID4AAAAwAgCdASoNABAAA8BgJZgCdADxIks6BtV6AAD+9pPmrFr5QnRj9Md6M/t4x4QJkV5w9eHloxLF5jJ8ngAAAA==",
+    "widths": [
+      320,
+      480,
+      512
+    ],
+    "sources": {
+      "320": {
+        "avif": "/img/instagram-03-320.avif",
+        "webp": "/img/instagram-03-320.webp",
+        "jpeg": "/img/instagram-03-320.jpg"
+      },
+      "480": {
+        "avif": "/img/instagram-03-480.avif",
+        "webp": "/img/instagram-03-480.webp",
+        "jpeg": "/img/instagram-03-480.jpg"
+      },
+      "512": {
+        "avif": "/img/instagram-03-512.avif",
+        "webp": "/img/instagram-03-512.webp",
+        "jpeg": "/img/instagram-03-512.jpg"
+      }
+    },
+    "src": "/img/instagram-03-512.jpg",
+    "avifSrc": "/img/instagram-03-512.avif",
+    "webpSrc": "/img/instagram-03-512.webp"
+  },
+  "instagram-04": {
+    "width": 360,
+    "height": 640,
+    "ratio": 0.5625,
+    "color": "#585858",
+    "lqip": "data:image/webp;base64,UklGRjwAAABXRUJQVlA4IDAAAACwAQCdASoJABAAA8BgJaQAAtzCrDEAAM4i9MKYc+I93G1A33jnu2txMQx/IXCAAAA=",
+    "widths": [
+      320,
+      360
+    ],
+    "sources": {
+      "320": {
+        "avif": "/img/instagram-04-320.avif",
+        "webp": "/img/instagram-04-320.webp",
+        "jpeg": "/img/instagram-04-320.jpg"
+      },
+      "360": {
+        "avif": "/img/instagram-04-360.avif",
+        "webp": "/img/instagram-04-360.webp",
+        "jpeg": "/img/instagram-04-360.jpg"
+      }
+    },
+    "src": "/img/instagram-04-360.jpg",
+    "avifSrc": "/img/instagram-04-360.avif",
+    "webpSrc": "/img/instagram-04-360.webp"
+  },
+  "instagram-05": {
+    "width": 360,
+    "height": 640,
+    "ratio": 0.5625,
+    "color": "#946659",
+    "lqip": "data:image/webp;base64,UklGRkQAAABXRUJQVlA4IDgAAADwAQCdASoJABAAA8BgJbACdADZmiNx/wAA/on09jWj9JNTfWjMXxgxmSKb+dTnAnU1uKK6sNQAAA==",
+    "widths": [
+      320,
+      360
+    ],
+    "sources": {
+      "320": {
+        "avif": "/img/instagram-05-320.avif",
+        "webp": "/img/instagram-05-320.webp",
+        "jpeg": "/img/instagram-05-320.jpg"
+      },
+      "360": {
+        "avif": "/img/instagram-05-360.avif",
+        "webp": "/img/instagram-05-360.webp",
+        "jpeg": "/img/instagram-05-360.jpg"
+      }
+    },
+    "src": "/img/instagram-05-360.jpg",
+    "avifSrc": "/img/instagram-05-360.avif",
+    "webpSrc": "/img/instagram-05-360.webp"
+  },
+  "instagram-06": {
+    "width": 360,
+    "height": 640,
+    "ratio": 0.5625,
+    "color": "#766755",
+    "lqip": "data:image/webp;base64,UklGRkAAAABXRUJQVlA4IDQAAAAQAgCdASoJABAAA8BgJQBOgCPybLQlQFEAAPlOa/qVfK/VWVpb5J7Khb3xblC0quUGYAAA",
+    "widths": [
+      320,
+      360
+    ],
+    "sources": {
+      "320": {
+        "avif": "/img/instagram-06-320.avif",
+        "webp": "/img/instagram-06-320.webp",
+        "jpeg": "/img/instagram-06-320.jpg"
+      },
+      "360": {
+        "avif": "/img/instagram-06-360.avif",
+        "webp": "/img/instagram-06-360.webp",
+        "jpeg": "/img/instagram-06-360.jpg"
+      }
+    },
+    "src": "/img/instagram-06-360.jpg",
+    "avifSrc": "/img/instagram-06-360.avif",
+    "webpSrc": "/img/instagram-06-360.webp"
+  },
+  "instagram-07": {
+    "width": 512,
+    "height": 640,
+    "ratio": 0.8,
+    "color": "#acacac",
+    "lqip": "data:image/webp;base64,UklGRjgAAABXRUJQVlA4ICwAAADQAQCdASoNABAAA8BgJaQAAuc/G7KzIAD+78o8lHTMpXeNrxIGDdeKKAAAAA==",
+    "widths": [
+      320,
+      480,
+      512
+    ],
+    "sources": {
+      "320": {
+        "avif": "/img/instagram-07-320.avif",
+        "webp": "/img/instagram-07-320.webp",
+        "jpeg": "/img/instagram-07-320.jpg"
+      },
+      "480": {
+        "avif": "/img/instagram-07-480.avif",
+        "webp": "/img/instagram-07-480.webp",
+        "jpeg": "/img/instagram-07-480.jpg"
+      },
+      "512": {
+        "avif": "/img/instagram-07-512.avif",
+        "webp": "/img/instagram-07-512.webp",
+        "jpeg": "/img/instagram-07-512.jpg"
+      }
+    },
+    "src": "/img/instagram-07-512.jpg",
+    "avifSrc": "/img/instagram-07-512.avif",
+    "webpSrc": "/img/instagram-07-512.webp"
+  },
+  "instagram-08": {
+    "width": 512,
+    "height": 640,
+    "ratio": 0.8,
+    "color": "#d1d1d1",
+    "lqip": "data:image/webp;base64,UklGRj4AAABXRUJQVlA4IDIAAADQAQCdASoNABAAA8BgJaQAAuVwAItlsAD+9gwdsr9xqCT9rFRtlMEBhrc84/1l+4AAAA==",
+    "widths": [
+      320,
+      480,
+      512
+    ],
+    "sources": {
+      "320": {
+        "avif": "/img/instagram-08-320.avif",
+        "webp": "/img/instagram-08-320.webp",
+        "jpeg": "/img/instagram-08-320.jpg"
+      },
+      "480": {
+        "avif": "/img/instagram-08-480.avif",
+        "webp": "/img/instagram-08-480.webp",
+        "jpeg": "/img/instagram-08-480.jpg"
+      },
+      "512": {
+        "avif": "/img/instagram-08-512.avif",
+        "webp": "/img/instagram-08-512.webp",
+        "jpeg": "/img/instagram-08-512.jpg"
+      }
+    },
+    "src": "/img/instagram-08-512.jpg",
+    "avifSrc": "/img/instagram-08-512.avif",
+    "webpSrc": "/img/instagram-08-512.webp"
+  },
+  "instagram-09": {
+    "width": 512,
+    "height": 640,
+    "ratio": 0.8,
+    "color": "#afa295",
+    "lqip": "data:image/webp;base64,UklGRlAAAABXRUJQVlA4IEQAAADwAQCdASoNABAAA8BgJQBOgCLHT8aG08AA/usXR8zgmtilX5C31+2hoh2oQswt1YDcgdm/HUKgWZJdEP6+FYfFsJwAAA==",
+    "widths": [
+      320,
+      480,
+      512
+    ],
+    "sources": {
+      "320": {
+        "avif": "/img/instagram-09-320.avif",
+        "webp": "/img/instagram-09-320.webp",
+        "jpeg": "/img/instagram-09-320.jpg"
+      },
+      "480": {
+        "avif": "/img/instagram-09-480.avif",
+        "webp": "/img/instagram-09-480.webp",
+        "jpeg": "/img/instagram-09-480.jpg"
+      },
+      "512": {
+        "avif": "/img/instagram-09-512.avif",
+        "webp": "/img/instagram-09-512.webp",
+        "jpeg": "/img/instagram-09-512.jpg"
+      }
+    },
+    "src": "/img/instagram-09-512.jpg",
+    "avifSrc": "/img/instagram-09-512.avif",
+    "webpSrc": "/img/instagram-09-512.webp"
+  },
+  "instagram-10": {
+    "width": 512,
+    "height": 640,
+    "ratio": 0.8,
+    "color": "#c6c4bf",
+    "lqip": "data:image/webp;base64,UklGRkQAAABXRUJQVlA4IDgAAADwAQCdASoNABAAA8BgJZwAAudQuY2YAoAA/vcCnCkkTs9j/qAN4M0U5KLAn+w1goBkbRoo6bUAAA==",
+    "widths": [
+      320,
+      480,
+      512
+    ],
+    "sources": {
+      "320": {
+        "avif": "/img/instagram-10-320.avif",
+        "webp": "/img/instagram-10-320.webp",
+        "jpeg": "/img/instagram-10-320.jpg"
+      },
+      "480": {
+        "avif": "/img/instagram-10-480.avif",
+        "webp": "/img/instagram-10-480.webp",
+        "jpeg": "/img/instagram-10-480.jpg"
+      },
+      "512": {
+        "avif": "/img/instagram-10-512.avif",
+        "webp": "/img/instagram-10-512.webp",
+        "jpeg": "/img/instagram-10-512.jpg"
+      }
+    },
+    "src": "/img/instagram-10-512.jpg",
+    "avifSrc": "/img/instagram-10-512.avif",
+    "webpSrc": "/img/instagram-10-512.webp"
+  },
+  "instagram-11": {
+    "width": 512,
+    "height": 640,
+    "ratio": 0.8,
+    "color": "#b5b4ac",
+    "lqip": "data:image/webp;base64,UklGRk4AAABXRUJQVlA4IEIAAADQAQCdASoNABAAA8BgJZQAAtuQpk+ZgAD+9xA21OF5V2czl7F3zzr9t659VtBNqIKzD2kjX5kU/M27xhLyfYbrAAA=",
+    "widths": [
+      320,
+      480,
+      512
+    ],
+    "sources": {
+      "320": {
+        "avif": "/img/instagram-11-320.avif",
+        "webp": "/img/instagram-11-320.webp",
+        "jpeg": "/img/instagram-11-320.jpg"
+      },
+      "480": {
+        "avif": "/img/instagram-11-480.avif",
+        "webp": "/img/instagram-11-480.webp",
+        "jpeg": "/img/instagram-11-480.jpg"
+      },
+      "512": {
+        "avif": "/img/instagram-11-512.avif",
+        "webp": "/img/instagram-11-512.webp",
+        "jpeg": "/img/instagram-11-512.jpg"
+      }
+    },
+    "src": "/img/instagram-11-512.jpg",
+    "avifSrc": "/img/instagram-11-512.avif",
+    "webpSrc": "/img/instagram-11-512.webp"
+  },
+  "instagram-12": {
+    "width": 360,
+    "height": 640,
+    "ratio": 0.5625,
+    "color": "#3f3f3f",
+    "lqip": "data:image/webp;base64,UklGRjIAAABXRUJQVlA4ICYAAACQAQCdASoJABAAA8BgJaQAAudZThAA/tm7fq5LeznEPw8AqxkQAA==",
+    "widths": [
+      320,
+      360
+    ],
+    "sources": {
+      "320": {
+        "avif": "/img/instagram-12-320.avif",
+        "webp": "/img/instagram-12-320.webp",
+        "jpeg": "/img/instagram-12-320.jpg"
+      },
+      "360": {
+        "avif": "/img/instagram-12-360.avif",
+        "webp": "/img/instagram-12-360.webp",
+        "jpeg": "/img/instagram-12-360.jpg"
+      }
+    },
+    "src": "/img/instagram-12-360.jpg",
+    "avifSrc": "/img/instagram-12-360.avif",
+    "webpSrc": "/img/instagram-12-360.webp"
+  },
+  "kerala-cinematic-wedding-film-still": {
+    "width": 1200,
+    "height": 1500,
+    "ratio": 0.8,
+    "color": "#977a72",
+    "lqip": "data:image/webp;base64,UklGRkQAAABXRUJQVlA4IDgAAACwAQCdASoNABAAA8BgJYgCdACvrW3IAP2ccUUp1w2ZTs4XvwQa4tQroEEiRI8EBAK4f7J/ZgAAAA==",
+    "widths": [
+      320,
+      480,
+      800,
+      1200
+    ],
+    "sources": {
+      "320": {
+        "avif": "/img/kerala-cinematic-wedding-film-still-320.avif",
+        "webp": "/img/kerala-cinematic-wedding-film-still-320.webp",
+        "jpeg": "/img/kerala-cinematic-wedding-film-still-320.jpg"
+      },
+      "480": {
+        "avif": "/img/kerala-cinematic-wedding-film-still-480.avif",
+        "webp": "/img/kerala-cinematic-wedding-film-still-480.webp",
+        "jpeg": "/img/kerala-cinematic-wedding-film-still-480.jpg"
+      },
+      "800": {
+        "avif": "/img/kerala-cinematic-wedding-film-still-800.avif",
+        "webp": "/img/kerala-cinematic-wedding-film-still-800.webp",
+        "jpeg": "/img/kerala-cinematic-wedding-film-still-800.jpg"
+      },
+      "1200": {
+        "avif": "/img/kerala-cinematic-wedding-film-still-1200.avif",
+        "webp": "/img/kerala-cinematic-wedding-film-still-1200.webp",
+        "jpeg": "/img/kerala-cinematic-wedding-film-still-1200.jpg"
+      }
+    },
+    "src": "/img/kerala-cinematic-wedding-film-still-1200.jpg",
+    "avifSrc": "/img/kerala-cinematic-wedding-film-still-1200.avif",
+    "webpSrc": "/img/kerala-cinematic-wedding-film-still-1200.webp"
+  },
+  "portrait-bride-sunlight": {
+    "width": 800,
+    "height": 1200,
+    "ratio": 0.6666666666666666,
+    "color": "#4d4134",
+    "lqip": "data:image/webp;base64,UklGRkAAAABXRUJQVlA4IDQAAADQAQCdASoLABAAA8BgJQBOgCP/nNB6AAD+9FK/paidUof7g1yjI/7jYYmC6nE5KipbsAAA",
+    "widths": [
+      320,
+      480,
+      800
+    ],
+    "sources": {
+      "320": {
+        "avif": "/img/portrait-bride-sunlight-320.avif",
+        "webp": "/img/portrait-bride-sunlight-320.webp",
+        "jpeg": "/img/portrait-bride-sunlight-320.jpg"
+      },
+      "480": {
+        "avif": "/img/portrait-bride-sunlight-480.avif",
+        "webp": "/img/portrait-bride-sunlight-480.webp",
+        "jpeg": "/img/portrait-bride-sunlight-480.jpg"
+      },
+      "800": {
+        "avif": "/img/portrait-bride-sunlight-800.avif",
+        "webp": "/img/portrait-bride-sunlight-800.webp",
+        "jpeg": "/img/portrait-bride-sunlight-800.jpg"
+      }
+    },
+    "src": "/img/portrait-bride-sunlight-800.jpg",
+    "avifSrc": "/img/portrait-bride-sunlight-800.avif",
+    "webpSrc": "/img/portrait-bride-sunlight-800.webp"
+  }
+}

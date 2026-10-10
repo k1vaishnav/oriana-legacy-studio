@@ -1,0 +1,4337 @@
+@import "tailwindcss";
+@import "./styles/fonts.css";
+
+/* Minimal photography story index and individual story pages. */
+.stories-page,
+.story-page {
+  min-height: 100vh;
+  padding: 7.5rem 5vw 5rem;
+  background: #efe8df;
+}
+.stories-board {
+  max-width: 1400px;
+  margin: 2rem auto 0;
+  padding: 4.5rem clamp(1.25rem, 4vw, 4.5rem);
+  border-radius: 2rem 2rem 0 0;
+  background: #fff;
+}
+.stories-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(2rem, 4vw, 4rem);
+}
+.story-card-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+.story-card-copy {
+  padding-top: 1.25rem;
+  max-width: 34rem;
+}
+.story-card-kicker {
+  margin: 0 0 0.6rem;
+  color: #625e57;
+  font:
+    600 0.7rem/1.4 Inter,
+    sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.story-card h2 {
+  margin: 0 0 0.65rem;
+  font:
+    500 clamp(1.4rem, 2vw, 2rem)/1.12 "Playfair Display",
+    Georgia,
+    serif;
+}
+.story-card-copy > p:not(.story-card-kicker) {
+  margin: 0;
+  max-width: 38ch;
+  color: #625e57;
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+.story-read {
+  display: inline-block;
+  margin-top: 0.85rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.story-read span {
+  padding-left: 0.2rem;
+}
+.story-card-link:hover .story-read {
+  color: #8c7540;
+}
+.story-detail-head {
+  max-width: 1200px;
+  margin: 0 auto 2.5rem;
+}
+.story-back {
+  display: inline-block;
+  margin-bottom: 2.5rem;
+  color: #625e57;
+  font-size: 0.8rem;
+  text-decoration: none;
+}
+.story-back:hover {
+  color: #171717;
+}
+.story-detail-head h1 {
+  margin: 0;
+  font:
+    500 clamp(2.8rem, 7vw, 6rem)/0.98 "Playfair Display",
+    Georgia,
+    serif;
+}
+.story-detail-summary {
+  max-width: 42rem;
+  margin: 1rem 0 0;
+  color: #625e57;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+.story-gallery {
+  max-width: 1200px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.75rem, 2vw, 1.5rem);
+  align-items: start;
+}
+.story-gallery-lead {
+  grid-column: 1 / -1;
+}
+.story-detail-footer {
+  max-width: 1200px;
+  margin: 3rem auto 0;
+  padding-top: 1rem;
+  border-top: 1px solid #d8cec0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  color: #625e57;
+  font-size: 0.8rem;
+}
+.story-detail-footer .story-back {
+  margin: 0;
+}
+@media (max-width: 800px) {
+  .stories-page,
+  .story-page {
+    padding: 6rem 1rem 2rem;
+  }
+  .stories-board {
+    margin-top: 1rem;
+    padding: 2rem 1.1rem;
+    border-radius: 1.25rem 1.25rem 0 0;
+  }
+  .stories-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem 1rem;
+  }
+  .story-gallery {
+    grid-template-columns: 1fr;
+  }
+  .story-gallery-lead {
+    grid-column: auto;
+  }
+}
+@media (max-width: 520px) {
+  .stories-grid {
+    grid-template-columns: 1fr;
+  }
+  .story-detail-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+/* Featured photography stories beneath the homepage image mosaic. */
+.featured-stories {
+  padding: clamp(4rem, 8vw, 9rem) clamp(1.25rem, 5vw, 5rem) 4rem;
+  background: #efe8df;
+  color: #171513;
+  text-align: center;
+}
+.featured-stories-grid {
+  display: grid;
+  width: min(100%, 1400px);
+  margin-inline: auto;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  text-align: left;
+}
+.featured-story-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+.featured-story-image {
+  width: 100%;
+  background: #e2d8ca;
+}
+.featured-story h2 {
+  margin: 0.8rem 0 0.2rem;
+  font: 500 clamp(1rem, 1.25vw, 1.35rem)/1.2 var(--font-display);
+}
+.featured-story p {
+  margin: 0;
+  color: #554e46;
+  font: 600 0.7rem/1.5 var(--font-display);
+}
+.featured-story-link:focus-visible {
+  outline: 2px solid #927b4c;
+  outline-offset: 5px;
+}
+.featured-stories-button {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2rem;
+  padding: 0.7rem 1.15rem;
+  background: #b49b60;
+  color: #fff;
+  font: 700 0.72rem/1.2 var(--font-display);
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+.featured-stories-button:hover {
+  background: #987e47;
+}
+@media (max-width: 760px) {
+  .featured-stories {
+    padding: 4rem 1.1rem 3rem;
+  }
+  .featured-stories-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem 0.65rem;
+  }
+  .featured-story h2 {
+    font-size: 1.05rem;
+  }
+}
+
+/* Wedding film archive: an editorial grid with an in-place film detail view. */
+.films-library-page {
+  min-height: 100vh;
+  background: #efe8df;
+}
+.films-library {
+  padding: clamp(7rem, 9vw, 8.5rem) 1.25rem 5rem;
+}
+.films-library-grid {
+  display: grid;
+  width: min(100%, 1248px);
+  margin-inline: auto;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(2.5rem, 4vw, 4rem) 1.25rem;
+}
+.films-library-card {
+  min-width: 0;
+}
+.films-library-card-button {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.films-library-card-button > img,
+.films-library-card-button > picture > img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1.5;
+  margin-bottom: 0.8rem;
+  background: #ded5ca;
+  object-fit: cover;
+  transition: opacity 0.25s ease;
+}
+.films-library-card-button:hover > img,
+.films-library-card-button:hover > picture > img {
+  opacity: 0.86;
+}
+.films-library-picture {
+  display: block;
+  width: 100%;
+}
+.films-library-card-button:focus-visible {
+  outline: 2px solid #967b49;
+  outline-offset: 5px;
+}
+.films-library-meta {
+  color: #39342f;
+  font: 400 0.72rem/1.5 var(--font-sans);
+}
+.films-library-title {
+  display: block;
+  margin-top: 0.55rem;
+  font: 400 clamp(1.2rem, 1.45vw, 1.55rem)/1.25 var(--font-display);
+}
+.films-library-description {
+  display: -webkit-box;
+  overflow: hidden;
+  margin-top: 0.7rem;
+  color: #27231f;
+  font: 600 0.72rem/1.8 var(--font-display);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+.film-detail-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  overflow-y: auto;
+  place-items: center;
+  padding: 2rem 1rem;
+  background: rgb(20 18 16 / 78%);
+}
+.film-detail-dialog {
+  position: relative;
+  width: min(100%, 920px);
+  padding: clamp(1rem, 3vw, 2rem);
+  background: #efe8df;
+  color: #171513;
+}
+.film-detail-close {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.55rem;
+  z-index: 2;
+  display: grid;
+  width: 2.6rem;
+  height: 2.6rem;
+  place-items: center;
+  border: 1px solid rgb(255 255 255 / 65%);
+  border-radius: 50%;
+  background: rgb(20 18 16 / 58%);
+  color: white;
+  font: 300 1.8rem/1 var(--font-sans);
+  cursor: pointer;
+}
+.film-detail-close:focus-visible {
+  outline: 2px solid #b49b60;
+  outline-offset: 3px;
+}
+.film-detail-player {
+  width: 100%;
+}
+.film-detail-copy {
+  padding: 1.25rem 0.15rem 0.2rem;
+}
+.film-detail-copy h2 {
+  margin: 0.35rem 0 0.5rem;
+  font: 400 clamp(1.7rem, 3vw, 2.5rem)/1.15 var(--font-display);
+}
+.film-detail-copy > p:last-child {
+  max-width: 68ch;
+  margin: 0;
+  color: #554e46;
+  font: 400 0.92rem/1.7 var(--font-sans);
+}
+@media (max-width: 900px) {
+  .films-library-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2.5rem 1rem;
+  }
+  .films-library-title {
+    font-size: clamp(1.15rem, 3vw, 1.5rem);
+  }
+}
+@media (max-width: 520px) {
+  .films-library {
+    padding: 5.5rem 1rem 3rem;
+  }
+  .films-library-grid {
+    gap: 2rem 0.8rem;
+  }
+  .films-library-card-button > img,
+  .films-library-card-button > picture > img {
+    aspect-ratio: 1.15;
+  }
+  .films-library-meta {
+    font-size: 0.65rem;
+  }
+  .films-library-title {
+    font-size: 1.05rem;
+  }
+  .films-library-description {
+    font-size: 0.68rem;
+    line-height: 1.55;
+  }
+  .film-detail-backdrop {
+    padding: 0.75rem;
+  }
+}
+
+/* Quiet, filterable portfolio wall in the wedding films visual language. */
+.portfolio-showcase {
+  min-height: 100vh;
+  background: #efe8df;
+  color: #171513;
+}
+.portfolio-showcase-inner {
+  width: min(100%, 1328px);
+  margin-inline: auto;
+  padding: clamp(7rem, 9vw, 8.5rem) clamp(1.25rem, 4vw, 3.5rem) 5rem;
+}
+.portfolio-showcase-header {
+  margin: 0 0 2.25rem;
+}
+.portfolio-showcase-eyebrow {
+  margin: 0 0 0.75rem;
+  color: #8e7958;
+  font: 600 0.65rem/1.4 var(--font-sans);
+  letter-spacing: 0.19em;
+}
+.portfolio-showcase-header h1 {
+  margin: 0;
+  font: 400 clamp(1.65rem, 2.8vw, 2.45rem)/1.1 var(--font-display);
+  letter-spacing: -0.025em;
+}
+.portfolio-showcase-header > p:last-child {
+  margin: 0.65rem 0 0;
+  color: #655e55;
+  font: 400 0.9rem/1.6 var(--font-sans);
+}
+.portfolio-showcase-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid #d8cec1;
+}
+.portfolio-showcase-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+.portfolio-filter {
+  min-height: 2.25rem;
+  padding: 0.5rem 0.85rem;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #5c554d;
+  font: 500 0.72rem/1.2 var(--font-sans);
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+.portfolio-filter:hover {
+  border-color: #c9b99f;
+  color: #171513;
+}
+.portfolio-filter[data-active="true"] {
+  border-color: #b49b60;
+  background: #b49b60;
+  color: #fff;
+}
+.portfolio-filter:focus-visible {
+  outline: 2px solid #8e7958;
+  outline-offset: 3px;
+}
+.portfolio-showcase-more {
+  display: flex;
+  justify-content: center;
+  margin-top: 2.5rem;
+}
+.portfolio-show-more {
+  min-height: 3rem;
+  padding: 0.8rem 2.2rem;
+  border: 1px solid #b49b60;
+  border-radius: 999px;
+  background: transparent;
+  color: #171513;
+  font: 600 0.82rem/1.2 var(--font-sans);
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease,
+    transform 0.25s ease;
+}
+.portfolio-show-more:hover {
+  background: #b49b60;
+  color: #fff;
+  transform: translateY(-2px);
+}
+.portfolio-show-more:active {
+  transform: scale(0.97);
+}
+.portfolio-showcase-count {
+  margin: 0;
+  color: #746b60;
+  font: 400 0.7rem/1.4 var(--font-sans);
+}
+.portfolio-tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.95rem;
+  margin: -0.35rem 0 1.35rem;
+  padding: 0 0 0.7rem;
+  border-bottom: 1px solid #ded5c9;
+}
+.portfolio-tag {
+  padding: 0.35rem 0;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  background: transparent;
+  color: #71695f;
+  font: 400 0.67rem/1.3 var(--font-sans);
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+.portfolio-tag:hover {
+  color: #171513;
+}
+.portfolio-tag[data-active="true"] {
+  border-bottom-color: #a68c59;
+  color: #312a20;
+}
+.portfolio-tag:focus-visible {
+  outline: 2px solid #8e7958;
+  outline-offset: 3px;
+}
+.portfolio-showcase-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 2.5rem 1.1rem;
+}
+.portfolio-work-card {
+  min-width: 0;
+}
+.portfolio-work-button {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.portfolio-work-button > img,
+.portfolio-work-button > picture > img,
+.portfolio-work-button > .img-shell {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1.18;
+  margin-bottom: 0.75rem;
+  background: #ded5ca;
+  object-fit: cover;
+  transition: opacity 0.25s ease;
+}
+.portfolio-work-button:hover > img,
+.portfolio-work-button:hover > picture > img,
+.portfolio-work-button:hover > .img-shell {
+  opacity: 0.86;
+}
+.portfolio-work-picture {
+  display: block;
+  width: 100%;
+}
+.portfolio-work-button:focus-visible {
+  outline: 2px solid #967b49;
+  outline-offset: 5px;
+}
+.portfolio-work-title {
+  display: -webkit-box;
+  overflow: hidden;
+  margin-top: 0.3rem;
+  font: 400 1.02rem/1.3 var(--font-display);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+.portfolio-work-description {
+  display: -webkit-box;
+  overflow: hidden;
+  margin-top: 0.55rem;
+  color: #554e46;
+  font: 400 0.72rem/1.65 var(--font-sans);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+@media (max-width: 900px) {
+  .portfolio-showcase-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2rem 0.9rem;
+  }
+}
+@media (max-width: 640px) {
+  .portfolio-showcase-inner {
+    padding: 5.5rem 1rem 3rem;
+  }
+  .portfolio-showcase-header {
+    margin-bottom: 1.5rem;
+  }
+  .portfolio-showcase-toolbar {
+    align-items: flex-end;
+  }
+  .portfolio-showcase-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.6rem 0.7rem;
+  }
+  .portfolio-work-button > img,
+  .portfolio-work-button > .img-shell {
+    aspect-ratio: 1.05;
+    margin-bottom: 0.55rem;
+  }
+  .portfolio-work-title {
+    font-size: 1rem;
+  }
+  .portfolio-work-description {
+    font-size: 0.66rem;
+  }
+  .portfolio-showcase-count {
+    white-space: nowrap;
+  }
+}
+
+/* Tailwind only scans the src directory for class names. */
+@source "../src";
+
+/* ================================================================== */
+/* Tokens                                                              */
+/*                                                                     */
+/* An editorial palette, not a wedding one. There is no pure white    */
+/* anywhere on this site: the page is warm off-white, and every       */
+/* surface above it is a slightly different temperature of the same   */
+/* idea. Photography supplies essentially all the colour, so the      */
+/* interface stays quiet enough to disappear behind it.               */
+/*                                                                     */
+/* Two accents, both used sparingly. Deep olive is the only colour   */
+/* allowed to fill a surface; warm sand is the only colour allowed    */
+/* to mark metadata. Neither is ever a large field.                   */
+/* ================================================================== */
+@theme {
+  /* Ink Black. Never pure #000 — it crushes the photographs. */
+  --color-ink: #171717;
+  --color-ink-soft: #1f1f1f;
+
+  /* The warm editorial palette, by exact value. Ivory is the page, beige is
+     the alternating section, and white is the inset panel — the only true
+     white on the site, reserved for the editorial tile that has to read as
+     paper dropped onto a spread. */
+  --color-paper: #f1ebe1;
+  --color-cream: #e7ded0;
+  --color-bone: #ffffff;
+
+  /* The brief's deep neutral, used where a surface needs to sit behind
+     photography rather than beside it. */
+  --color-olive: #232320;
+  --color-sand: #d8cbb6;
+
+  /* Muted text.
+     The brief specifies #68645D, and it is used almost verbatim — one shade
+     deeper, to #625E57. The specified value measures 4.41:1 on the beige
+     (#E7DED0), which is under the 4.5:1 WCAG AA floor, and #625E57 clears it
+     at 4.84:1. The difference is not visible; the accessibility failure would
+     be, and it would fail on every secondary line on the site at once. */
+  --color-mute: #625e57;
+  --color-mute-dark: #8f8a82;
+
+  /* Hairlines. Warm and low-contrast — a border should be felt, not seen. */
+  --color-line: #d8cec0;
+  --color-line-dark: #2e2c29;
+
+  /* Muted champagne gold. This is the only accent allowed on the site, and
+     only for small marks: labels, hover states and award details. The aliases
+     below exist because the gold utilities are load-bearing across every route.
+     `gold-ink` is the shade used for gold *text*; the pure accent is far too
+     light to pass as type on ivory, so the text shade is a deeper bronze that
+     still reads as the same colour. */
+  --color-gold: #b39a5a;
+  --color-gold-lit: #d8c69c;
+  --color-gold-ink: #6b5a2e;
+
+  --color-whatsapp: #25d366;
+
+  --font-sans: "Inter", "Inter Fallback", ui-sans-serif, system-ui, sans-serif;
+  /* Display is a separate family on purpose: headlines are set in a
+     serif at large sizes, and every piece of metadata, navigation and
+     caption is set in the sans. Neither face does the other's job. */
+  --font-display: "Playfair Display", "Playfair Display Fallback", ui-serif, Georgia, serif;
+
+  /* A single fluid ramp. `clamp` rather than a breakpoint ladder so the page
+     interpolates continuously instead of stepping at eight breakpoints. */
+  --text-micro: 0.6875rem;
+  --text-micro--line-height: 1.4;
+  --text-micro--letter-spacing: 0.18em;
+  --text-micro--font-weight: 500;
+
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.6;
+  --text-base: 1rem;
+  --text-base--line-height: 1.65;
+  --text-lead: clamp(1.0625rem, 0.95rem + 0.55vw, 1.375rem);
+  --text-lead--line-height: 1.55;
+  --text-h3: clamp(1.3125rem, 1.05rem + 0.9vw, 1.875rem);
+  --text-h3--line-height: 1.2;
+  --text-h2: clamp(1.875rem, 1.2rem + 2.6vw, 3.25rem);
+  --text-h2--line-height: 1.05;
+  --text-h1: clamp(2.25rem, 1.2rem + 4.4vw, 4.75rem);
+  --text-h1--line-height: 0.98;
+  --text-display: clamp(2.75rem, 0.5rem + 8.4vw, 7.5rem);
+  --text-display--line-height: 0.92;
+  /* The very large editorial statement that opens a section. Deliberately
+     bigger than the hero: this is the line the site is built around. */
+  --text-editorial: clamp(2.5rem, 0.75rem + 7.6vw, 6.5rem);
+  --text-editorial--line-height: 0.96;
+
+  /* Photography is printed, not app chrome. Two to four pixels, never a
+     pill, never a card radius. */
+  --radius-card: 2px;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+  /* Cinematic ease for entrances: slow out, long settle. */
+  --ease-cinema: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* ================================================================== */
+/* Base                                                                */
+/* ================================================================== */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    border-color: var(--color-line);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* A sticky header would otherwise cover the top of every anchor target. */
+    scroll-padding-top: 5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-synthesis-weight: none;
+    /* Stops a 12-word headline from reflowing the whole page mid-scroll on
+       iOS Safari, which shrinks the text and then restores it. */
+    text-size-adjust: 100%;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    /* Display copy is the serif. The sans is reserved for navigation,
+       metadata, captions, labels and body text. */
+    font-family: var(--font-display);
+    font-weight: 400;
+    /* Playfair is a high-contrast face, so it wants a little less negative
+       tracking than a grotesque does before the joins start to close. */
+    letter-spacing: -0.022em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Weight is the axis the variable font exists for: display copy is 500,
+     body copy is 400, and anything the brand wants to shout uses 600. */
+  strong,
+  b {
+    font-weight: 600;
+  }
+
+  ::selection {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  .on-ink :focus-visible,
+  .on-ink:focus-visible {
+    outline-color: var(--color-gold-lit);
+  }
+
+  /* Native controls inherit nothing by default, so every one of them has to be
+     told about the type ramp explicitly or the form reads as a different site. */
+  input,
+  select,
+  textarea,
+  button {
+    font: inherit;
+    color: inherit;
+  }
+
+  img,
+  video {
+    display: block;
+    max-width: 100%;
+  }
+}
+
+/* ================================================================== */
+/* Layout                                                              */
+/* ================================================================== */
+
+/*
+ * One container, three widths, chosen by the content rather than by the
+ * viewport: prose wants to stay under 68 characters, editorial wants the full
+ * measure, and the gallery wants to bleed.
+ *
+ * Side padding steps 20px / 32px / 72px, which is what keeps the measure from
+ * collapsing on a wide monitor — a 1600px container with 20px gutters reads as a
+ * website that was never opened on a desktop.
+ */
+@utility shell {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+  max-width: 90rem;
+}
+
+@utility shell-wide {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+  max-width: 100rem;
+}
+
+/*
+ * Whitespace is the luxury signal on this kind of site, so the default section
+ * is far taller than a conventional portfolio would dare. The `section-tight`
+ * scale is the only one allowed inside a page, and even that is generous.
+ */
+@utility section {
+  padding-block: clamp(5rem, 1.5rem + 12vw, 12.5rem);
+}
+
+@utility section-tight {
+  padding-block: clamp(3.5rem, 1.5rem + 7vw, 7rem);
+}
+
+@utility section-flush {
+  padding-block: 0;
+}
+
+@utility measure {
+  max-width: 34rem;
+}
+
+/* ================================================================== */
+/* Type                                                                */
+/* ================================================================== */
+
+/*
+ * The eyebrow is the site's one piece of ornament: a small uppercase label in
+ * gold that introduces a section. It is used instead of the decorative rules
+ * and flourishes the old design reached for.
+ */
+@utility eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-size: var(--text-micro);
+  line-height: 1.4;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-olive);
+
+  /* The rule that sits in front of the label. Written as a nested
+     `::before` because Tailwind's `@utility` does not accept a pseudo-element
+     in the utility name — `@utility eyebrow::before` is rejected at build time. */
+  &::before {
+    content: "";
+    width: 1.75rem;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.55;
+    flex: none;
+  }
+}
+
+/* An eyebrow with no rule in front of it, for use directly under a heading. */
+@utility display {
+  font-family: var(--font-display);
+  font-size: var(--text-display);
+  line-height: 0.92;
+  font-weight: 400;
+  letter-spacing: -0.035em;
+}
+
+/*
+ * The very large editorial statement. Set in the serif, allowed to run to four
+ * or five short lines, and given room to breathe on every side — this is the
+ * one element on the site that is meant to stop somebody mid-scroll.
+ */
+@utility editorial {
+  font-family: var(--font-display);
+  font-size: var(--text-editorial);
+  line-height: 0.96;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+/* Uppercase sans labels. The serif is never set in all caps at small sizes. */
+@utility label {
+  font-family: var(--font-sans);
+  font-size: var(--text-micro);
+  line-height: 1.4;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+@utility lede {
+  font-size: var(--text-lead);
+  line-height: 1.55;
+  color: var(--color-mute);
+  max-width: 40rem;
+}
+
+@utility gold {
+  color: var(--color-gold-ink);
+}
+
+@utility olive {
+  color: var(--color-olive);
+}
+
+@utility sand {
+  color: var(--color-gold-ink);
+}
+
+@utility mute {
+  color: var(--color-mute);
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ================================================================== */
+/* Actions                                                             */
+/* ================================================================== */
+
+/*
+ * Two shapes only, and both are rectangles. A filled block for the one thing we
+ * want a visitor to do, a hairline block for everything else. A pill reads as
+ * wedding-template; a 2px rectangle reads as print. Underlines stay reserved
+ * for inline text links, where they are the clearest possible affordance.
+ */
+@utility btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  padding: 0.9375rem 1.75rem;
+  border-radius: var(--radius-card);
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 0.4s var(--ease-out-expo),
+    color 0.4s var(--ease-out-expo),
+    border-color 0.4s var(--ease-out-expo);
+}
+
+@utility btn-ink {
+  background: var(--color-ink);
+  color: var(--color-paper);
+  border: 1px solid var(--color-ink);
+}
+
+@utility btn-ink-hover {
+  background: var(--color-olive);
+  border-color: var(--color-olive);
+}
+
+@utility btn-line {
+  background: transparent;
+  color: var(--color-ink);
+  border: 1px solid var(--color-line);
+}
+
+@utility btn-line-hover {
+  background: var(--color-ink);
+  color: var(--color-paper);
+  border-color: var(--color-ink);
+}
+
+/*
+ * Tone inversion for dark sections.
+ *
+ * `on-ink` is the marker every dark container carries. The ink-coloured
+ * utilities below are written once, in the light palette, and would otherwise
+ * render black-on-black the moment a component is reused inside a dark
+ * section — a `btn-line` secondary action, a `lede`, a `link`, a `mute` label.
+ * Rather than recolouring each call site (which is what a trail of
+ * `!text-paper` overrides amounts to, and which silently rots the next time a
+ * section moves), the inversion is declared once here.
+ *
+ * Descendant selectors, so specificity beats the single-class utility
+ * regardless of the order Tailwind emits them in.
+ */
+.on-ink .lede {
+  color: color-mix(in oklab, var(--color-paper) 72%, transparent);
+}
+
+/* Small gold type is stepped down for light surfaces; on ink the lit tone is
+   already the readable one. */
+.on-ink .eyebrow,
+.on-ink .olive,
+.on-ink .gold,
+.on-ink .sand {
+  color: var(--color-sand);
+}
+
+.on-ink .mute {
+  color: color-mix(in oklab, var(--color-paper) 70%, transparent);
+}
+
+/* Secondary action: a light hairline pill, inverting to a solid paper pill. */
+.on-ink .btn-line {
+  color: var(--color-paper);
+  border-color: var(--color-line-dark);
+}
+
+.on-ink .btn-line:hover {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  border-color: var(--color-paper);
+}
+
+/* Inline text links, same treatment. */
+.on-ink .link {
+  color: var(--color-paper);
+  border-bottom-color: var(--color-line-dark);
+}
+
+.on-ink .link:hover {
+  border-bottom-color: var(--color-paper);
+}
+
+/* The card outline, so a bordered card on black is visible at all. */
+.on-ink .card {
+  border-color: var(--color-line-dark);
+}
+
+/* A chip on a dark surface, which is otherwise a white pill. */
+.on-ink .chip {
+  color: color-mix(in oklab, var(--color-paper) 85%, transparent);
+  border-color: var(--color-line-dark);
+}
+
+@utility btn-paper {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  border: 1px solid var(--color-paper);
+}
+
+@utility btn-paper-hover {
+  background: var(--color-olive);
+  border-color: var(--color-olive);
+  color: var(--color-paper);
+}
+
+/* Inline text link: the rule thickens on hover, the arrow advances. */
+@utility link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 500;
+  color: var(--color-ink);
+  padding-bottom: 0.125rem;
+  border-bottom: 1px solid var(--color-line);
+  transition:
+    border-color 0.3s var(--ease-out-expo),
+    color 0.3s var(--ease-out-expo),
+    gap 0.3s var(--ease-out-expo);
+
+  &:hover {
+    border-bottom-color: var(--color-ink);
+    gap: 0.7rem;
+  }
+}
+
+@utility link-arrow {
+  transition: transform 0.35s var(--ease-out-expo);
+}
+
+/* Small circular arrow that sits next to a heading. */
+@utility round-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex: none;
+  border-radius: 999px;
+  border: 1px solid var(--color-line);
+  color: var(--color-ink);
+  transition:
+    background-color 0.4s var(--ease-out-expo),
+    color 0.4s var(--ease-out-expo),
+    border-color 0.4s var(--ease-out-expo);
+
+  &:hover {
+    background: var(--color-ink);
+    color: var(--color-paper);
+    border-color: var(--color-ink);
+  }
+}
+
+/* ================================================================== */
+/* Surfaces                                                            */
+/* ================================================================== */
+
+@utility surface-paper {
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+@utility surface-cream {
+  background: var(--color-cream);
+  color: var(--color-ink);
+}
+
+@utility surface-ink {
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+
+@utility surface-bone {
+  background: var(--color-bone);
+  color: var(--color-ink);
+}
+
+/* Body-weight text that still needs to read as a link: the ink underline only
+   appears on hover, so a directory of links does not become a wall of rules. */
+@utility link-muted {
+  color: var(--color-mute);
+  text-decoration: none;
+  text-underline-offset: 0.2em;
+}
+
+/* A card that is only a hairline and a fill — no shadow anywhere on the site. */
+@utility card {
+  background: var(--color-paper);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+}
+
+/* A pill used for filters, tags and function lists. */
+@utility chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.875rem;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-line);
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  color: var(--color-mute);
+  background: var(--color-paper);
+  cursor: pointer;
+  transition:
+    background-color 0.3s var(--ease-out-expo),
+    color 0.3s var(--ease-out-expo),
+    border-color 0.3s var(--ease-out-expo);
+}
+
+@utility chip-on {
+  background: var(--color-ink);
+  border-color: var(--color-ink);
+  color: var(--color-paper);
+}
+
+/* ================================================================== */
+/* Photography                                                         */
+/* ================================================================== */
+
+/*
+ * The shell `ResponsiveImage` renders. Its height comes from an inline
+ * `aspect-ratio` taken straight from the image manifest, so the correct box is
+ * reserved before the first byte of the photograph arrives and the blurred
+ * placeholder is already the right shape.
+ *
+ * The frame edge is a hairline or nothing at all — depth comes from the
+ * surface stack, never from a drop shadow.
+ */
+.img-shell {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--color-bone);
+  isolation: isolate;
+}
+
+.img-shell > picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.img-shell img {
+  width: 100%;
+  height: 100%;
+  /*
+   * Safe because the box is sized from the same manifest entry: when the box
+   * ratio equals the source ratio, `cover` has nothing to crop. It stays `cover`
+   * rather than `contain` so a caller who *does* pass a wider ratio gets a
+   * considered crop instead of letterboxing.
+   */
+  object-fit: cover;
+  /* Cross-fade from the blurred placeholder: long enough not to flash, short
+     enough to read as the photograph arriving. */
+  opacity: 0;
+  transition:
+    opacity 0.9s var(--ease-cinema),
+    transform 1.4s var(--ease-cinema);
+}
+
+.img-shell img.is-loaded {
+  opacity: 1;
+}
+
+/* Opt-in: a photograph that scales a little as it comes to rest. Used on the
+   portrait and bento tiles so a wall of images has some motion in it. */
+.img-shell[data-zoom] img {
+  transform: scale(1.04);
+}
+
+.img-shell[data-zoom]:hover img {
+  transform: scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .img-shell img {
+    opacity: 1;
+    transform: none !important;
+    transition: none;
+  }
+}
+
+/* Camera and post-production marks: two compact, readable rows with no tiles. */
+.gear-strip-inner {
+  display: grid;
+  gap: clamp(1.1rem, 2.5vw, 2rem);
+}
+.gear-logo-set {
+  display: grid;
+  gap: 0.45rem;
+}
+.gear-row-label {
+  margin: 0;
+  color: #837969;
+  text-align: center;
+  font: 600 0.58rem/1.3 var(--font-sans);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.logo-wall-gear {
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: clamp(0.3rem, 1.5vw, 1.25rem);
+}
+.logo-wall-kit {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: clamp(0.25rem, 1.1vw, 0.9rem);
+}
+.logo-wall-gear .logo-tile {
+  min-height: 3.5rem;
+  padding: 0.15rem;
+}
+.logo-wall-kit .logo-tile {
+  min-height: 4.35rem;
+  padding: 0.1rem;
+}
+.mark-image {
+  max-width: min(100%, 10rem);
+  max-height: 2.4rem;
+}
+.kit-tile {
+  flex-direction: column;
+  gap: 0.32rem;
+  padding: 0.15rem;
+}
+.kit-icon {
+  width: 2.35rem;
+  height: 2.35rem;
+  object-fit: contain;
+}
+.kit-tile-name {
+  color: #39352f;
+  font-size: clamp(0.56rem, 0.72vw, 0.68rem);
+  font-weight: 600;
+  letter-spacing: 0.055em;
+  text-transform: none;
+  line-height: 1.2;
+}
+.gear-red .mark-svg {
+  max-width: 6.2rem;
+}
+@media (max-width: 767px) {
+  .logo-wall-gear {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .logo-wall-kit {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    row-gap: 0.85rem;
+  }
+  .logo-wall-gear .logo-tile {
+    min-height: 3.2rem;
+  }
+  .logo-wall-kit .logo-tile {
+    min-height: 4.25rem;
+  }
+}
+
+/* Soul + Cinema is an edge-to-edge, shallow video band like the visual reference. */
+.soul-section {
+  padding-block: clamp(1.5rem, 2.4vw, 2.5rem);
+}
+.soul-shell {
+  width: 100%;
+  max-width: none;
+  padding: 0;
+}
+.frame {
+  aspect-ratio: 2.32 / 1;
+  min-height: 0;
+  max-width: none;
+  border-radius: 0;
+  border: 0;
+  box-shadow: none;
+}
+.frame-media {
+  inset: 0;
+}
+.frame-video {
+  width: 100%;
+  height: 100%;
+  transform: translate(-50%, -50%) scale(1.12);
+  filter: grayscale(1) brightness(0.72) contrast(1.05);
+}
+.frame-poster {
+  display: none;
+}
+.frame-grade {
+  background: linear-gradient(90deg, rgb(0 0 0 / 25%), rgb(0 0 0 / 10%) 50%, rgb(0 0 0 / 25%));
+}
+.frame-copy-block {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1rem, 4vw, 3.5rem);
+  color: #fff;
+  text-align: center;
+}
+.frame-copy-block h2 {
+  margin: 0;
+  color: #fff;
+  font: 400 clamp(2.3rem, 5vw, 5rem)/1.05 var(--font-display);
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+  text-shadow: 0 2px 24px rgb(0 0 0 / 40%);
+}
+.frame-copy-block p {
+  max-width: 62ch;
+  margin: clamp(0.9rem, 1.8vw, 1.45rem) 0 0;
+  color: rgb(255 255 255 / 94%);
+  font: 400 clamp(0.88rem, 1.05vw, 1.06rem)/1.75 var(--font-sans);
+  letter-spacing: 0.025em;
+  text-shadow: 0 1px 12px rgb(0 0 0 / 55%);
+}
+@media (max-width: 639px) {
+  .frame {
+    aspect-ratio: 1.08 / 1;
+    min-height: 0;
+  }
+  .frame-copy-block {
+    padding: 1.25rem;
+  }
+  .frame-copy-block h2 {
+    font-size: clamp(2rem, 10vw, 3rem);
+  }
+  .frame-copy-block p {
+    max-width: 39ch;
+    font-size: 0.84rem;
+    line-height: 1.55;
+  }
+}
+
+/* Compact full-bleed Soul + Cinema film strip. */
+.soul-section {
+  padding-block: 0;
+  background: #171715;
+}
+.soul-shell {
+  padding: 0;
+}
+.frame {
+  aspect-ratio: 3.05 / 1;
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+.frame-video {
+  width: 100%;
+  height: 100%;
+  transform: translate(-50%, -50%);
+  object-fit: cover;
+  filter: grayscale(1) brightness(0.68) contrast(1.04);
+}
+.frame-grade {
+  background: linear-gradient(90deg, rgb(0 0 0 / 29%), rgb(0 0 0 / 13%) 52%, rgb(0 0 0 / 29%));
+}
+.frame-copy-block {
+  padding: 1rem;
+}
+.frame-copy-block h2 {
+  font-size: clamp(2rem, 4.7vw, 4.4rem);
+}
+.frame-copy-block p {
+  max-width: 44ch;
+  margin-top: 0.6rem;
+  font-size: clamp(0.76rem, 0.95vw, 0.92rem);
+  line-height: 1.45;
+}
+
+@media (max-width: 639px) {
+  .frame {
+    aspect-ratio: 1.85 / 1;
+    min-height: 0;
+  }
+  .frame-copy-block {
+    padding: 0.75rem;
+  }
+  .frame-copy-block h2 {
+    font-size: clamp(1.85rem, 8vw, 2.5rem);
+  }
+  .frame-copy-block p {
+    max-width: 31ch;
+    margin-top: 0.35rem;
+    font-size: 0.72rem;
+    line-height: 1.35;
+  }
+}
+
+/* Homepage collections: four edge-to-edge photographic entry points. */
+.home-hero-wrap {
+  padding: clamp(0.75rem, 1.8vw, 1.5rem) clamp(1rem, 4vw, 4rem) 0;
+  background: var(--color-paper);
+}
+.home-hero-frame {
+  position: relative;
+  height: min(78svh, 58rem);
+  min-height: 32rem;
+  overflow: hidden;
+  background: #0b0c0e;
+}
+.home-hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.home-hero-shade {
+  position: absolute;
+  inset: auto 0 0;
+  height: 8rem;
+  background: linear-gradient(transparent, rgb(0 0 0 / 48%));
+  pointer-events: none;
+}
+.home-hero-scroll {
+  position: absolute;
+  z-index: 1;
+  right: 0;
+  bottom: 1.5rem;
+  left: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.home-hero-wrap {
+  padding: 0;
+}
+.home-hero-frame {
+  height: min(78svh, 58rem);
+  min-height: 34rem;
+  background: #24211f;
+}
+.home-hero-image {
+  object-position: center 38%;
+}
+.home-hero-shade {
+  height: 13rem;
+  background: linear-gradient(transparent, rgb(0 0 0 / 44%));
+}
+.home-hero-copy {
+  position: absolute;
+  z-index: 1;
+  left: clamp(1.25rem, 6vw, 6rem);
+  bottom: clamp(2.3rem, 5vw, 4rem);
+  display: grid;
+  gap: 0.7rem;
+  color: #fff;
+  text-shadow: 0 1px 16px rgb(0 0 0 / 40%);
+}
+.home-hero-copy span:first-child {
+  font: 600 0.62rem/1.3 var(--font-sans);
+  letter-spacing: 0.32em;
+}
+.home-hero-copy span:last-child {
+  font: 400 clamp(1.4rem, 2.6vw, 2.5rem)/1.1 var(--font-display);
+  letter-spacing: 0.01em;
+}
+.home-hero-scroll {
+  bottom: 1.5rem;
+}
+@media (max-width: 767px) {
+  .home-hero-frame {
+    height: 72svh;
+    min-height: 29rem;
+  }
+  .home-hero-copy {
+    bottom: 4.3rem;
+  }
+}
+
+/* Hero message + actions. Bottom-anchored so the faces stay visible, with a
+   scrim tuned for legibility and a bottom offset that clears the floating
+   call/chat bar on phones (plus the iOS home-indicator zone). */
+.home-hero-scrim {
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 1;
+  height: 62%;
+  background: linear-gradient(transparent 0%, rgb(0 0 0 / 28%) 45%, rgb(0 0 0 / 62%) 100%);
+  pointer-events: none;
+}
+.home-hero-content {
+  position: absolute;
+  z-index: 2;
+  right: clamp(1.25rem, 6vw, 6rem);
+  bottom: clamp(2rem, 5vw, 4rem);
+  left: clamp(1.25rem, 6vw, 6rem);
+  display: grid;
+  justify-items: center;
+  gap: 0.7rem;
+  color: #fff;
+  text-align: center;
+  text-wrap: balance;
+}
+.home-hero-eyebrow {
+  margin: 0;
+  font: 600 0.62rem/1.4 var(--font-sans);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+.home-hero-title {
+  max-width: 16ch;
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.1rem, 9.5vw, 4.5rem);
+  letter-spacing: -0.02em;
+  line-height: 1.04;
+  text-shadow: 0 2px 24px rgb(0 0 0 / 45%);
+}
+.home-hero-sub {
+  margin: 0;
+  max-width: 38ch;
+  font-size: clamp(0.85rem, 3.6vw, 1rem);
+  line-height: 1.55;
+  opacity: 0.88;
+}
+.home-hero-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.65rem;
+  margin-top: 0.5rem;
+}
+.home-hero-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  min-width: 9.5rem;
+  padding: 0.8rem 1.6rem;
+  border-radius: 999px;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  transition:
+    transform 0.25s ease,
+    background-color 0.25s ease,
+    color 0.25s ease;
+}
+.home-hero-cta:active {
+  transform: scale(0.97);
+}
+.home-hero-cta-primary {
+  background: var(--color-gold-ink);
+  color: #fff;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 35%);
+}
+.home-hero-cta-ghost {
+  border: 1px solid rgb(255 255 255 / 65%);
+  background: rgb(0 0 0 / 25%);
+  color: #fff;
+  backdrop-filter: blur(6px);
+}
+@media (min-width: 768px) {
+  .home-hero-content {
+    justify-items: start;
+    text-align: left;
+  }
+  .home-hero-ctas {
+    justify-content: flex-start;
+  }
+  .home-hero-cta:hover {
+    transform: translateY(-2px);
+  }
+}
+@media (max-width: 767px) {
+  .home-hero-content {
+    bottom: max(1.75rem, env(safe-area-inset-bottom));
+  }
+  .home-hero-cta {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+  .home-hero-ctas {
+    width: 100%;
+    max-width: 24rem;
+  }
+}
+.home-intro {
+  padding: clamp(3.5rem, 7vw, 6.5rem) clamp(1rem, 4vw, 4rem);
+  background: var(--color-paper);
+  text-align: center;
+}
+.home-intro-inner {
+  width: min(100%, 52rem);
+  margin-inline: auto;
+}
+.home-intro-eyebrow {
+  margin-bottom: 1rem;
+  color: var(--color-mute);
+  font: 500 0.625rem/1.4 var(--font-sans);
+  letter-spacing: 0.24em;
+}
+.home-intro h2 {
+  color: var(--color-ink);
+  font: 400 clamp(2rem, 4.2vw, 3.75rem)/1.06 var(--font-display);
+  letter-spacing: -0.04em;
+}
+.home-intro-inner > p:last-child {
+  margin-top: 0.9rem;
+  color: var(--color-mute);
+  font: 400 clamp(0.85rem, 1.1vw, 1rem)/1.6 var(--font-sans);
+}
+.photography-collections {
+  width: 100%;
+  background: #171717;
+}
+.photography-collections-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  height: min(78svh, 58rem);
+  min-height: 34rem;
+  gap: 2px;
+  background: var(--color-paper);
+}
+.photography-collection {
+  position: relative;
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  color: #fff;
+  background: #292722;
+}
+.photography-collection::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background: linear-gradient(180deg, transparent 55%, rgb(0 0 0 / 46%) 100%);
+}
+.photography-collection-image {
+  width: 100%;
+  height: 100%;
+}
+.photography-collection-title {
+  position: absolute;
+  z-index: 1;
+  right: 0.5rem;
+  bottom: clamp(1.25rem, 3vw, 2.75rem);
+  left: 0.5rem;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.55rem;
+  color: #fff;
+  font-family: var(--font-sans);
+  font-size: clamp(0.7rem, 1.25vw, 1rem);
+  font-weight: 500;
+  letter-spacing: 0.17em;
+  line-height: 1.2;
+  text-align: center;
+  text-transform: uppercase;
+  text-shadow: 0 1px 14px rgb(0 0 0 / 36%);
+}
+.photography-collection-index {
+  font-size: 0.68em;
+  opacity: 0.76;
+}
+.photography-collection:focus-visible,
+.editorial-grid-photo:focus-visible,
+.film-feature:focus-visible {
+  z-index: 2;
+  outline: 2px solid #fff;
+  outline-offset: -4px;
+}
+
+/* The 15-cell portfolio mosaic reaches every edge of the browser window. */
+.editorial-grid-section,
+.editorial-image-grid {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+.editorial-image-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 2px;
+  background: #f1ebe1;
+}
+.editorial-grid-photo {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 0;
+  background: #ded9d1;
+  cursor: zoom-in;
+}
+.editorial-grid-image {
+  width: 100%;
+  height: 100%;
+}
+.editorial-grid-title {
+  display: flex;
+  min-width: 0;
+  aspect-ratio: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(0.75rem, 2vw, 2.5rem);
+  background: #fbfaf8;
+  color: #26221f;
+  font-family: var(--font-display);
+  text-align: center;
+}
+.editorial-grid-title > span:first-child {
+  font-size: clamp(0.8rem, 1.25vw, 1.35rem);
+  line-height: 1.25;
+}
+.editorial-grid-title strong {
+  font-size: clamp(1.55rem, 3.65vw, 4.35rem);
+  font-weight: 400;
+  letter-spacing: -0.055em;
+  line-height: 1;
+}
+.editorial-grid-title > span:last-child {
+  font-size: clamp(0.68rem, 1.1vw, 1.1rem);
+  line-height: 1.25;
+}
+
+/* Padded film section with a two-by-two image grid and editorial cover row. */
+.films-editorial-section {
+  width: 100%;
+  padding: clamp(2.75rem, 5vw, 5rem) clamp(1rem, 4vw, 4rem);
+  background: var(--color-paper);
+}
+.film-editorial-heading {
+  max-width: 100rem;
+  margin: 0 auto clamp(1.25rem, 2.5vw, 2.25rem);
+  color: var(--color-ink);
+  text-align: center;
+}
+.film-editorial-heading p {
+  margin-bottom: 0.55rem;
+  color: var(--color-mute);
+  font: 500 0.625rem/1.4 var(--font-sans);
+  letter-spacing: 0.22em;
+}
+.film-editorial-heading h3 {
+  font: 400 clamp(1.75rem, 3.5vw, 3rem)/1.05 var(--font-display);
+  letter-spacing: -0.035em;
+}
+.films-feature-grid {
+  display: grid;
+  max-width: 100rem;
+  margin-inline: auto;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.film-feature {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 0;
+  background: #201e1b;
+  color: #fff;
+  cursor: pointer;
+  text-align: center;
+}
+.film-feature > img,
+.film-feature > picture > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.film-feature-picture {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+.film-feature-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgb(0 0 0 / 16%), rgb(0 0 0 / 26%) 45%, rgb(0 0 0 / 45%));
+}
+.film-feature-copy {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  color: #fff;
+  pointer-events: none;
+}
+.film-feature-brand {
+  margin-bottom: 0.6rem;
+  font-family: var(--font-sans);
+  font-size: clamp(0.48rem, 0.62vw, 0.65rem);
+  font-weight: 600;
+  letter-spacing: 0.35em;
+}
+.film-feature-couple {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 5vw, 5.25rem);
+  font-weight: 400;
+  letter-spacing: -0.045em;
+  line-height: 0.98;
+  text-shadow: 0 1px 18px rgb(0 0 0 / 36%);
+}
+.film-feature-location {
+  margin-top: 0.45rem;
+  font-family: var(--font-display);
+  font-size: clamp(0.8rem, 1.35vw, 1.3rem);
+  letter-spacing: 0.08em;
+}
+.film-feature-play {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  filter: drop-shadow(0 1px 5px rgb(0 0 0 / 45%));
+  pointer-events: none;
+}
+.film-feature-play svg {
+  width: clamp(2rem, 3.2vw, 3.4rem);
+  height: auto;
+  fill: currentColor;
+}
+.film-cover-row {
+  display: flex;
+  width: min(100%, 62rem);
+  margin: clamp(1.5rem, 3vw, 2.5rem) auto 0;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  gap: clamp(0.8rem, 2.5vw, 2rem);
+  overflow-x: auto;
+  padding-bottom: 0.35rem;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.film-cover-row::-webkit-scrollbar {
+  display: none;
+}
+.film-cover {
+  position: relative;
+  flex: 0 0 7.5rem;
+  min-width: 0;
+  aspect-ratio: 0.68;
+  overflow: hidden;
+  background: #e9e2d9;
+  scroll-snap-align: start;
+}
+.film-cover-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 767px) {
+  .home-hero-frame {
+    height: 72svh;
+    min-height: 27rem;
+  }
+  .photography-collections-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    height: auto;
+    min-height: 0;
+  }
+  .photography-collection {
+    aspect-ratio: 2 / 3;
+  }
+  .photography-collection::after {
+    background: linear-gradient(180deg, transparent 42%, rgb(0 0 0 / 58%) 100%);
+  }
+  .photography-collection-title {
+    bottom: 1rem;
+    font-size: 0.78rem;
+  }
+  .editorial-image-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .editorial-grid-title strong {
+    font-size: clamp(2.1rem, 10vw, 3.5rem);
+  }
+  .films-feature-grid {
+    grid-template-columns: 1fr;
+    gap: 3px;
+  }
+  .film-feature {
+    aspect-ratio: 16 / 10;
+  }
+  .film-feature-couple {
+    font-size: clamp(2rem, 9vw, 3.5rem);
+  }
+  .film-cover-row {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 0.35rem;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .film-cover-row::-webkit-scrollbar {
+    display: none;
+  }
+  .film-cover {
+    flex: 0 0 6rem;
+    scroll-snap-align: start;
+  }
+}
+
+/* Floating dock + chat card clear the iPhone home indicator / gesture bar. */
+@media (max-width: 1023px) {
+  .mobile-dock {
+    bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+  .mobile-chat-card {
+    bottom: max(72px, calc(env(safe-area-inset-bottom) + 72px));
+  }
+}
+
+/* ================================================================== */
+/* The full-viewport hero                                              */
+/* ================================================================== */
+
+/*
+ * The one place on the site where type sits on a photograph, and the one place
+ * a gradient is justified: the copy has to be legible over an unknown image, so
+ * the scrim is anchored to the bottom and the headline is never placed where
+ * the brightest part of a wedding photograph tends to be.
+ */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100svh;
+  min-height: 32rem;
+  overflow: hidden;
+  /* The warm mid-tone the hero fades in from, rather than near-black: on a slow
+     connection the first thing painted was a black rectangle, which is the one
+     place a visitor would form an impression of a dark-themed site. */
+  background: var(--color-olive);
+  color: var(--color-paper);
+}
+
+.hero-frame {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1.4s var(--ease-out-expo);
+}
+
+.hero-frame[data-active="true"] {
+  opacity: 1;
+}
+
+/* A very slow push on the live frame. Subtle enough to read as a held frame
+   rather than as motion. */
+.hero-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: hero-drift 22s var(--ease-cinema) infinite alternate;
+}
+
+/* Warm, and lighter at the foot than it was. The scrim only has to hold the
+   caption legible over whatever the frame happens to be; at 0.82 it was
+   flattening the lower third of every hero photograph into a black band. */
+.hero-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgb(23 21 18 / 0.7) 0%,
+    rgb(23 21 18 / 0.42) 30%,
+    rgb(23 21 18 / 0.08) 60%,
+    rgb(23 21 18 / 0.26) 100%
+  );
+}
+
+/* Keeps the transparent header legible over a pale frame. */
+.hero-cap {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 8rem;
+  background: linear-gradient(to bottom, rgb(23 21 18 / 0.5), transparent);
+  pointer-events: none;
+}
+
+@media (min-width: 48rem) {
+  .hero-cap {
+    height: 10rem;
+  }
+}
+
+@keyframes hero-drift {
+  from {
+    transform: scale(1.04);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+/*
+ * Film grain. One fixed overlay above the whole page at an opacity you feel
+ * rather than see. Pointer-transparent, so it never eats a click, and removed
+ * entirely when the visitor has asked for reduced motion.
+ */
+@utility grain {
+  position: relative;
+}
+
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grain::after {
+    display: none;
+  }
+}
+
+@layer components {
+  /*
+ * These defaults live in the components layer on purpose.
+ *
+ * Unlayered rules outrank every Tailwind layer, so a plain `.bento > *`
+ * selector would beat a `lg:col-span-2` written in the markup and the
+ * deliberate spans this grid exists for would silently never render. In the
+ * components layer the utilities layer wins, as it should.
+ */
+  /* ================================================================== */
+  /* Bento grid                                                          */
+  /* ================================================================== */
+
+  /*
+   * A bento is not decoration: the lead cell carries the argument and the smaller
+   * cells carry evidence, so the spans are set in the markup rather than left to
+   * a uniform auto-flow that would make every cell the same size.
+   */
+  .bento {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(0.75rem, 0.4rem + 1vw, 1.25rem);
+  }
+
+  /*
+   * The default span is wrapped in :where() so it carries zero specificity.
+   *
+   * That is deliberate. At 0,1,0 it outranked any Tailwind grid-column utility
+   * in the markup — a deliberate `lg:col-span-2` lost to it, so the bento
+   * silently flattened into a uniform grid and the lead-card variation this
+   * default exists to be overridden by never rendered. Wrapping the selector
+   * lets the intended spans in the markup win, and lets this rule do its real
+   * job: supply a sane default where no span is declared.
+   */
+  :where(.bento) > * {
+    grid-column: span 1;
+    grid-row: span 1;
+  }
+
+  @media (min-width: 48rem) {
+    .bento-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .bento-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .bento-4 {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  /*
+   * A six-column substrate only earns its keep once a cell is actually allowed
+   * to span it. Between 48rem and 64rem the bento has no spans declared, so six
+   * columns put all six cards on a single row of roughly 100px each — unreadable.
+   * Three columns reads properly on a tablet, and the 2x/3x variation the
+   * six-column grid exists for only starts at the same breakpoint the spans do.
+   */
+  @media (min-width: 64rem) {
+    .bento-3 {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 47.99rem) {
+    .bento,
+    .bento-2,
+    .bento-3,
+    .bento-4 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    :where(.bento) > * {
+      grid-column: span 2;
+    }
+    /* On a phone a two-up bento still reads as a bento; a one-up stack does not. */
+    :where(.bento) > :where([data-mobile="half"]) {
+      grid-column: span 1;
+    }
+  }
+}
+
+/* ================================================================== */
+/* Pinned mobile actions                                              */
+/* ================================================================== */
+
+/*
+ * /contact pins a call and a WhatsApp bar to the bottom of the viewport on
+ * phones. The footer is the last thing in the document, so without this the
+ * bar covers its phone number and social links — the two ways to reach the
+ * studio, hidden behind two other ways to reach the studio.
+ *
+ * The flag is set by the page and removed on unmount, so no other route pays
+ * for the clearance.
+ */
+body[data-pinned-actions] footer {
+  padding-bottom: 5.5rem;
+}
+
+@media (min-width: 48rem) {
+  body[data-pinned-actions] footer {
+    padding-bottom: 0;
+  }
+}
+
+/* ================================================================== */
+/* Carousel                                                            */
+/* ================================================================== */
+
+/*
+ * Native scroll-snap rather than a transform-driven slider: it gets momentum
+ * on touch, a real scrollbar for pointer users, keyboard paging, and correct
+ * behaviour inside a scroller for free. The arrows are progressive
+ * enhancement on top.
+ */
+.carousel {
+  display: flex;
+  gap: clamp(0.75rem, 0.4rem + 1vw, 1.25rem);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 1.25rem;
+  padding-inline: 1.25rem;
+  /* The gutter belongs to the scroller so cards can bleed to the edge. */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  overscroll-behavior-x: contain;
+}
+
+.carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.carousel > * {
+  scroll-snap-align: start;
+  flex: none;
+}
+
+/* Cards are sized in `cqi`-free viewport units so a card is always the same
+   fraction of the screen regardless of how much padding the shell adds. */
+@utility carousel-item {
+  width: min(78vw, 30rem);
+}
+
+/* A uniform portrait card. Narrower than the landscape default so a 3/4 crop
+   lands near 27rem tall rather than 40rem. */
+/* The 1px rule that tracks the carousel's progress. */
+.carousel-rail {
+  position: relative;
+  height: 1px;
+  background: var(--color-line);
+  overflow: hidden;
+}
+
+.carousel-rail > span {
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  background: var(--color-ink);
+  transform-origin: left;
+  transition: transform 0.2s linear;
+}
+
+/* ================================================================== */
+/* Marquee                                                             */
+/* ================================================================== */
+
+/*
+ * A ticker of the things the studio is known for. Runs at a speed slow enough
+ * to read, pauses on hover, and is hidden from assistive tech because the same
+ * words are always available as a real list elsewhere on the page.
+ */
+.marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee var(--marquee-duration, 38s) linear infinite;
+}
+
+.marquee-slow {
+  animation-duration: 64s;
+}
+
+.marquee:hover {
+  animation-play-state: paused;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ================================================================== */
+/* Lightbox                                                            */
+/* ================================================================== */
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: rgb(17 17 17 / 0.96);
+  padding: clamp(1rem, 4vw, 3rem);
+  animation: fade-in 0.3s var(--ease-out-expo);
+}
+
+.lightbox-stage {
+  position: relative;
+  max-width: min(100%, 78rem);
+  max-height: 82svh;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: clamp(-0.5rem, -1vw, 0rem);
+  right: 0;
+  translate: 0 -100%;
+}
+
+/* ================================================================== */
+/* Scroll-driven storytelling                                          */
+/* ================================================================== */
+
+/*
+ * A hairline that fills as the section scrolls. One rule, no library, and it
+ * turns a list of seven steps into something that visibly progresses.
+ */
+/* ================================================================== */
+/* Forms                                                               */
+/* ================================================================== */
+
+.field {
+  width: 100%;
+  padding: 0.8125rem 0;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--color-line);
+  border-radius: 0;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  transition: border-color 0.3s var(--ease-out-expo);
+}
+
+.field::placeholder {
+  color: var(--color-mute);
+  opacity: 0.75;
+}
+
+.field:focus {
+  outline: none;
+  border-bottom-color: var(--color-ink);
+}
+
+.field:focus-visible {
+  outline: none;
+}
+
+/* A hairline field on a dark surface: the rule and the focus colour are both
+   written for light sections and would otherwise disappear. */
+.on-ink .field {
+  border-bottom-color: var(--color-line-dark);
+}
+
+.on-ink .field:focus {
+  border-bottom-color: var(--color-gold-lit);
+}
+
+.on-ink .field::placeholder {
+  color: color-mix(in oklab, var(--color-paper) 45%, transparent);
+  opacity: 1;
+}
+
+textarea.field {
+  resize: vertical;
+  min-height: 6rem;
+}
+
+select.field {
+  appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) calc(50% + 2px),
+    calc(100% - 9px) calc(50% + 2px);
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 2rem;
+  cursor: pointer;
+}
+
+/* A checkbox or radio drawn as a small square with a gold fill. */
+.check {
+  appearance: none;
+  flex: none;
+  width: 1.125rem;
+  height: 1.125rem;
+  border: 1px solid var(--color-line);
+  border-radius: 3px;
+  background: transparent;
+  cursor: pointer;
+  display: grid;
+  place-content: center;
+  transition:
+    background-color 0.2s var(--ease-out-expo),
+    border-color 0.2s var(--ease-out-expo);
+}
+
+.check::after {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  transform: scale(0);
+  transition: transform 0.2s var(--ease-out-expo);
+  background: var(--color-paper);
+  clip-path: polygon(14% 46%, 4% 58%, 40% 88%, 96% 22%, 86% 12%, 38% 68%);
+}
+
+.check:checked {
+  background: var(--color-ink);
+  border-color: var(--color-ink);
+}
+
+.check:checked::after {
+  transform: scale(1);
+}
+
+/* ================================================================== */
+/* Reveal on scroll                                                    */
+/* ================================================================== */
+
+.js .reveal {
+  opacity: 0;
+  transform: translateY(1.25rem);
+  transition:
+    opacity 0.9s var(--ease-out-expo),
+    transform 0.9s var(--ease-out-expo);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+/*
+ * `will-change` is deliberately NOT set on the resting `.reveal` state.
+ *
+ * A page like the homepage has sixty-odd reveals on it. `will-change:
+ * opacity, transform` promotes every one of them to its own compositor layer
+ * for as long as the rule applies, so the browser holds sixty textures in GPU
+ * memory to animate a one-line opacity change — on a phone that is the
+ * difference between a smooth scroll and visible tearing, and it grows with
+ * every cell added to a grid.
+ *
+ * The hint is applied only to the handful of elements actively animating, by
+ * `.reveal-in` (JS adds it on the same frame the transition starts) and
+ * dropped again once the transition ends. If the transitionend never fires the
+ * hint is harmless: a layer that is already painted and no longer changing.
+ */
+.reveal.reveal-in {
+  will-change: opacity, transform;
+}
+
+.js .reveal.reveal-in {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .js .reveal {
+    opacity: 1;
+    transform: none;
+  }
+  .marquee {
+    animation: none;
+  }
+  .hero-frame img {
+    animation: none;
+  }
+}
+
+/*
+ * The stories backdrop.
+ *
+ * The frames cycle on one shared keyframe offset by a fraction of the total
+ * cycle, so each frame spends most of the cycle invisible, cross-fades in,
+ * holds, and fades back out. The offsets are what make it a cross-fade rather
+ * than four images blinking in sequence.
+ */
+@keyframes film-crossfade {
+  0% {
+    opacity: 0;
+  }
+  4% {
+    opacity: 1;
+  }
+  29% {
+    opacity: 1;
+  }
+  33%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [style*="film-crossfade"] {
+    animation: none !important;
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ================================================================== */
+/* Awards, press and gear                                             */
+/* ================================================================== */
+
+/*
+ * The medal, as a certificate tile: white paper, gold ink, a hairline.
+ * The gold family had to drop from `--color-gold-lit`/`--color-gold` to
+ * `--color-gold-ink` when this section moved onto ivory — the lighter golds
+ * measured under 3:1 on white at the sizes used here.
+ */
+.medal {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  padding: 1.5rem 0.875rem;
+  text-align: center;
+  background: var(--color-bone);
+  border: 1px solid var(--color-line);
+  transition:
+    border-color 0.4s ease,
+    background-color 0.4s ease;
+}
+.medal:hover {
+  border-color: var(--color-gold);
+  background-color: color-mix(in srgb, var(--color-gold) 7%, var(--color-bone));
+}
+
+/* The leaf badge.
+ *
+ * A fixed-size circle with the wreath drawn around it and the year set inside.
+ * Every medal gets the same 5.5rem box, so the ten badges are identical
+ * drawings and a row of them lines up on one baseline. The wreath is
+ * `position: absolute` behind the year because the SVG is a 100x100 box and
+ * the year has to sit in the middle of it rather than beside it. */
+.medal-badge {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 5.5rem;
+  height: 5.5rem;
+  flex: none;
+  margin-bottom: 1rem;
+  border-radius: 999px;
+  background: var(--color-paper);
+  border: 1px solid color-mix(in srgb, var(--color-gold) 45%, transparent);
+}
+
+.medal-wreath {
+  position: absolute;
+  inset: 0.35rem;
+  width: calc(100% - 0.7rem);
+  height: calc(100% - 0.7rem);
+  color: var(--color-gold);
+}
+
+/* The short ribbon under the title. Decorative — the studio name is already
+   in the page title and the footer. */
+.medal-ribbon {
+  margin-top: auto;
+  padding-top: 0.75rem;
+  font-size: 0.5625rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-mute);
+}
+
+.medal-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.medal-year {
+  position: relative;
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  color: var(--color-gold-ink);
+}
+
+.medal-title {
+  margin-top: 0.7rem;
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  line-height: 1.3;
+  color: var(--color-ink);
+}
+
+.medal-headline {
+  margin-top: 0.45rem;
+  font-size: 0.6875rem;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-gold-ink);
+}
+
+/* --- Press ------------------------------------------------------- */
+
+.press-word {
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  letter-spacing: 0.02em;
+  color: var(--color-mute);
+  transition: color 0.3s ease;
+}
+.press-word:hover {
+  color: var(--color-ink);
+}
+
+/* --- Gear -------------------------------------------------------- */
+
+.gear-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  height: 100%;
+  padding: 1.35rem 1rem;
+  border-bottom: 1px solid var(--color-line);
+  transition: background-color 0.3s ease;
+}
+.gear-cell:hover {
+  background-color: var(--color-bone);
+}
+
+.gear-kind {
+  font-size: 0.625rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-mute);
+}
+
+.gear-name {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  color: var(--color-ink);
+}
+
+.gear-go {
+  margin-top: 0.35rem;
+  color: var(--color-mute);
+  opacity: 0;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+  transform: translate(-2px, 2px);
+}
+.gear-cell:hover .gear-go,
+.gear-cell:focus-visible .gear-go {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+/* ================================================================== */
+/* The editorial system                                                */
+/* ================================================================== */
+
+/* ------------------------------------------------------------------ */
+/* Outlined button                                                     */
+/* ------------------------------------------------------------------ */
+
+@utility btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.9rem 1.6rem;
+  border: 1px solid var(--color-ink);
+  color: var(--color-ink);
+  background: transparent;
+  transition:
+    background-color 0.4s var(--ease-out-expo),
+    color 0.4s var(--ease-out-expo);
+
+  &:hover {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+}
+
+@utility text-paper-light {
+  color: rgb(252 251 248 / 0.85);
+  border-bottom-color: rgb(252 251 248 / 0.4);
+}
+
+/* Homepage: quieter, more spacious editorial pacing. */
+.hero .display {
+  max-width: 12ch;
+  font-size: clamp(3.5rem, 8.7vw, 8.4rem);
+  line-height: 0.94;
+  letter-spacing: -0.055em;
+}
+.hero .display span + span {
+  font-style: italic;
+  font-weight: 400;
+}
+.site-wordmark {
+  text-shadow: 0 1px 18px rgb(0 0 0 / 0.15);
+}
+.promise-section {
+  padding: clamp(5rem, 11vw, 10rem) 0;
+  background: var(--color-paper);
+}
+.promise-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 4rem;
+  align-items: start;
+}
+.promise-layout > .eyebrow {
+  margin-top: 0.8rem;
+}
+.promise-title {
+  max-width: 12ch;
+  font-family: var(--font-display);
+  font-size: clamp(2.7rem, 5.3vw, 5.6rem);
+  line-height: 0.99;
+  letter-spacing: -0.045em;
+}
+.promise-title em,
+.awards-title em {
+  color: var(--color-gold-ink);
+  font-weight: 400;
+}
+.promise-copy {
+  max-width: 49ch;
+  margin-top: 1.8rem;
+  color: var(--color-mute);
+  font-size: var(--text-lead);
+}
+.editorial-link {
+  display: inline-flex;
+  gap: 1rem;
+  align-items: center;
+  margin-top: 2rem;
+  padding-bottom: 0.45rem;
+  border-bottom: 1px solid var(--color-gold-ink);
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.editorial-link span {
+  font-size: 1rem;
+  transition: transform 250ms ease;
+}
+.editorial-link:hover span {
+  transform: translate(3px, -3px);
+}
+.press-editorial {
+  padding: clamp(3rem, 6vw, 5.5rem) 0;
+  background: var(--color-cream);
+}
+.press-heading-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--color-line);
+  padding-bottom: 1.1rem;
+}
+.press-heading-row h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 2.2vw, 2.3rem);
+  font-weight: 400;
+}
+
+.press-logo-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+@media (min-width: 640px) {
+  .press-logo-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1024px) {
+  .press-logo-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+.press-logo-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 1rem;
+  background: #ffffff;
+  border: 1px solid var(--color-line);
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+.press-logo-card:hover {
+  border-color: var(--color-gold);
+}
+
+.vogue-logo {
+  font-family: Didot, "Playfair Display", serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+}
+.weddingsutra-logo {
+  font-family: Georgia, serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #9b111e;
+}
+.theknot-logo {
+  font-family: var(--font-sans);
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  color: #2d68c4;
+}
+.weddingwire-logo {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  color: #2f3e46;
+}
+.pinkvilla-logo {
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  color: #e60067;
+}
+.film-companion-logo {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  color: #171717;
+}
+
+/* Compact couture and press affiliation wall. The marks carry the section. */
+.affiliations-section {
+  padding: clamp(2.25rem, 5vw, 4.5rem) 1rem;
+  background: #e9e2d9;
+  border-block: 1px solid #ddd3c8;
+}
+.affiliations-grid {
+  width: min(100%, 66rem);
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: center;
+  justify-items: center;
+  gap: 2rem 1.25rem;
+}
+.affiliation-link {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  text-decoration: none;
+}
+.affiliation-link:focus-visible {
+  outline: 2px solid #625e57;
+  outline-offset: 5px;
+}
+.affiliation-mark {
+  min-width: 0;
+  min-height: 3.4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 0.9;
+  color: #151515;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(0.8rem, 1.6vw, 1.35rem);
+}
+.affiliation-image {
+  display: block;
+  max-width: min(100%, 10rem);
+  max-height: 3rem;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+/* No filter: manish-malhotra.png already ships as a black mark and used to be
+   flipped to white here, which left it invisible on the light ground. */
+.affiliation-vera .affiliation-image {
+  filter: brightness(0);
+}
+.affiliation-vogue {
+  font-family: Didot, "Times New Roman", serif;
+  font-size: clamp(1.6rem, 3.2vw, 2.45rem);
+  letter-spacing: -0.07em;
+}
+.affiliation-weddingsutra {
+  color: #c6154d;
+  font-family: Georgia, serif;
+}
+.affiliation-seal {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font:
+    italic 700 1rem Georgia,
+    serif;
+  margin-bottom: 0.2rem;
+}
+.affiliation-small {
+  font-size: 0.58em;
+  letter-spacing: 0.05em;
+  line-height: 1.2;
+}
+.affiliation-tiny {
+  font-family: Arial, sans-serif;
+  font-size: 0.4em;
+  letter-spacing: 0.1em;
+  line-height: 1.3;
+}
+.affiliation-hindustan {
+  flex-direction: row;
+  gap: 0.25rem;
+  font-weight: 700;
+  font-size: clamp(0.65rem, 1.2vw, 1rem);
+}
+.ht-disc {
+  display: inline-grid;
+  place-items: center;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: #13a8c7;
+  color: white;
+  font:
+    700 0.5rem Georgia,
+    serif;
+}
+.affiliation-ifp {
+  font-family: Impact, "Arial Narrow", sans-serif;
+  font-stretch: condensed;
+  font-weight: 900;
+  font-size: clamp(1.05rem, 2vw, 1.65rem);
+  line-height: 0.78;
+}
+.affiliation-toi .toi-emblem {
+  font-size: 1.5rem;
+  line-height: 0.8;
+}
+.affiliation-asian {
+  color: #d8091a;
+  font-family: Impact, "Arial Narrow", sans-serif;
+  font-weight: 900;
+  font-size: clamp(1.05rem, 2vw, 1.55rem);
+  line-height: 0.78;
+}
+.affiliation-femina {
+  border: 1px solid #bdb7b0;
+  padding: 0.35rem 0.55rem;
+  font-family: Georgia, serif;
+  font-size: clamp(0.65rem, 1.1vw, 0.85rem);
+  line-height: 0.95;
+}
+.affiliation-diva {
+  font-family: Impact, "Arial Black", sans-serif;
+  font-weight: 900;
+  font-style: italic;
+  font-size: clamp(1.5rem, 3vw, 2.3rem);
+  letter-spacing: -0.1em;
+}
+.affiliation-sabyasachi {
+  font-family: Georgia, serif;
+  font-size: clamp(0.7rem, 1.25vw, 1rem);
+  letter-spacing: 0.02em;
+  font-weight: 700;
+}
+.affiliation-traveler {
+  font-family: Georgia, serif;
+  font-weight: 700;
+  font-size: clamp(1.1rem, 2vw, 1.65rem);
+  line-height: 0.75;
+}
+.affiliation-vows {
+  gap: 0.2rem;
+}
+.vows-v {
+  color: #ed4e59;
+  font:
+    900 italic 2.2rem Arial,
+    sans-serif;
+  line-height: 0.7;
+}
+.affiliation-cultured {
+  font-family: Arial, sans-serif;
+  gap: 0.08rem;
+}
+
+.closing-cta {
+  padding: clamp(3.5rem, 8vw, 7rem) 0;
+  background: #f4f0e9;
+}
+.closing-cta-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  align-items: center;
+  gap: clamp(2rem, 7vw, 7rem);
+}
+.closing-cta-copy {
+  padding: clamp(1rem, 4vw, 3.5rem) 0;
+  color: #31291f;
+}
+.closing-cta-kicker {
+  margin: 0 0 1.2rem;
+  color: #917c60;
+  font: 600 0.65rem/1.4 var(--font-sans);
+  letter-spacing: 0.24em;
+}
+.closing-cta-copy h2 {
+  max-width: 12ch;
+  margin: 0;
+  font: 400 clamp(2.8rem, 5.4vw, 5.5rem)/0.98 var(--font-display);
+  letter-spacing: -0.04em;
+}
+.closing-cta-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 2rem;
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid #a58d6b;
+  color: #514331;
+  font: 500 0.68rem/1.3 var(--font-sans);
+  letter-spacing: 0.17em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+.closing-cta-image {
+  height: clamp(22rem, 42vw, 38rem);
+  overflow: hidden;
+  background: #e7d8c4;
+}
+.closing-cta-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 55%;
+}
+@media (max-width: 720px) {
+  .closing-cta-inner {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .closing-cta-copy {
+    padding: 0;
+  }
+  .closing-cta-image {
+    height: min(75vw, 28rem);
+  }
+}
+
+/* Bright editorial enquiry banner with the supplied photograph. */
+.closing-cta {
+  padding: clamp(2.5rem, 6vw, 5rem) 0;
+  background: #f8f6f1;
+}
+.closing-cta-inner.shell {
+  width: min(100% - clamp(2rem, 8vw, 8rem), 92rem);
+  max-width: 92rem;
+  grid-template-columns: minmax(0, 1.35fr) minmax(18rem, 0.8fr);
+  gap: clamp(2rem, 6vw, 6rem);
+}
+.closing-cta-image {
+  height: clamp(20rem, 34vw, 31rem);
+  background: #eae5dc;
+}
+.closing-cta-image img {
+  object-position: center 46%;
+}
+.closing-cta-copy {
+  padding: 1rem 0;
+}
+.closing-cta-kicker {
+  margin-bottom: 1rem;
+  color: #8a7259;
+}
+.closing-cta-copy h2 {
+  max-width: 10ch;
+  color: #2c2924;
+  font-size: clamp(2.6rem, 4.6vw, 4.6rem);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+}
+.closing-cta-note {
+  max-width: 34ch;
+  margin: 1.1rem 0 0;
+  color: #71695f;
+  font: 400 0.94rem/1.65 var(--font-sans);
+}
+.closing-cta-link {
+  margin-top: 1.5rem;
+  padding: 0.9rem 1.2rem;
+  border: 1px solid #8a7259;
+  color: #312b24;
+  letter-spacing: 0.12em;
+  transition: none;
+}
+@media (max-width: 720px) {
+  .closing-cta {
+    padding: 2.25rem 0;
+  }
+  .closing-cta-inner.shell {
+    width: min(100% - 2rem, 92rem);
+    grid-template-columns: 1fr;
+    gap: 1.15rem;
+  }
+  .closing-cta-image {
+    height: min(68vw, 24rem);
+  }
+  .closing-cta-copy h2 {
+    max-width: 13ch;
+    font-size: clamp(2.5rem, 10vw, 3.7rem);
+  }
+}
+
+/* One image-led enquiry banner: the supplied wedding photograph fills the frame. */
+.closing-cta-banner {
+  position: relative;
+  isolation: isolate;
+  width: min(100% - clamp(2rem, 7vw, 7rem), 100rem);
+  min-height: clamp(25rem, 41vw, 39rem);
+  margin: clamp(2rem, 5vw, 4rem) auto;
+  padding: 0;
+  overflow: hidden;
+  background-color: #dfd5c5;
+}
+/* The photograph, as a real responsive image behind the copy — not a CSS
+   background, so every viewport fetches its own width from the ladder. */
+.closing-cta-photo {
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.closing-cta-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 46%;
+}
+.closing-cta-banner::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  content: "";
+  background: linear-gradient(
+    90deg,
+    rgb(248 246 241 / 96%) 0%,
+    rgb(248 246 241 / 87%) 27%,
+    rgb(248 246 241 / 43%) 48%,
+    transparent 68%
+  );
+}
+.closing-cta-banner .closing-cta-inner.shell {
+  display: flex;
+  width: 100%;
+  max-width: none;
+  min-height: inherit;
+  align-items: center;
+  padding: clamp(2rem, 7vw, 7rem);
+}
+.closing-cta-banner .closing-cta-copy {
+  max-width: 34rem;
+  padding: 0;
+}
+.closing-cta-banner .closing-cta-kicker {
+  margin: 0 0 1.15rem;
+  color: #75634e;
+  font-size: 0.61rem;
+  letter-spacing: 0.22em;
+}
+.closing-cta-banner .closing-cta-copy h2 {
+  max-width: 10ch;
+  color: #28231d;
+  font-size: clamp(3rem, 5.3vw, 5.6rem);
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+}
+.closing-cta-banner .closing-cta-link {
+  min-height: 3rem;
+  margin-top: 1.65rem;
+  padding: 0.95rem 1.25rem;
+  border: 0;
+  background: #29251f;
+  color: #fffdf9;
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+}
+@media (max-width: 720px) {
+  .closing-cta-banner {
+    width: calc(100% - 1.25rem);
+    min-height: 31rem;
+    margin: 1.5rem auto;
+  }
+  .closing-cta-photo img {
+    object-position: 57% center;
+  }
+  .closing-cta-banner::before {
+    background: linear-gradient(
+      90deg,
+      rgb(248 246 241 / 94%) 0%,
+      rgb(248 246 241 / 84%) 44%,
+      rgb(248 246 241 / 25%) 100%
+    );
+  }
+  .closing-cta-banner .closing-cta-inner.shell {
+    min-height: inherit;
+    align-items: center;
+    padding: 1.5rem;
+  }
+  .closing-cta-banner .closing-cta-copy {
+    max-width: 19rem;
+  }
+  .closing-cta-banner .closing-cta-kicker {
+    max-width: 22rem;
+    font-size: 0.52rem;
+    letter-spacing: 0.15em;
+  }
+  .closing-cta-banner .closing-cta-copy h2 {
+    font-size: clamp(2.7rem, 12vw, 3.6rem);
+  }
+}
+
+/* Show the supplied portrait in full, with the promise set below it. */
+.home-hero-wrap {
+  padding: 0;
+  background: #f3f0eb;
+}
+.home-hero-frame {
+  display: block;
+  height: min(86svh, 64rem);
+  min-height: 37rem;
+  background: #f3f0eb;
+}
+.home-hero-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: 68% center;
+}
+.home-hero-shade {
+  display: none;
+}
+.home-hero-copy {
+  position: absolute;
+  z-index: 1;
+  right: auto;
+  bottom: clamp(2.2rem, 5vw, 4.5rem);
+  left: clamp(1.5rem, 5vw, 5rem);
+  display: block;
+  width: min(36vw, 38rem);
+  color: #25231f;
+  text-shadow: none;
+}
+.home-hero-copy h1 {
+  max-width: 11ch;
+  margin: 0;
+  color: inherit;
+  font: 700 clamp(2rem, 4.1vw, 4.4rem)/1.04 var(--font-sans);
+  letter-spacing: -0.045em;
+}
+@media (max-width: 767px) {
+  .home-hero-frame {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    height: 82svh;
+    min-height: 37rem;
+    padding-bottom: 1.3rem;
+  }
+  .home-hero-image {
+    grid-row: 1;
+    min-height: 0;
+    height: 100%;
+    object-position: center;
+  }
+  .home-hero-copy {
+    position: static;
+    width: auto;
+    padding: 0.9rem 1.4rem 0;
+  }
+  .home-hero-copy h1 {
+    max-width: 18ch;
+    font-size: clamp(1.55rem, 7vw, 2.35rem);
+    line-height: 1.08;
+  }
+}
+
+/* Full-window hero: the portrait becomes the complete canvas, like the reference. */
+.home-hero-wrap {
+  width: 100%;
+  height: 100svh;
+  padding: 0;
+  background: #171615;
+}
+.home-hero-frame {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100svh;
+  min-height: 34rem;
+  overflow: hidden;
+  background: #171615;
+}
+.home-hero-image {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 46%;
+}
+.home-hero-frame::before {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 1;
+  height: clamp(6rem, 18vh, 11rem);
+  content: "";
+  pointer-events: none;
+  background: linear-gradient(180deg, rgb(0 0 0 / 34%) 0%, rgb(0 0 0 / 15%) 48%, transparent 100%);
+}
+.home-hero-shade {
+  display: none;
+}
+.home-hero-copy {
+  position: absolute;
+  inset: auto 1.25rem clamp(2rem, 6vh, 4.5rem);
+  z-index: 2;
+  display: flex;
+  width: auto;
+  justify-content: center;
+  color: #fff;
+  text-align: center;
+  text-shadow: 0 2px 18px rgb(0 0 0 / 72%);
+}
+.home-hero-copy h1 {
+  max-width: 28ch;
+  margin: 0;
+  color: inherit;
+  font: 700 clamp(1.45rem, 3.5vw, 3.35rem)/1.1 var(--font-sans);
+  letter-spacing: -0.025em;
+}
+@media (max-width: 767px) {
+  .home-hero-wrap,
+  .home-hero-frame {
+    height: 100svh;
+    min-height: 34rem;
+  }
+  .home-hero-image {
+    object-position: center 42%;
+  }
+  .home-hero-copy {
+    inset-inline: 1.25rem;
+    bottom: 2.5rem;
+    width: auto;
+    padding: 0;
+  }
+  .home-hero-copy h1 {
+    max-width: 20ch;
+    font-size: clamp(1.5rem, 7vw, 2.25rem);
+  }
+}
+@media (min-width: 700px) {
+  .affiliations-grid {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    row-gap: 3rem;
+  }
+}
+
+@media (max-width: 720px) {
+  .promise-layout,
+  .awards-layout {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .promise-layout > .eyebrow {
+    margin-top: 0;
+  }
+  .awards-art {
+    max-width: 28rem;
+    margin-inline: auto;
+  }
+  .press-logos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.7rem 1rem;
+  }
+}
+
+/* ================================================================== */
+/* The brand index                                                     */
+/* ================================================================== */
+
+/*
+ * A wall of marks, divided by hairlines rather than boxed in.
+ *
+ * The one-pixel gap over a line-coloured ground is the whole trick: it draws
+ * the rules between the tiles without a single border on any of them, so the
+ * grid stays hairline-crisp at any column count and the section reads as an
+ * index rather than a shelf of cards.
+ *
+ * Rows are set by `--per`, a flex-basis percentage, and the tiles grow to close
+ * whichever row they land in. That is why the last row of an odd count fills the
+ * measure instead of leaving an empty cell — a grid with `1fr` tracks cannot do
+ * that, and an empty cell on a line-coloured ground is a solid block of line.
+ */
+.logo-wall {
+  --per: 46%;
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(0.75rem, 1.8vw, 1.5rem);
+  background: transparent;
+  border: 0;
+}
+
+.logo-tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 var(--per);
+  min-width: 0;
+  min-height: 4rem;
+  padding: 0.65rem 0.25rem;
+  background: transparent;
+  color: var(--color-ink);
+}
+.logo-tile:hover {
+  background: transparent;
+}
+.logo-wall-gear,
+.logo-wall-kit {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: clamp(0.45rem, 1.3vw, 1.2rem);
+  align-items: center;
+}
+.logo-wall-kit {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+.logo-wall-gear .logo-tile,
+.logo-wall-kit .logo-tile {
+  min-height: 3.1rem;
+  padding: 0.2rem;
+}
+.gear-nikon .mark-image,
+.gear-sony .mark-image {
+  filter: brightness(0);
+}
+
+/*
+ * The house wall — a transcription of Wedding Brands Directory.pdf.
+ *
+ * Each group is the directory's own heading over its own brands, so the section
+ * reads as the index it is rather than one undifferentiated shelf. The columns
+ * follow the group size: the six-house couture group lands as two even rows of
+ * three, the four-house groups as a single row of four.
+ */
+.brand-groups {
+  display: grid;
+  gap: clamp(1.75rem, 3vw, 2.75rem);
+}
+
+.brand-group-label {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-mute);
+  text-align: center;
+  margin-bottom: 0.9rem;
+}
+
+.brand-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  flex: 1 1 var(--per);
+  min-width: 0;
+  min-height: 7rem;
+  padding: 1.5rem 1rem;
+  background: var(--color-bone);
+  color: var(--color-ink);
+  text-align: center;
+}
+
+/* The wordmark. The casing is the brand's own and is carried in the markup, so
+   nothing here uppercases or transforms it — a house that sets its name in title
+   case keeps it. Only the tracking is ours, to even out the optical weight of a
+   wide word against a narrow one. */
+.brand-word {
+  display: block;
+  font-size: clamp(0.95rem, 1.1vw + 0.55rem, 1.3rem);
+  line-height: 1.25;
+  letter-spacing: 0.14em;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+.brand-word-serif {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: 0.16em;
+}
+
+.brand-word-sans {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+}
+
+/* The directory's own tagline for the house, which is what tells a reader what
+   the label on a photo of a lehenga is. */
+.brand-tag {
+  font-family: var(--font-sans);
+  font-size: 0.5625rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  line-height: 1.4;
+  color: var(--color-mute);
+}
+
+/* The mark itself. Never wider than the tile, never taller than the em. */
+.mark-svg {
+  display: block;
+  width: 100%;
+  max-width: 10.5rem;
+  height: auto;
+}
+.mark-image {
+  display: block;
+  width: auto;
+  max-width: min(100%, 8rem);
+  max-height: 2rem;
+  object-fit: contain;
+}
+
+.kit-tile {
+  flex-direction: row;
+  /* The mark and its name sit side by side, so they need room between them.
+     This was 0, which set the 1.8rem icon hard against the label. */
+  gap: 0.55rem;
+  padding-block: 0.75rem;
+  text-decoration: none;
+}
+.software-word {
+  color: #41382d;
+  font: 500 clamp(0.82rem, 1.2vw, 1rem)/1.2 var(--font-sans);
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+.software-word-premiere-pro,
+.software-word-after-effects,
+.software-word-photoshop,
+.software-word-lightroom {
+  font-weight: 650;
+  letter-spacing: -0.035em;
+}
+.software-word-final-cut-pro {
+  font-family: var(--font-display);
+  letter-spacing: 0.02em;
+}
+.software-word-da-vinci-resolve {
+  font-family: var(--font-display);
+}
+.kit-tile:hover {
+  background: transparent;
+}
+
+.kit-icon {
+  display: block;
+  width: 1.8rem;
+  height: 1.8rem;
+  flex: none;
+}
+
+.kit-tile-name {
+  font-family: var(--font-sans);
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1.3;
+  text-align: left;
+  color: var(--color-mute);
+  /* Lets a long name wrap inside its column instead of pushing into the icon
+     beside it or the tile beyond. */
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+@media (min-width: 640px) {
+  .logo-wall {
+    --per: 30%;
+  }
+  /* Seven marks: four across, then three filling the row. */
+  .logo-wall-gear {
+    --per: 24%;
+  }
+  /* The six-house couture group: three across, two even rows. */
+  .brand-wall-6 {
+    --per: 33.3333%;
+  }
+}
+
+@media (max-width: 767px) {
+  .logo-wall-gear {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .logo-wall-kit {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .logo-wall {
+    --per: 20%;
+  }
+  .logo-wall-gear {
+    --per: 13%;
+  }
+  .logo-wall-kit {
+    --per: 15%;
+  }
+  /* A four-house group closes as one row. */
+  .brand-wall-4 {
+    --per: 25%;
+  }
+  .brand-wall-6 {
+    --per: 33.3333%;
+  }
+}
+
+/* ================================================================== */
+/* Soul + Cinema — the film frame                                      */
+/* ================================================================== */
+
+/* The cream the rest of the site is on, and room to breathe. The video is the
+   only dark thing in this section; the surface holding it is not. */
+.soul-section {
+  background: var(--color-cream);
+  padding-block: clamp(4rem, 8vw, 7.5rem);
+}
+/* Full bleed: the film runs the entire width of the viewport. */
+.soul-shell {
+  max-width: none;
+  padding-inline: 0;
+}
+
+/*
+ * The rectangle.
+ *
+ * Wide and short, which is the whole brief. The ratio gives the cinematic band;
+ * `max-height` is what stops it — on a 27" display a 21:9 band of pure width
+ * would still run 900px tall and read as a full-screen block. The cap wins, the
+ * width stays at 100%, and the picture is cropped by `object-fit` rather than
+ * stretched. No radius, no shadow, no border: the edges are the page's.
+ */
+.frame {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  max-width: none;
+  aspect-ratio: 2.9 / 1;
+  max-height: min(50vh, 30rem);
+  min-height: 0;
+  margin-inline: auto;
+  overflow: hidden;
+  border-radius: 0;
+  background: #0b0b0c;
+  box-shadow: none;
+}
+
+/* A phone held upright needs the height back, or the copy has nowhere to sit. */
+@media (max-width: 639px) {
+  .frame {
+    aspect-ratio: 16 / 9;
+    max-height: none;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+  .frame {
+    aspect-ratio: 2.4 / 1;
+    max-height: min(44vh, 24rem);
+  }
+}
+
+/*
+ * A short window is the one case the capped band can be tighter than the copy.
+ * A 600px-tall laptop gives the strip ~340px, and the title and manifesto at
+ * their comfortable sizes want a little more than that — with `overflow: hidden`
+ * on the frame the last line would be cut off. Both step down together, so the
+ * hierarchy survives even when the space does not.
+ */
+@media (min-width: 640px) and (max-height: 720px) {
+  .frame-copy-block {
+    padding-block: 1.5rem;
+    gap: 0.6rem;
+  }
+  .frame-copy-block h2 {
+    font-size: clamp(1.6rem, 2.6vw, 2.3rem);
+  }
+  .frame-copy-block p {
+    font-size: clamp(0.74rem, 0.8vw, 0.85rem);
+    line-height: 1.65;
+  }
+}
+
+/* The moving image, and the stills it replaces. */
+.frame-media {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.frame-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  /* Cover, not fill: the box is a fixed height whatever the viewport, so the
+     picture is cropped to it rather than stretched to fit. */
+  object-fit: cover;
+  transform: translate(-50%, -50%) scale(1.1);
+  pointer-events: none;
+}
+.frame-poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(0.35) brightness(0.78);
+}
+
+/*
+ * The projector grade.
+ *
+ * Deliberately gentle. The earlier version ramped to 68–82% black at the top and
+ * bottom edges, which turned the band into the black block the section is trying
+ * not to be. What is left is a shallow edge falloff for the corners and a soft
+ * pool behind the middle, which is all the cream serif actually needs to stay
+ * legible over black-and-white footage.
+ */
+.frame-grade {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      72% 130% at 50% 50%,
+      rgb(0 0 0 / 44%) 0%,
+      rgb(0 0 0 / 10%) 60%,
+      rgb(0 0 0 / 32%) 100%
+    ),
+    linear-gradient(
+      to bottom,
+      rgb(0 0 0 / 28%) 0%,
+      rgb(0 0 0 / 6%) 30%,
+      rgb(0 0 0 / 8%) 70%,
+      rgb(0 0 0 / 30%) 100%
+    );
+}
+
+/*
+ * The title and the manifesto, over the film.
+ *
+ * Playfair Display is the site's display face and is the closest thing in the
+ * build to the Didone the brief asks for — high stroke contrast, sharp unbracketed
+ * serifs — so the title is set in it rather than pulling in a second webfont.
+ *
+ * The tracking is wide and the weight is 400, which is the fashion-magazine
+ * reading of "SOUL + CINEMA": small-ish, thin, and spaced until it stops being a
+ * word and becomes a line. `text-indent` puts back the space the trailing
+ * letter-space adds on the right, so the block stays optically centred.
+ */
+.frame-copy-block {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.85rem, 1.5vw, 1.35rem);
+  padding: clamp(1.25rem, 3vw, 3rem) clamp(1.25rem, 7vw, 7rem);
+  text-align: center;
+  color: var(--color-paper);
+}
+
+.frame-copy-block h2 {
+  margin: 0;
+  color: var(--color-paper);
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.75rem, 3.2vw, 3.1rem);
+  line-height: 1.08;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+  text-transform: uppercase;
+  text-shadow: 0 2px 30px rgb(0 0 0 / 55%);
+}
+
+/*
+ * The manifesto.
+ *
+ * Subordinate on purpose: a size step under the title, in the same serif rather
+ * than the sans, on a narrow measure with a tall line height. It has to be read,
+ * not glanced at, so it is the only thing here with a measure this narrow.
+ */
+.frame-copy-block p {
+  max-width: 46ch;
+  margin: 0;
+  color: rgb(241 235 225 / 92%);
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(0.8rem, 0.95vw, 0.98rem);
+  line-height: 1.85;
+  letter-spacing: 0.012em;
+  text-wrap: pretty;
+  text-shadow: 0 1px 16px rgb(0 0 0 / 70%);
+}
+
+@media (max-width: 639px) {
+  .frame-copy-block {
+    gap: 0.7rem;
+    padding: 1.25rem 1.5rem;
+  }
+  .frame-copy-block h2 {
+    /* Tracking has to come down on a narrow measure or the title wraps. */
+    font-size: clamp(1.35rem, 6.4vw, 1.9rem);
+    letter-spacing: 0.2em;
+    text-indent: 0.2em;
+  }
+  .frame-copy-block p {
+    max-width: 34ch;
+    font-size: 0.78rem;
+    line-height: 1.7;
+    /* The 16/9 band is ~200px tall on phones — never let the copy spill it. */
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+/* The perforated rebate down both edges, faded top and bottom so it reads as
+   film rather than as a graphic device. */
+.frame-perf {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 3;
+  width: 1.375rem;
+  background-color: rgba(0, 0, 0, 0.3);
+  background-image: radial-gradient(closest-side, rgba(255, 255, 255, 0.15) 90%, transparent 100%);
+  background-size: 1.375rem 2rem;
+  background-repeat: repeat-y;
+  background-position: center;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 16%, #000 84%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 16%, #000 84%, transparent);
+}
+
+.frame-perf-l {
+  left: 0;
+}
+
+.frame-perf-r {
+  right: 0;
+}
+
+/*
+ * Grain.
+ *
+ * An SVG turbulence tile, oversized so the four-step jitter can move it without
+ * ever showing an edge, and blended rather than laid on top so it darkens the
+ * shadows and brightens the highlights the way emulsion does.
+ */
+.frame-grain {
+  position: absolute;
+  inset: -25%;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0.34;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  animation: grain-jitter 0.7s steps(4, end) infinite;
+}
+
+@keyframes grain-jitter {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  25% {
+    transform: translate3d(-3%, 2%, 0);
+  }
+  50% {
+    transform: translate3d(2%, -3%, 0);
+  }
+  75% {
+    transform: translate3d(-2%, -1%, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Viewfinder brackets. */
+.frame-corner {
+  position: absolute;
+  z-index: 4;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 0 solid var(--color-gold);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.frame-corner-tl {
+  top: 1.375rem;
+  left: 1.375rem;
+  border-top-width: 1px;
+  border-left-width: 1px;
+}
+.frame-corner-tr {
+  top: 1.375rem;
+  right: 1.375rem;
+  border-top-width: 1px;
+  border-right-width: 1px;
+}
+.frame-corner-bl {
+  bottom: 1.375rem;
+  left: 1.375rem;
+  border-bottom-width: 1px;
+  border-left-width: 1px;
+}
+.frame-corner-br {
+  right: 1.375rem;
+  bottom: 1.375rem;
+  border-right-width: 1px;
+  border-bottom-width: 1px;
+}
+
+.frame-hud,
+.frame-foot {
+  position: absolute;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 0.5625rem;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  color: color-mix(in oklab, var(--color-paper) 62%, transparent);
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.8);
+}
+
+.frame-hud {
+  inset: 1.75rem 1.5rem auto;
+}
+
+.frame-hud-rule {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    color-mix(in oklab, var(--color-paper) 30%, transparent),
+    transparent
+  );
+}
+
+.frame-foot {
+  inset: auto 1.5rem 1.75rem;
+  justify-content: space-between;
+}
+
+.frame-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  margin: 0;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: inherit;
+}
+
+.frame-body {
+  position: absolute;
+  inset: 4.25rem 1.5rem 4rem;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.frame-head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.frame-eyebrow {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--color-sand);
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.8);
+}
+
+/*
+ * The title.
+ *
+ * Script, a small gold plus, then the caps at two-thirds the size. The mixed
+ * scale is what keeps it from reading as a flat banner: `Soul` carries the
+ * weight, `Cinema` sits under it like a credit, and the plus is set small enough
+ * to be punctuation rather than a conjunction.
+ */
+.frame-title {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0 0.5rem;
+  margin: 0;
+  color: var(--color-paper);
+  line-height: 0.86;
+  letter-spacing: -0.03em;
+  text-shadow: 0 4px 44px rgba(0, 0, 0, 0.7);
+}
+
+.frame-title-script {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(2.75rem, 1rem + 7.2vw, 6.25rem);
+}
+
+.frame-title-mark {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 0.8rem + 2.4vw, 2.5rem);
+  font-style: normal;
+  color: var(--color-sand);
+}
+
+.frame-title-caps {
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 0.6rem + 2.6vw, 2.6rem);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.frame-aside {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.25rem;
+  min-width: 0;
+}
+
+.frame-copy {
+  margin: 0;
+  max-width: 36ch;
+  font-size: 0.875rem;
+  line-height: 1.65;
+  color: color-mix(in oklab, var(--color-paper) 84%, transparent);
+  text-shadow: 0 1px 22px rgba(0, 0, 0, 0.75);
+}
+
+.frame-link {
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+@media (min-width: 900px) {
+  .frame-body {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 3.5rem;
+  }
+  .frame-copy {
+    font-size: 0.9375rem;
+  }
+}
+
+/* Transport. 40px targets, well over the 24px floor. */
+.frame-controls {
+  display: flex;
+  gap: 0.5rem;
+  flex: none;
+}
+
+.frame-control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: none;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--color-paper) 26%, transparent);
+  background: rgba(0, 0, 0, 0.32);
+  color: var(--color-paper);
+  cursor: pointer;
+  transition:
+    border-color 0.35s var(--ease-cinema),
+    color 0.35s var(--ease-cinema),
+    background-color 0.35s var(--ease-cinema);
+}
+
+.frame-control:hover {
+  border-color: var(--color-gold-lit);
+  color: var(--color-gold-lit);
+}
+
+.frame-control:focus-visible {
+  outline-color: var(--color-gold-lit);
+}
+
+/* The scrub line along the bottom edge of the frame. */
+.frame-progress {
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 6;
+  height: 2px;
+  background: color-mix(in oklab, var(--color-paper) 16%, transparent);
+  pointer-events: none;
+}
+
+.frame-progress > span {
+  display: block;
+  height: 100%;
+  background: var(--color-gold-lit);
+  transform-origin: left center;
+  transition: transform 0.4s linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .frame-grain {
+    animation: none;
+    opacity: 0.22;
+  }
+}
+
+/* Concierge floating chat — calm, premium motion (no wiggle) */
+@keyframes concierge-nudge-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes typing-bounce {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  30% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+/* Attention for the two floating buttons: a soft glow "bloom" plus a
+   minimal sway (tiny rotation, mostly resting). Active whenever the chat
+   is closed — including after the user closes it — and paused while open. */
+@keyframes bloom-ring-gold {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 0 rgb(176 141 79 / 0.65),
+      0 0 26px 3px rgb(176 141 79 / 0.5),
+      0 10px 25px -5px rgb(0 0 0 / 0.3);
+  }
+  50% {
+    box-shadow:
+      0 0 0 16px rgb(176 141 79 / 0),
+      0 0 38px 8px rgb(176 141 79 / 0.55),
+      0 14px 30px -5px rgb(0 0 0 / 0.35);
+  }
+}
+
+@keyframes bloom-ring-light {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 0 rgb(34 197 94 / 0.5),
+      0 0 20px 2px rgb(34 197 94 / 0.35),
+      0 10px 25px -8px rgb(0 0 0 / 0.25);
+  }
+  50% {
+    box-shadow:
+      0 0 0 14px rgb(34 197 94 / 0),
+      0 0 30px 6px rgb(34 197 94 / 0.4),
+      0 14px 28px -8px rgb(0 0 0 / 0.3);
+  }
+}
+
+/* Minimal wiggle: rests almost all cycle, then a quick gentle sway. */
+@keyframes attn-sway {
+  0%,
+  82%,
+  100% {
+    transform: rotate(0deg) scale(1);
+  }
+  86% {
+    transform: rotate(-2.5deg) scale(1.03);
+  }
+  90% {
+    transform: rotate(2deg) scale(1.03);
+  }
+  94% {
+    transform: rotate(-1.2deg) scale(1.01);
+  }
+}
+
+.btn-attn-gold {
+  animation:
+    bloom-ring-gold 2.6s ease-in-out infinite,
+    attn-sway 4.6s ease-in-out infinite;
+}
+
+.btn-attn-light {
+  animation:
+    bloom-ring-light 2.6s ease-in-out infinite,
+    attn-sway 4.6s ease-in-out infinite;
+  animation-delay: 1.3s, 2.3s;
+}
+
+.concierge-nudge {
+  animation: concierge-nudge-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+  transform-origin: bottom right;
+}
+
+.typing-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: color-mix(in srgb, var(--color-ink) 55%, transparent);
+  display: inline-block;
+  animation: typing-bounce 1.1s ease-in-out infinite;
+}
+
+.typing-dot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.typing-dot:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .concierge-nudge,
+  .typing-dot,
+  .btn-attn-gold,
+  .btn-attn-light {
+    animation: none;
+  }
+}

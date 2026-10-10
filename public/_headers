@@ -1,0 +1,27 @@
+# Cloudflare / Pages edge rules.
+#
+# /assets/* is emitted by Vite with content hashes in the filename, so it is
+# safe to cache forever. /fonts/* are build artifacts that only change when the
+# fonts are regenerated. /img/* are the responsive derivatives, regenerated
+# whenever a source photograph is replaced — hence a one-month fresh window
+# with stale-while-revalidate rather than an immutable year, so a refreshed
+# photograph still reaches returning visitors. Brand marks and the ambient
+# film band follow the same month window; film posters come from YouTube's
+# image CDN and carry Google's own cache headers.
+/assets/*
+  cache-control: public, max-age=31536000, immutable
+
+/fonts/*
+  cache-control: public, max-age=31536000, immutable
+
+/img/*
+  cache-control: public, max-age=2592000, stale-while-revalidate=86400
+
+/brand/*
+  cache-control: public, max-age=2592000, stale-while-revalidate=86400
+
+/brand-logos/*
+  cache-control: public, max-age=2592000, stale-while-revalidate=86400
+
+/video/*
+  cache-control: public, max-age=2592000, stale-while-revalidate=86400
