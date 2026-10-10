@@ -1,6 +1,16 @@
 import { CameraLogos, SoftwareLogos } from "@/components/site/BrandLogos";
 
-const affiliations = [
+type Affiliation = {
+  name: string;
+  style: string;
+  href: string;
+  image?: string;
+  /** Intrinsic pixels — reserves ratio-correct space before bytes arrive. */
+  imageWidth?: number;
+  imageHeight?: number;
+};
+
+const affiliations: Affiliation[] = [
   {
     name: "WeddingSutra",
     style: "affiliation-weddingsutra",
@@ -50,12 +60,16 @@ const affiliations = [
     style: "affiliation-manish",
     href: "https://www.manishmalhotra.in",
     image: "/brand-logos/manish-malhotra.png",
+    imageWidth: 360,
+    imageHeight: 152,
   },
   {
     name: "Vera Wang",
     style: "affiliation-vera",
     href: "https://www.verawang.com",
     image: "/brand-logos/vera-wang.webp",
+    imageWidth: 768,
+    imageHeight: 102,
   },
 ];
 
@@ -63,7 +77,7 @@ export function CouturePressStrip() {
   return (
     <section className="affiliations-section" aria-label="Bridal couture and press affiliations">
       <div className="affiliations-grid">
-        {affiliations.map(({ name, style, href, image }) => {
+        {affiliations.map(({ name, style, href, image, imageWidth, imageHeight }) => {
           const mark = (
             <span className={`affiliation-mark ${style}`}>
               {image ? (
@@ -71,6 +85,8 @@ export function CouturePressStrip() {
                   className="affiliation-image"
                   src={image}
                   alt={name}
+                  width={imageWidth}
+                  height={imageHeight}
                   loading="lazy"
                   decoding="async"
                 />

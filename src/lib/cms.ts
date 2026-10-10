@@ -14,7 +14,7 @@
  * Fetches are memoized per session, so a root loader plus a page loader asking
  * for the same document costs one request.
  */
-import { createClient, type SanityClient } from "@sanity/client";
+import type { SanityClient } from "@sanity/client";
 import { getRouteApi } from "@tanstack/react-router";
 
 import { films as localFilms, type Film } from "./films";
@@ -37,9 +37,12 @@ export const isCmsConfigured =
   Boolean(import.meta.env?.["VITE_SANITY_DATASET"]);
 
 let client: SanityClient | null = null;
-function getClient(): SanityClient | null {
+async function getClient(): Promise<SanityClient | null> {
   if (!isCmsConfigured) return null;
   if (!client) {
+    // Dynamic import: the client (~100 KB) stays out of the main bundle and
+    // downloads only when the CMS is actually configured.
+    const { createClient } = await import("@sanity/client");
     client = createClient({
       projectId: import.meta.env["VITE_SANITY_PROJECT_ID"] as string,
       dataset: import.meta.env["VITE_SANITY_DATASET"] as string,
@@ -69,7 +72,7 @@ function cached<T>(key: string, fetch: () => Promise<T>, fallback: T): Promise<T
 }
 
 async function fetchDoc<T>(query: string, fallback: T): Promise<T> {
-  const c = getClient();
+  const c = await getClient();
   if (!c) return fallback;
   return cached(
     query,

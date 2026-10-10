@@ -26,7 +26,16 @@ export function ClosingCTA() {
 
   return (
     <section className="closing-cta closing-cta-banner" aria-labelledby="closing-cta-heading">
-      <picture className="closing-cta-photo" aria-hidden="true">
+      <picture
+        className="closing-cta-photo"
+        aria-hidden="true"
+        style={{
+          backgroundColor: entry.color,
+          backgroundImage: `url("${entry.lqip}")`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
         <source type="image/avif" srcSet={srcSet(CTA_IMAGE, "avif")} sizes="100vw" />
         <source type="image/webp" srcSet={srcSet(CTA_IMAGE, "webp")} sizes="100vw" />
         <img
@@ -38,6 +47,10 @@ export function ClosingCTA() {
           height={entry.height}
           loading="lazy"
           decoding="async"
+          ref={(node) => {
+            if (node?.complete) node.classList.add("is-loaded");
+          }}
+          onLoad={(event) => event.currentTarget.classList.add("is-loaded")}
         />
       </picture>
       <div className="closing-cta-inner shell">

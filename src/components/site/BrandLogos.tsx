@@ -32,6 +32,9 @@ type Mark = {
   /** The mark, drawn on the shared canvas. */
   art: ReactNode;
   image?: string;
+  /** Intrinsic pixels — reserves ratio-correct space before bytes arrive. */
+  imageWidth?: number;
+  imageHeight?: number;
   className?: string;
 };
 
@@ -45,7 +48,15 @@ type Mark = {
  * The label goes on the anchor as `aria-label` rather than as hidden text, so
  * the SVG's own letterforms are not announced twice.
  */
-function MarkTile({ name, href, art, image, className = "" }: Mark & { className?: string }) {
+function MarkTile({
+  name,
+  href,
+  art,
+  image,
+  imageWidth,
+  imageHeight,
+  className = "",
+}: Mark & { className?: string }) {
   return (
     <a
       className={`logo-tile ${className}`.trim()}
@@ -55,7 +66,15 @@ function MarkTile({ name, href, art, image, className = "" }: Mark & { className
       aria-label={name}
     >
       {image ? (
-        <img className="mark-image" src={image} alt="" loading="lazy" decoding="async" />
+        <img
+          className="mark-image"
+          src={image}
+          alt=""
+          width={imageWidth}
+          height={imageHeight}
+          loading="lazy"
+          decoding="async"
+        />
       ) : (
         <svg viewBox="0 0 200 44" className="mark-svg" role="presentation" aria-hidden="true">
           {art}
@@ -349,6 +368,8 @@ const GEAR: readonly Mark[] = [
     name: "Canon",
     href: "https://global.canon/en/",
     image: "/brand-logos/canon.svg",
+    imageWidth: 234,
+    imageHeight: 26,
     art: (
       <Word
         x={100}
@@ -368,6 +389,8 @@ const GEAR: readonly Mark[] = [
     name: "Nikon",
     href: "https://www.nikon.com/",
     image: "/brand-logos/nikon.svg",
+    imageWidth: 24,
+    imageHeight: 8,
     className: "gear-nikon",
     art: (
       <Word
@@ -388,6 +411,8 @@ const GEAR: readonly Mark[] = [
     name: "Sony",
     href: "https://electronics.sony.com/imaging/c/interchangeable-lens-cameras",
     image: "/brand-logos/sony.svg",
+    imageWidth: 24,
+    imageHeight: 9,
     className: "gear-sony",
     art: (
       <Word x={100} y={28.5} size={19} ls={3.4} font={SERIF} weight={600} anchor="middle">
@@ -399,6 +424,8 @@ const GEAR: readonly Mark[] = [
     name: "Leica",
     href: "https://www.leica-camera.com/",
     image: "/brand-logos/leica.svg",
+    imageWidth: 24,
+    imageHeight: 24,
     art: (
       <g>
         <circle cx="72" cy="22" r="15" fill="#E4002B" />
@@ -431,6 +458,8 @@ const GEAR: readonly Mark[] = [
     name: "DJI",
     href: "https://www.dji.com/",
     image: "/brand-logos/dji.svg",
+    imageWidth: 24,
+    imageHeight: 24,
     art: (
       <Word x={100} y={29} size={23} ls={0.6} font={SANS} weight={800} anchor="middle">
         dji
@@ -460,6 +489,8 @@ const GEAR: readonly Mark[] = [
     name: "ARRI ALEXA",
     href: "https://www.arri.com/en/cine-systems/cine-cameras",
     image: "/brand-logos/arri.svg",
+    imageWidth: 1024,
+    imageHeight: 301,
     art: (
       <g>
         <Word x={100} y={28} size={23} ls={2} font={SANS} weight={900} anchor="middle">
@@ -492,6 +523,8 @@ const SOFTWARE: readonly Mark[] = [
     name: "Premiere Pro",
     href: "https://www.adobe.com/products/premiere.html",
     image: "/brand-logos/premiere-pro.svg",
+    imageWidth: 240,
+    imageHeight: 240,
     art: (
       <Word x={100} y={29} size={18} ls={1} font={SANS} weight={700} anchor="middle">
         Pr
@@ -502,6 +535,8 @@ const SOFTWARE: readonly Mark[] = [
     name: "After Effects",
     href: "https://www.adobe.com/products/aftereffects.html",
     image: "/brand-logos/after-effects.svg",
+    imageWidth: 240,
+    imageHeight: 240,
     art: (
       <Word x={100} y={29} size={18} ls={1} font={SANS} weight={700} anchor="middle">
         Ae
@@ -512,6 +547,8 @@ const SOFTWARE: readonly Mark[] = [
     name: "Final Cut Pro",
     href: "https://www.apple.com/final-cut-pro/",
     image: "/brand-logos/final-cut-pro.webp",
+    imageWidth: 512,
+    imageHeight: 512,
     art: (
       <Word x={100} y={29} size={18} ls={1} font={SANS} weight={700} anchor="middle">
         FCP
@@ -522,6 +559,8 @@ const SOFTWARE: readonly Mark[] = [
     name: "Photoshop",
     href: "https://www.adobe.com/products/photoshop.html",
     image: "/brand-logos/photoshop.svg",
+    imageWidth: 240,
+    imageHeight: 240,
     art: (
       <Word x={100} y={29} size={18} ls={1} font={SANS} weight={700} anchor="middle">
         Ps
@@ -532,6 +571,8 @@ const SOFTWARE: readonly Mark[] = [
     name: "DaVinci Resolve",
     href: "https://www.blackmagicdesign.com/products/davinciresolve",
     image: "/brand-logos/resolve-color.png",
+    imageWidth: 256,
+    imageHeight: 256,
     art: (
       <Word x={100} y={29} size={15} ls={1} font={SANS} weight={700} anchor="middle">
         Resolve
@@ -542,6 +583,8 @@ const SOFTWARE: readonly Mark[] = [
     name: "Lightroom",
     href: "https://www.adobe.com/products/lightroom.html",
     image: "/brand-logos/lightroom.svg",
+    imageWidth: 240,
+    imageHeight: 240,
     art: (
       <Word x={100} y={29} size={18} ls={1} font={SANS} weight={700} anchor="middle">
         Lr
@@ -563,7 +606,15 @@ export function SoftwareLogos() {
           aria-label={mark.name}
         >
           {mark.image ? (
-            <img className="kit-icon" src={mark.image} alt="" loading="lazy" decoding="async" />
+            <img
+              className="kit-icon"
+              src={mark.image}
+              alt=""
+              width={mark.imageWidth ?? 48}
+              height={mark.imageHeight ?? 48}
+              loading="lazy"
+              decoding="async"
+            />
           ) : (
             <svg viewBox="0 0 200 44" className="mark-svg" role="presentation" aria-hidden="true">
               {mark.art}

@@ -3189,6 +3189,17 @@ select.field {
   height: 100%;
   object-fit: cover;
   object-position: center 46%;
+  opacity: 0;
+  transition: opacity 0.9s var(--ease-cinema, ease);
+}
+.closing-cta-photo img.is-loaded {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .closing-cta-photo img {
+    opacity: 1;
+    transition: none;
+  }
 }
 .closing-cta-banner::before {
   position: absolute;
