@@ -162,6 +162,10 @@ const toImageFields = (doc) => {
     if (refByKey[out.closingCta.imageKey]) out.closingCta.image = img(out.closingCta.imageKey);
     delete out.closingCta.imageKey;
   }
+  // Soul poster defaults to the built-in still so the field never sits blank.
+  if (out.soulCinema && !out.soulCinema.poster) {
+    out.soulCinema = { ...out.soulCinema, poster: img("kerala-cinematic-wedding-film-still") };
+  }
   if (Array.isArray(out.collections)) {
     out.collections = out.collections.map((c) => {
       const next = { ...c };
@@ -219,11 +223,8 @@ const docs = [
   {
     _id: "siteSettings",
     _type: "siteSettings",
-    tagline: "Your Wedding. Our Responsibility.",
     phone: "+91 96055 75311",
     phoneHref: "tel:+919605575311",
-    phoneSecondary: "+91 96055 75330",
-    phoneSecondaryHref: "tel:+919605575330",
     whatsapp: "919605575311",
     email: "orianaweddings@gmail.com",
     instagram: "https://www.instagram.com/orianaweddings/",
@@ -732,8 +733,6 @@ const docs = [
     venue: "St. Mary's Church, Kozhikode",
     location: "Kozhikode, Kerala",
     type: "Church",
-    coverage: "Photography + Videography",
-    season: "January",
     coverKey: "calicut-church-wedding-ceremony",
     summary:
       "Vows beneath stained glass in Calicut, followed by a courtyard reception lit by the last of the evening sun.",
@@ -762,8 +761,6 @@ const docs = [
     venue: "Wayanad tea estates",
     location: "Wayanad, Kerala",
     type: "Pre-wedding",
-    coverage: "Photography + Videography",
-    season: "August",
     coverKey: "hero-traditional-intimate",
     summary:
       "A sunrise pre-wedding shoot across Wayanad's tea estates, shot entirely in natural light and finished as a save-the-date.",
@@ -792,8 +789,6 @@ const docs = [
     venue: "Traditional residence, Malappuram",
     location: "Malappuram, Kerala",
     type: "Candid",
-    coverage: "Photography",
-    season: "March",
     coverKey: "haldi-bride-with-friends",
     summary:
       "A traditional Malappuram wedding photographed candidly, from the henna evening to the send-off.",
@@ -822,8 +817,6 @@ const docs = [
     venue: "Kozhikode Beach",
     location: "Kozhikode, Kerala",
     type: "Destination",
-    coverage: "Photography + Videography",
-    season: "November",
     coverKey: "calicut-cinematic-wedding-hero",
     summary:
       "A post-wedding portrait session on Kozhikode beach, timed to the last twenty minutes of light.",
@@ -851,8 +844,6 @@ const docs = [
     venue: "Traditional ceremony, Kozhikode",
     location: "Kozhikode, Kerala",
     type: "Traditional",
-    coverage: "Photography + Videography",
-    season: "May",
     coverKey: "ceremony-temple-ritual",
     summary:
       "A complete traditional Kerala wedding — every ritual documented in sequence, every elder portrait made.",
@@ -881,8 +872,6 @@ const docs = [
     venue: "Backwater resort, Alappuzha",
     location: "Alappuzha, Kerala",
     type: "Destination",
-    coverage: "Photography + Videography",
-    season: "December",
     coverKey: "detail-reception-monochrome",
     summary:
       "Destination coverage across coconut groves and backwater — a team on the ground and a drone over the venue.",

@@ -61,16 +61,8 @@ const seoFields = [
 
 export const schemaTypes = [
   singleton("siteSettings", "⚙️ Site settings", [
-    {
-      name: "tagline",
-      title: "Tagline",
-      type: "string",
-      validation: required,
-    },
     { name: "phone", title: "Phone", type: "string" },
     { name: "phoneHref", title: "Phone link (tel:…)", type: "string" },
-    { name: "phoneSecondary", title: "Second phone", type: "string" },
-    { name: "phoneSecondaryHref", title: "Second phone link (tel:…)", type: "string" },
     { name: "whatsapp", title: "WhatsApp number (digits only)", type: "string" },
     { name: "email", title: "Email", type: "string" },
     { name: "instagram", title: "Instagram URL", type: "url" },
@@ -521,8 +513,6 @@ export const schemaTypes = [
         ...photoListField("Detail-page gallery", "Frames shown on the brand's own page."),
         name: "gallery",
       },
-      { name: "seoTitle", title: "Search title override", type: "string" },
-      { name: "seoDescription", title: "Search description override", type: "text" },
     ],
     preview: {
       select: { title: "name", subtitle: "tagline" },
@@ -562,13 +552,6 @@ export const schemaTypes = [
           list: ["Candid", "Traditional", "Church", "Pre-wedding", "Destination", "Intimate"],
         },
       },
-      {
-        name: "coverage",
-        title: "Coverage",
-        type: "string",
-        options: { list: ["Photography", "Videography", "Photography + Videography"] },
-      },
-      { name: "season", title: "Season / month", type: "string" },
       { name: "summary", title: "Summary (cards + search)", type: "text" },
       { name: "story", title: "Story paragraphs", type: "array", of: [{ type: "text" }] },
       { name: "services", title: "Services delivered", type: "array", of: [{ type: "string" }] },
@@ -580,8 +563,6 @@ export const schemaTypes = [
         ...photoListField("Story frames", "Photographs on the story page."),
         name: "frames",
       },
-      { name: "seoTitle", title: "Search title override", type: "string" },
-      { name: "seoDescription", title: "Search description override", type: "text" },
     ],
     preview: {
       select: { title: "title", subtitle: "couple" },
