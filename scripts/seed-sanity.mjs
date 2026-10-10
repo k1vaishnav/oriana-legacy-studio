@@ -21,6 +21,33 @@ if (!token) throw new Error("Set SANITY_API_TOKEN (Editor role, from sanity.io/m
 
 const client = createClient({ projectId, dataset, apiVersion: "2025-01-01", token });
 
+/**
+ * Sanity requires every OBJECT inside an array to carry a `_key` — without
+ * one the Studio shows "Missing keys" and locks the list for editing. (Plain
+ * strings/numbers in arrays are fine.) This walks each document and stamps any
+ * key-less array item, so the seed output is always Studio-ready. Keys are
+ * deterministic per run; re-seeding replaces whole documents anyway.
+ */
+let keyCounter = 0;
+const assignKeys = (node) => {
+  if (Array.isArray(node)) {
+    return node.map((item) => {
+      if (item && typeof item === "object") {
+        const keyed = item._key ? { ...item } : { _key: `seed-${++keyCounter}`, ...item };
+        for (const k of Object.keys(keyed)) keyed[k] = assignKeys(keyed[k]);
+        return keyed;
+      }
+      return item;
+    });
+  }
+  if (node && typeof node === "object") {
+    const out = { ...node };
+    for (const k of Object.keys(out)) out[k] = assignKeys(out[k]);
+    return out;
+  }
+  return node;
+};
+
 const docs = [
   {
     _id: "siteSettings",
@@ -798,7 +825,7 @@ const docs = [
 ];
 
 for (const doc of docs) {
-  await client.createOrReplace(doc);
+  await client.createOrReplace(assignKeys(doc));
   console.log(`ok   ${doc._type} ${doc._id}`);
 }
 console.log(`\nSeeded ${docs.length} documents into "${dataset}". Open /studio to edit.`);
