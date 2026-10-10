@@ -13,6 +13,7 @@
  * content, so only their names/links are editable.
  */
 import { IMAGE_KEYS } from "./imageKeys";
+import { ImageKeyInput, ImageKeysInput } from "./ImageKeyInput";
 
 type Rule = { required: () => unknown };
 const required = (r: Rule) => r.required();
@@ -23,6 +24,8 @@ const imageKeyField = (title: string, description?: string) => ({
   name: "key",
   type: "string",
   options: { list: [...IMAGE_KEYS] },
+  // Live thumbnail under the dropdown (see ImageKeyInput).
+  components: { input: ImageKeyInput },
   validation: required,
 });
 
@@ -32,6 +35,8 @@ const imageKeysField = (title: string, description?: string) => ({
   name: "keys",
   type: "array",
   of: [{ type: "string", options: { list: [...IMAGE_KEYS] } }],
+  // Thumbnail strip under the list editor (see ImageKeysInput).
+  components: { input: ImageKeysInput },
   validation: required,
 });
 

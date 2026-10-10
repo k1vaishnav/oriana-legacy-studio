@@ -38,27 +38,45 @@ export default defineConfig({
         S.list()
           .title("Oriana content")
           .items([
-            // One section per page, in site order — each opens its page
-            // directly, so the thing you want to edit is always one click away.
+            // One section per page, in site order. Pages that own a
+            // collection keep it inside their own section — stories live
+            // with Photography, films with Films, brands with Brands — so
+            // everything about a page is found in exactly one place.
             singleton(S, "homePage", "🏠 Home"),
-            singleton(S, "photographyPage", "📷 Photography"),
-            singleton(S, "filmsPage", "🎬 Films"),
-            singleton(S, "portfolioPage", "🖼️ Portfolio"),
-            singleton(S, "brandsPage", "🏷️ Brands"),
-            singleton(S, "aboutPage", "📖 About"),
-            singleton(S, "contactPage", "✉️ Contact"),
-            S.divider(),
             S.listItem()
-              .title("💍 Stories & work")
+              .title("📷 Photography")
               .child(
                 S.list()
-                  .title("Stories & work")
+                  .title("Photography")
                   .items([
+                    singleton(S, "photographyPage", "📷 Photography page"),
                     S.documentTypeListItem("wedding").title("💍 Wedding stories"),
+                  ]),
+              ),
+            S.listItem()
+              .title("🎬 Films")
+              .child(
+                S.list()
+                  .title("Films")
+                  .items([
+                    singleton(S, "filmsPage", "🎬 Films page"),
                     S.documentTypeListItem("film").title("🎬 Wedding films"),
+                  ]),
+              ),
+            singleton(S, "portfolioPage", "🖼️ Portfolio"),
+            S.listItem()
+              .title("🏷️ Brands")
+              .child(
+                S.list()
+                  .title("Brands")
+                  .items([
+                    singleton(S, "brandsPage", "🏷️ Brands page"),
                     S.documentTypeListItem("brand").title("🏷️ Brands"),
                   ]),
               ),
+            singleton(S, "aboutPage", "📖 About"),
+            singleton(S, "contactPage", "✉️ Contact"),
+            S.divider(),
             S.listItem()
               .title("⚙️ Site settings")
               .child(
