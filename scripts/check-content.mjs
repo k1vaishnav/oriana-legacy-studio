@@ -61,12 +61,13 @@ for (const gone of RETIRED) {
   if (routeNames.has(gone)) fail(`${gone} was retired but is back`);
 }
 for (const name of routeNames) {
-  // The layout route, the embedded CMS studio and the generated sitemap are not pages.
+  // The layout routes, the embedded CMS studio subtree and the generated
+  // sitemap are not pages.
   if (
     name === "portfolio.real-weddings.$slug.tsx" ||
     name === "portfolio.tsx" ||
     name === "brands.$slug.tsx" ||
-    name === "studio.tsx"
+    name.startsWith("studio.")
   )
     continue;
   if (name.endsWith(".tsx") && !name.startsWith("__") && !(name in PAGES)) {
