@@ -48,6 +48,9 @@ export default defineConfig({
                     singleton(S, "aboutPage", "📖 About page"),
                     singleton(S, "brandsPage", "🏷️ Brands page"),
                     singleton(S, "contactPage", "✉️ Contact page"),
+                    singleton(S, "portfolioPage", "🖼️ Portfolio page"),
+                    singleton(S, "filmsPage", "🎬 Films page"),
+                    singleton(S, "photographyPage", "📷 Photography page"),
                   ]),
               ),
             S.listItem()
