@@ -18,9 +18,9 @@ export function StudioPage() {
     setMounted(true);
   }, []);
 
-  if (!mounted) return <div style={{ minHeight: "100svh" }} />;
+  if (!mounted) return <div className="sanity-boot" />;
   return (
-    <Suspense fallback={<div style={{ minHeight: "100svh" }} />}>
+    <Suspense fallback={<div className="sanity-boot" />}>
       <StudioApp />
     </Suspense>
   );

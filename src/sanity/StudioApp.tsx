@@ -12,7 +12,7 @@ import config from "../../sanity.config";
 
 export default function StudioApp() {
   return (
-    <div style={{ minHeight: "100svh" }}>
+    <div className="sanity-root">
       <Studio config={config} />
     </div>
   );

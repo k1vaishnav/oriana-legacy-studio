@@ -183,10 +183,13 @@ function RootComponent() {
   const isStudio = useIsStudio();
 
   // `/studio` is Sanity alone: no header, footer, chatbot or site furniture.
+  // The stage gives the Studio a full-viewport, white, block-level box of its
+  // own — it sizes itself to the viewport (not to the site's flex column),
+  // so no collapsed region or site background can show through mid-page.
   if (isStudio) {
     return (
       <QueryClientProvider client={queryClient}>
-        <main id="main" className="flex min-h-svh flex-col">
+        <main id="main" className="sanity-stage">
           <Outlet />
         </main>
       </QueryClientProvider>

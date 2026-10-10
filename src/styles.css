@@ -4346,3 +4346,35 @@ select.field {
     animation: none;
   }
 }
+
+/* ================================================================== */
+/* Embedded Sanity Studio (/studio)                                     */
+/*                                                                     */
+/* The Studio is a full-viewport app that sizes itself to an explicit  */
+/* height chain. These three boxes give it exactly that — a white,     */
+/* block-level stage at 100dvh — so it can never collapse into a       */
+/* half-height frame with a dead region below it, and no site chrome,  */
+/* texture or background can leak through. Nothing else on the site    */
+/* uses these classes.                                                 */
+/* ================================================================== */
+.sanity-stage {
+  display: block;
+  height: 100dvh;
+  min-height: 100dvh;
+  background: #fff;
+  color-scheme: light;
+}
+
+.sanity-boot {
+  height: 100dvh;
+  background: #fff;
+}
+
+.sanity-root {
+  height: 100dvh;
+  background: #fff;
+}
+
+.sanity-root > div {
+  height: 100%;
+}
