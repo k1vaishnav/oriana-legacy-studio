@@ -19,6 +19,7 @@ import { films as localFilms, type Film } from "./films";
 import { weddings as localWeddings, type Wedding } from "./portfolio";
 import { getImage } from "./image-manifest";
 import { photoAlt, type Photo } from "./photos";
+import type { FilterId } from "./photoFilters";
 import {
   business as localBusiness,
   coverage as localCoverage,
@@ -805,8 +806,24 @@ export type PortfolioPageContent = {
   countTemplate: string;
   showMoreTemplate: string;
   filterLabels: { id: string; label: string }[];
-  library: Photo[];
+  library: LibraryItem[];
 };
+
+/** One wall frame: its photograph plus the filters it appears in. */
+export type LibraryItem = {
+  photo: Photo;
+  categories: FilterId[];
+};
+
+const FILTER_IDS = [
+  "candid",
+  "traditional",
+  "intimate",
+  "haldi",
+  "christian",
+  "pre",
+  "venue",
+] as const;
 
 const defaultPortfolio: PortfolioPageContent = {
   seoTitle: "Wedding Photography Portfolio | Oriana Weddings",
@@ -822,7 +839,7 @@ const defaultPortfolio: PortfolioPageContent = {
   library: [],
 };
 
-type RawLibraryItem = { photo?: RawImage; caption?: string };
+type RawLibraryItem = { photo?: RawImage; caption?: string; categories?: string[] };
 
 export function getPortfolioPage(): Promise<PortfolioPageContent> {
   return fetchDoc<
@@ -831,7 +848,7 @@ export function getPortfolioPage(): Promise<PortfolioPageContent> {
     `*[_type == "portfolioPage" && _id == "portfolioPage"][0]{
       seoTitle, seoDescription, eyebrow, sub, storyBackLabel, storiesBackLabel,
       countTemplate, showMoreTemplate, filterLabels,
-      library[]{caption, photo${IMG}}
+      library[]{caption, categories, photo${IMG}}
     }`,
     null,
   ).then((doc) => {
@@ -849,13 +866,18 @@ export function getPortfolioPage(): Promise<PortfolioPageContent> {
           const asset = mapAsset(item?.photo);
           return asset
             ? ({
-                key: null,
-                alt: item?.caption || "Wedding photograph",
-                asset,
-              } as Photo)
+                photo: {
+                  key: null,
+                  alt: item?.caption || "Wedding photograph",
+                  asset,
+                } as Photo,
+                categories: (Array.isArray(item?.categories) ? item.categories : []).filter(
+                  (c): c is FilterId => (FILTER_IDS as readonly string[]).includes(c),
+                ),
+              } as LibraryItem)
             : null;
         })
-        .filter((p): p is Photo => p !== null),
+        .filter((item): item is LibraryItem => item !== null),
     };
   });
 }

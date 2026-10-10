@@ -415,7 +415,7 @@ export const schemaTypes = [
       name: "library",
       title: "The portfolio wall (30 frames)",
       description:
-        "What the “All work” wall shows, in order — add, remove, reorder, replace. Filtered views (Candid, Traditional, …) stay curated.",
+        "What the “All work” wall shows, in order — add, remove, reorder, replace. Tick the filters each frame belongs to and it appears in those filtered views too.",
       type: "array",
       of: [
         {
@@ -429,6 +429,24 @@ export const schemaTypes = [
               validation: required,
             },
             { name: "caption", title: "Caption under the frame", type: "string" },
+            {
+              name: "categories",
+              title: "Shows in filters",
+              description: "Unticked frames appear only under “All work”.",
+              type: "array",
+              of: [{ type: "string" }],
+              options: {
+                list: [
+                  { title: "Candid", value: "candid" },
+                  { title: "Traditional", value: "traditional" },
+                  { title: "Intimate", value: "intimate" },
+                  { title: "Haldi & Mehendi", value: "haldi" },
+                  { title: "Christian", value: "christian" },
+                  { title: "Pre-wedding", value: "pre" },
+                  { title: "Venues", value: "venue" },
+                ],
+              },
+            },
           ],
           preview: {
             select: { title: "caption", media: "photo" },

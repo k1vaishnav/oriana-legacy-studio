@@ -40,9 +40,23 @@ function PortfolioPage() {
   }, [search.filter]);
 
   // "All work" shows the CMS library when it has frames (full CRUD: add,
-  // remove, reorder, replace); curated filters keep their archive slices.
-  const allPhotos: readonly Photo[] = page.library.length > 0 ? page.library : GROUPS.all;
-  const visiblePhotos: readonly Photo[] = photoFilter === "all" ? allPhotos : GROUPS[photoFilter];
+  // remove, reorder, replace). A filtered view shows the library frames ticked
+  // for that filter — falling back to the curated archive slice only when
+  // nothing is ticked, so a filter never goes empty.
+  const libraryPhotos = page.library.length > 0 ? page.library : null;
+  const taggedPhotos = (id: FilterId): readonly Photo[] | null => {
+    if (!libraryPhotos || id === "all") return null;
+    const matches = libraryPhotos
+      .filter((item) => item.categories.includes(id))
+      .map((item) => item.photo);
+    return matches.length > 0 ? matches : null;
+  };
+  const visiblePhotos: readonly Photo[] =
+    photoFilter === "all"
+      ? libraryPhotos
+        ? libraryPhotos.map((item) => item.photo)
+        : GROUPS.all
+      : (taggedPhotos(photoFilter) ?? GROUPS[photoFilter]);
   const shownPhotos = visiblePhotos.slice(0, visibleCount);
 
   // CMS renames a filter button by id; unknown ids and blanks keep the built-in.

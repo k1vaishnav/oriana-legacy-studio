@@ -67,68 +67,103 @@ console.log(`assets ready (${Object.keys(refByKey).length} frames)`);
 const img = (key) => imageRef(refByKey[key]);
 const imgs = (keys) => keys.map(img);
 
-// The portfolio wall in wall order, with the registry captions.
+// The portfolio wall in wall order, with the registry captions and the
+// filters each frame belongs to (mirrors the built-in filter groups).
 const LIBRARY = [
-  ["home-hero-user", "Newlywed couple sharing a quiet moment, photographed by Oriana Weddings"],
+  ["home-hero-user", "Newlywed couple sharing a quiet moment, photographed by Oriana Weddings", []],
   [
     "hero-traditional-intimate",
     "Bride and groom together in wedding attire, photographed by Oriana Weddings",
+    ["candid", "intimate"],
   ],
   [
     "calicut-cinematic-wedding-hero",
     "Bride in a red veil at night, photographed by Oriana Weddings",
+    ["candid"],
   ],
   [
     "kerala-cinematic-wedding-film-still",
     "Bride celebrating with sparklers among loved ones, photographed by Oriana Weddings",
+    ["candid"],
   ],
   [
     "calicut-church-wedding-ceremony",
     "Wedding ceremony with family and friends, photographed by Oriana Weddings",
+    ["traditional", "christian"],
   ],
   [
     "church-golden-altar",
     "Bride in a gold veil and temple jewellery, photographed by Oriana Weddings",
+    ["traditional", "christian"],
   ],
   [
     "portrait-bride-sunlight",
     "Kerala bride in gold jewellery at a doorway, photographed by Oriana Weddings",
+    ["candid", "intimate", "haldi", "pre"],
   ],
-  ["closing-cta-user", "Newlywed couple at home, photographed by Oriana Weddings"],
-  ["ceremony-temple-ritual", "Bride in red and gold jewellery, photographed by Oriana Weddings"],
+  ["closing-cta-user", "Newlywed couple at home, photographed by Oriana Weddings", ["venue"]],
+  [
+    "ceremony-temple-ritual",
+    "Bride in red and gold jewellery, photographed by Oriana Weddings",
+    ["traditional"],
+  ],
   [
     "ceremony-south-asian-prewedding",
     "Newlywed couple sharing a quiet moment outdoors, photographed by Oriana Weddings",
+    ["traditional"],
   ],
-  ["church-altar-candid", "Veiled bride with the groom, photographed by Oriana Weddings"],
+  [
+    "church-altar-candid",
+    "Veiled bride with the groom, photographed by Oriana Weddings",
+    ["traditional", "christian", "venue"],
+  ],
   [
     "church-outside-joy",
     "Newlywed couple laughing together outdoors, photographed by Oriana Weddings",
+    ["traditional", "christian"],
   ],
   [
     "haldi-bride-with-friends",
     "Bride and groom in vibrant wedding attire, photographed by Oriana Weddings",
+    ["candid", "intimate", "traditional", "haldi", "pre"],
   ],
-  ["detail-bride-henna-face", "Bride during the haldi ceremony, photographed by Oriana Weddings"],
-  ["detail-bouquet", "Wedding bouquet detail, photographed by Oriana Weddings"],
-  ["detail-bride-groom-feet", "Couple dancing at their wedding, photographed by Oriana Weddings"],
-  ["detail-reception-cake", "Wedding reception details, photographed by Oriana Weddings"],
+  [
+    "detail-bride-henna-face",
+    "Bride during the haldi ceremony, photographed by Oriana Weddings",
+    ["traditional", "haldi", "pre", "venue"],
+  ],
+  [
+    "detail-bouquet",
+    "Wedding bouquet detail, photographed by Oriana Weddings",
+    ["haldi", "pre", "venue"],
+  ],
+  [
+    "detail-bride-groom-feet",
+    "Couple dancing at their wedding, photographed by Oriana Weddings",
+    [],
+  ],
+  [
+    "detail-reception-cake",
+    "Wedding reception details, photographed by Oriana Weddings",
+    ["venue"],
+  ],
   [
     "detail-reception-monochrome",
     "Newlywed couple in a quiet moment at home, photographed by Oriana Weddings",
+    ["candid", "intimate", "venue"],
   ],
-  ["instagram-01", "Wedding moment, photographed by Oriana Weddings"],
-  ["instagram-02", "Wedding moment, photographed by Oriana Weddings"],
-  ["instagram-07", "Wedding moment, photographed by Oriana Weddings"],
-  ["instagram-08", "Wedding moment, photographed by Oriana Weddings"],
-  ["instagram-03", "Wedding moment, photographed by Oriana Weddings"],
-  ["instagram-04", "Wedding moment, photographed by Oriana Weddings"],
-  ["instagram-05", "Wedding moment, photographed by Oriana Weddings"],
-  ["instagram-06", "Wedding moment, photographed by Oriana Weddings"],
-  ["instagram-09", "Wedding moment, photographed by Oriana Weddings"],
-  ["instagram-10", "Wedding moment, photographed by Oriana Weddings"],
-  ["instagram-11", "Wedding moment, photographed by Oriana Weddings"],
-  ["instagram-12", "Wedding moment, photographed by Oriana Weddings"],
+  ["instagram-01", "Wedding moment, photographed by Oriana Weddings", ["candid", "pre"]],
+  ["instagram-02", "Wedding moment, photographed by Oriana Weddings", ["candid", "pre"]],
+  ["instagram-07", "Wedding moment, photographed by Oriana Weddings", ["candid", "pre"]],
+  ["instagram-08", "Wedding moment, photographed by Oriana Weddings", ["candid", "pre"]],
+  ["instagram-03", "Wedding moment, photographed by Oriana Weddings", []],
+  ["instagram-04", "Wedding moment, photographed by Oriana Weddings", []],
+  ["instagram-05", "Wedding moment, photographed by Oriana Weddings", []],
+  ["instagram-06", "Wedding moment, photographed by Oriana Weddings", []],
+  ["instagram-09", "Wedding moment, photographed by Oriana Weddings", []],
+  ["instagram-10", "Wedding moment, photographed by Oriana Weddings", []],
+  ["instagram-11", "Wedding moment, photographed by Oriana Weddings", []],
+  ["instagram-12", "Wedding moment, photographed by Oriana Weddings", []],
 ];
 
 /**
@@ -187,7 +222,11 @@ const toImageFields = (doc) => {
     });
   }
   if (out._id === "portfolioPage") {
-    out.library = LIBRARY.map(([key, caption]) => ({ photo: img(key), caption }));
+    out.library = LIBRARY.map(([key, caption, categories]) => ({
+      photo: img(key),
+      caption,
+      categories,
+    }));
   }
   return out;
 };
