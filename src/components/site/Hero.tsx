@@ -24,12 +24,16 @@ export function EditorialHero({
   eyebrow = "Oriana Weddings · Photography & Films",
   title = "Your wedding, our responsibility.",
   sub = "Candid, traditional & cinematic — managed by Oriana.",
+  primaryLabel = "View our work",
+  secondaryLabel = "Enquire",
 }: {
   image?: ImageKey;
   alt: string;
   eyebrow?: string;
   title?: string;
   sub?: string;
+  primaryLabel?: string;
+  secondaryLabel?: string;
 }) {
   const settings = useSiteSettings();
   const entry = getImage(image);
@@ -69,7 +73,7 @@ export function EditorialHero({
           <p className="home-hero-sub">{sub}</p>
           <div className="home-hero-ctas">
             <Link to="/portfolio" className="home-hero-cta home-hero-cta-primary">
-              View our work
+              {primaryLabel}
             </Link>
             <a
               href={whatsappHrefFor(
@@ -80,7 +84,7 @@ export function EditorialHero({
               rel="noreferrer"
               className="home-hero-cta home-hero-cta-ghost"
             >
-              Enquire
+              {secondaryLabel}
             </a>
           </div>
         </div>

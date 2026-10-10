@@ -50,7 +50,10 @@ export function FeaturedStories({ stills }: { stills?: ImageKey[] }) {
       className="relative isolate overflow-hidden on-ink text-paper"
       aria-labelledby="featured-heading"
     >
-      <FilmBackdrop {...(BACKDROP_VIDEO ? { src: BACKDROP_VIDEO } : {})} stills={stills && stills.length > 0 ? stills : DEFAULT_STILLS} />
+      <FilmBackdrop
+        {...(BACKDROP_VIDEO ? { src: BACKDROP_VIDEO } : {})}
+        stills={stills && stills.length > 0 ? stills : DEFAULT_STILLS}
+      />
 
       <div className="shell relative py-24 sm:py-32">
         <Reveal>

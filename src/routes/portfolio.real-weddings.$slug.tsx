@@ -5,7 +5,7 @@ import { Lightbox } from "@/components/site/Lightbox";
 import { Reveal } from "@/components/site/Reveal";
 import { ResponsiveImage } from "@/lib/images";
 import { getImage } from "@/lib/image-manifest";
-import { getWedding } from "@/lib/cms";
+import { getPortfolioPage, getWedding } from "@/lib/cms";
 import { photoAlt, type Photo } from "@/lib/photos";
 import { business } from "@/lib/site";
 import { seo } from "@/lib/seo";
@@ -14,7 +14,12 @@ export const Route = createFileRoute("/portfolio/real-weddings/$slug")({
   loader: async ({ params }) => {
     const wedding = await getWedding(params.slug);
     if (!wedding) throw notFound();
-    return { wedding };
+    const page = await getPortfolioPage();
+    return {
+      wedding,
+      storyBackLabel: page.storyBackLabel,
+      storiesBackLabel: page.storiesBackLabel,
+    };
   },
   head: ({ loaderData }) => {
     const wedding = loaderData!.wedding;
@@ -29,7 +34,7 @@ export const Route = createFileRoute("/portfolio/real-weddings/$slug")({
 });
 
 function StoryPage() {
-  const { wedding } = Route.useLoaderData();
+  const { wedding, storyBackLabel, storiesBackLabel } = Route.useLoaderData();
   const [lightbox, setLightbox] = useState<number | null>(null);
   const photos: Photo[] = wedding.frames.map((key) => ({
     key,
@@ -40,7 +45,7 @@ function StoryPage() {
     <main className="story-page">
       <header className="story-detail-head">
         <Link to="/wedding-photography" className="story-back">
-          ← All stories
+          {storyBackLabel}
         </Link>
         <p className="story-card-kicker">
           {wedding.type} · {wedding.location}
@@ -72,7 +77,7 @@ function StoryPage() {
           {wedding.venue} · {wedding.location}
         </p>
         <Link to="/wedding-photography" className="story-back">
-          ← All photography stories
+          {storiesBackLabel}
         </Link>
       </footer>
       {lightbox !== null ? (

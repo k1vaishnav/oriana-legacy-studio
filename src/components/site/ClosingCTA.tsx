@@ -15,14 +15,13 @@ import { useSiteSettings, whatsappHrefFor } from "@/lib/cms";
  * a real responsive image — AVIF, then WebP, then JPEG across the generated
  * width ladder — rather than a CSS background, so phones fetch a small variant
  * and desktops fetch a large one. It is decorative (`aria-hidden`, empty alt):
- * the heading carries the message.
+ * the heading carries the message. The photograph itself is CMS-selectable.
  */
-const DEFAULT_CTA_IMAGE: ImageKey = "closing-cta-user";
-
-export function ClosingCTA({ image = DEFAULT_CTA_IMAGE }: { image?: ImageKey }) {
+export function ClosingCTA({ image }: { image?: ImageKey }) {
   const settings = useSiteSettings();
   const { closingCta } = settings;
-  const entry = getImage(image);
+  const key = image ?? closingCta.imageKey;
+  const entry = getImage(key);
 
   return (
     <section className="closing-cta closing-cta-banner" aria-labelledby="closing-cta-heading">
@@ -36,11 +35,11 @@ export function ClosingCTA({ image = DEFAULT_CTA_IMAGE }: { image?: ImageKey }) 
           backgroundPosition: "center",
         }}
       >
-        <source type="image/avif" srcSet={srcSet(image, "avif")} sizes="100vw" />
-        <source type="image/webp" srcSet={srcSet(image, "webp")} sizes="100vw" />
+        <source type="image/avif" srcSet={srcSet(key, "avif")} sizes="100vw" />
+        <source type="image/webp" srcSet={srcSet(key, "webp")} sizes="100vw" />
         <img
           src={entry.src}
-          srcSet={srcSet(image, "jpeg")}
+          srcSet={srcSet(key, "jpeg")}
           sizes="100vw"
           alt=""
           width={entry.width}

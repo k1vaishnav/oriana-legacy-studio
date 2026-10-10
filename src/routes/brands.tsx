@@ -45,8 +45,8 @@ function BrandsPage() {
         image={asImageKey(page.heroImageKey, "detail-reception-monochrome")}
         alt={page.heroImageAlt}
         meta={[
-          { label: "Brands", value: `${brands.length}` },
-          { label: "Offices", value: "Calicut & Ahmedabad" },
+          { label: page.metaFirstLabel, value: `${brands.length}` },
+          { label: page.metaSecondLabel, value: page.metaSecondValue },
         ]}
         crumb={[{ name: "Brands" }]}
       />

@@ -107,12 +107,22 @@ const docs = [
     soulCinema: {
       title: "Soul + Cinema",
       body: "Every wedding is unique and so are our films. For the past 12 years, Oriana has set new benchmarks of storytelling within the wedding realm and beyond. We are fortunate to have experienced such unique cultures and traditions across Kerala, Gujarat, India and beyond, and to document stories that continuously overwhelm us.",
+      videoSrc: "/video/soul-cinema-stock.mp4",
     },
     closingCta: {
       kicker: "ORIANAWEDDINGS · WEDDING PHOTOGRAPHY & FILMS",
       heading: "A day, held forever.",
       button: "Enquire on WhatsApp",
+      imageKey: "closing-cta-user",
     },
+    chatbot: {
+      greeting: "Hi there! 👋 Welcome to Oriana Weddings.",
+      prompt: "Ask me anything — or share your name and I’ll get you a quick quote.",
+      handoff: "Perfect! Opening WhatsApp so our team can assist you right away. 💬",
+    },
+    footerExplore: "Explore",
+    footerStudios: "Studio",
+    footerCoverage: "Where we shoot",
     affiliations: [
       { name: "WeddingSutra", href: "https://www.weddingsutra.com/" },
       { name: "Vogue", href: "https://www.vogue.in/" },
@@ -154,6 +164,8 @@ const docs = [
     heroEyebrow: "Oriana Weddings · Photography & Films",
     heroTitle: "Your wedding, our responsibility.",
     heroSub: "Candid, traditional & cinematic — managed by Oriana.",
+    heroPrimaryLabel: "View our work",
+    heroSecondaryLabel: "Enquire",
     introEyebrow: "ORIANAWEDDINGS · PHOTOGRAPHY & CINEMA",
     introHeading: "Every story has its own rhythm.",
     introBody: "We hold on to the rituals, the in-between moments, and the joy.",
@@ -240,6 +252,10 @@ const docs = [
     heroTitle: "More than wedding photographers",
     heroLead:
       "Oriana Weddings has grown beyond the traditional idea of a wedding photography company. It is a photography and filmmaking brand built around experience, team selection, planning, management and trust.",
+    heroMeta: [
+      { label: "Founded", value: "12+ years experience" },
+      { label: "Main office", value: "Calicut, Kerala" },
+    ],
     teamEyebrow: "The team",
     teamHeading: "Meet the team",
     teamBody:
@@ -319,6 +335,10 @@ const docs = [
     heroTitle: "Five brands, one house",
     heroLead:
       "Oriana Group brings together creative brands working across photography, fashion, events and luxury products.",
+    metaFirstLabel: "Brands",
+    metaSecondLabel: "Offices",
+    metaSecondValue: "Calicut & Ahmedabad",
+    backLabel: "← All brands",
     whyEyebrow: "Why more than one brand",
     whyTitle: "Different work needs different people, but the same standard",
     whyLead:
@@ -367,6 +387,18 @@ const docs = [
       { value: "Wedding Films", note: "Feature films, teasers, reels" },
       { value: "Photography + Films", note: "Both teams, structured together" },
     ],
+    formEyebrow: "Enquiry",
+    formTitle: "Five boxes. That is the whole form.",
+    formBody:
+      "We only ask for what we need to answer you. Dates, venue and everything else can wait for the reply.",
+    sentEyebrow: "Sent",
+    sentTitle: "Thank you — we have your details.",
+    sentBody:
+      "Oriana will reply to you shortly, usually the same day. If it is urgent, call {phone}.",
+    blockedTitle: "One tap left.",
+    blockedBody:
+      "Your browser stopped the WhatsApp window from opening on its own, so this has not been sent yet. Nothing you typed is lost — press the button and it goes.",
+    blockedButton: "Open WhatsApp",
     nextSteps: [
       {
         title: "We read it ourselves",
@@ -414,6 +446,8 @@ const docs = [
       "Browse wedding photographs by Oriana Weddings. Explore candid, traditional, intimate, pre-wedding and other photography styles.",
     eyebrow: "ORIANA WEDDINGS · PORTFOLIO",
     sub: "A few moments, held in still frames.",
+    storyBackLabel: "← All stories",
+    storiesBackLabel: "← All photography stories",
     countTemplate: "Showing {shown} of {total} images",
     showMoreTemplate: "Show more ({remaining} remaining)",
     filterLabels: [

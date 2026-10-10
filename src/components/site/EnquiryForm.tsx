@@ -104,12 +104,47 @@ const compose = (values: Fields, phone: string) =>
     phone,
   ].join("\n");
 
-export function EnquiryForm({ services }: { services?: { value: string; note: string }[] }) {
+export function EnquiryForm({
+  services,
+  copy = {},
+}: {
+  services?: { value: string; note: string }[];
+  copy?: {
+    formEyebrow?: string;
+    formTitle?: string;
+    formBody?: string;
+    sentEyebrow?: string;
+    sentTitle?: string;
+    sentBody?: string;
+    blockedTitle?: string;
+    blockedBody?: string;
+    blockedButton?: string;
+  };
+}) {
   const settings = useSiteSettings();
   const business = settings.business ?? fallbackBusiness;
   const whatsappHref = (message: string) =>
     settings.business ? whatsappHrefFor(settings, message) : fallbackWhatsappHref(message);
   const options = services && services.length > 0 ? services : DEFAULT_SERVICES;
+  const text = {
+    formEyebrow: copy.formEyebrow || "Enquiry",
+    formTitle: copy.formTitle || "Five boxes. That is the whole form.",
+    formBody:
+      copy.formBody ||
+      "We only ask for what we need to answer you. Dates, venue and everything else can wait for the reply.",
+    sentEyebrow: copy.sentEyebrow || "Sent",
+    sentTitle: copy.sentTitle || "Thank you — we have your details.",
+    sentBody:
+      copy.sentBody ||
+      "Oriana will reply to you shortly, usually the same day. If it is urgent, call {phone}.",
+    blockedTitle: copy.blockedTitle || "One tap left.",
+    blockedBody:
+      copy.blockedBody ||
+      "Your browser stopped the WhatsApp window from opening on its own, so this has not been sent yet. Nothing you typed is lost — press the button and it goes.",
+    blockedButton: copy.blockedButton || "Open WhatsApp",
+  };
+  // "…call {phone}." renders the number as a tappable link.
+  const sentParts = text.sentBody.split("{phone}");
   const [fields, setFields] = useState<Fields>(EMPTY);
   const [errors, setErrors] = useState<Errors>({});
   const [state, setState] = useState<"idle" | "sending" | "sent">("idle");
@@ -220,16 +255,13 @@ export function EnquiryForm({ services }: { services?: { value: string; note: st
         aria-labelledby="enquiry-done"
         className="rounded-card border border-line bg-bone p-7 sm:p-9"
       >
-        <p className="eyebrow">Sent</p>
+        <p className="eyebrow">{text.sentEyebrow}</p>
         <h2 id="enquiry-done" className="mt-5 font-display text-h3 text-ink">
-          {blocked ? "One tap left." : "Thank you — we have your details."}
+          {blocked ? text.blockedTitle : text.sentTitle}
         </h2>
         {blocked ? (
           <>
-            <p className="measure mt-4 text-mute">
-              Your browser stopped the WhatsApp window from opening on its own, so this has not been
-              sent yet. Nothing you typed is lost — press the button and it goes.
-            </p>
+            <p className="measure mt-4 text-mute">{text.blockedBody}</p>
             <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
               <a
                 href={whatsappHref(compose(fields, business.phone))}
@@ -237,7 +269,7 @@ export function EnquiryForm({ services }: { services?: { value: string; note: st
                 rel="noopener noreferrer"
                 className="btn btn-ink"
               >
-                Open WhatsApp
+                {text.blockedButton}
                 <Arrow className="size-3.5" />
               </a>
               <a href={`mailto:${business.email}`} className="link text-sm">
@@ -247,11 +279,15 @@ export function EnquiryForm({ services }: { services?: { value: string; note: st
           </>
         ) : (
           <p className="measure mt-4 text-mute">
-            Oriana will reply to you shortly, usually the same day. If it is urgent, call{" "}
-            <a href={business.phoneHref} className="link">
-              {business.phone}
-            </a>
-            .
+            {sentParts[0]}
+            {sentParts.length > 1 ? (
+              <>
+                <a href={business.phoneHref} className="link">
+                  {business.phone}
+                </a>
+                {sentParts.slice(1).join("{phone}")}
+              </>
+            ) : null}
           </p>
         )}
 
@@ -269,14 +305,11 @@ export function EnquiryForm({ services }: { services?: { value: string; note: st
       aria-labelledby="enquiry-heading"
       className="rounded-card border border-line bg-bone p-6 sm:p-9"
     >
-      <p className="eyebrow">Enquiry</p>
+      <p className="eyebrow">{text.formEyebrow}</p>
       <h2 id="enquiry-heading" className="mt-4 font-display text-h3 text-ink">
-        Five boxes. That is the whole form.
+        {text.formTitle}
       </h2>
-      <p className="mt-3 max-w-[44ch] text-sm leading-relaxed text-mute">
-        We only ask for what we need to answer you. Dates, venue and everything else can wait for
-        the reply.
-      </p>
+      <p className="mt-3 max-w-[44ch] text-sm leading-relaxed text-mute">{text.formBody}</p>
 
       <form onSubmit={onSubmit} noValidate className="mt-8">
         {/* Spam trap. Hidden from sight and from the accessibility tree. */}

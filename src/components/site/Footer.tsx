@@ -28,7 +28,7 @@ export function Footer() {
     <footer className="surface-cream mt-auto border-t border-line">
       <div className="shell-wide grid gap-10 py-16 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8 lg:py-20">
         <div className="flex flex-col gap-4">
-          <p className="eyebrow">Explore</p>
+          <p className="eyebrow">{settings.footerExplore}</p>
           <ul className="flex flex-col gap-2.5">
             {sections.map((item) => (
               <li key={item.to}>
@@ -45,7 +45,7 @@ export function Footer() {
 
         {offices.map((office) => (
           <div key={office.city} className="flex flex-col gap-3">
-            <p className="eyebrow">Studio</p>
+            <p className="eyebrow">{settings.footerStudios}</p>
             <address className="flex flex-col gap-1 text-sm text-mute not-italic">
               <span className="font-medium text-ink">{office.city}</span>
               <a href={office.phoneHref} className="link-muted transition-colors hover:text-ink">
@@ -56,7 +56,7 @@ export function Footer() {
         ))}
 
         <div className="flex flex-col gap-4">
-          <p className="eyebrow">Where we shoot</p>
+          <p className="eyebrow">{settings.footerCoverage}</p>
           <ul className="flex flex-wrap gap-1.5">
             {coverage.slice(0, 8).map((place) => (
               /* The chip's own ground is ivory, a shade off the cream footer, so

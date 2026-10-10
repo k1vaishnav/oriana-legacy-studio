@@ -127,7 +127,20 @@ function ContactPage() {
       <section id="enquiry" className="surface-cream pb-32 sm:pb-20">
         <div className="shell grid gap-10 lg:grid-cols-12 lg:gap-12">
           <div className="lg:col-span-7">
-            <EnquiryForm services={page.serviceOptions} />
+            <EnquiryForm
+              services={page.serviceOptions}
+              copy={{
+                formEyebrow: page.formEyebrow,
+                formTitle: page.formTitle,
+                formBody: page.formBody,
+                sentEyebrow: page.sentEyebrow,
+                sentTitle: page.sentTitle,
+                sentBody: page.sentBody,
+                blockedTitle: page.blockedTitle,
+                blockedBody: page.blockedBody,
+                blockedButton: page.blockedButton,
+              }}
+            />
 
             {/*
               Where we are, on the left under the form.

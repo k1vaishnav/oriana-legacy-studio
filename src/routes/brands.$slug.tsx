@@ -8,7 +8,7 @@ import { ResponsiveImage } from "@/lib/images";
 import { getImage } from "@/lib/image-manifest";
 import { photoAlt, type Photo } from "@/lib/photos";
 import { business } from "@/lib/site";
-import { getBrand, useSiteSettings, whatsappHrefFor } from "@/lib/cms";
+import { getBrand, getBrandsPage, useSiteSettings, whatsappHrefFor } from "@/lib/cms";
 import { PageHero } from "@/components/site/PageHero";
 import { seo } from "@/lib/seo";
 
@@ -18,7 +18,8 @@ export const Route = createFileRoute("/brands/$slug")({
     if (!brand) throw notFound();
     // Oriana Weddings is the house itself — its "detail page" is the homepage.
     if (brand.slug === "oriana-weddings") throw redirect({ to: "/", statusCode: 301 });
-    return { brand };
+    const page = await getBrandsPage();
+    return { brand, backLabel: page.backLabel };
   },
   head: ({ loaderData }) => {
     const brand = loaderData!.brand;
@@ -33,7 +34,7 @@ export const Route = createFileRoute("/brands/$slug")({
 });
 
 function BrandPage() {
-  const { brand } = Route.useLoaderData();
+  const { brand, backLabel } = Route.useLoaderData();
   const settings = useSiteSettings();
   const { business } = settings;
   const [lightbox, setLightbox] = useState<number | null>(null);
@@ -89,7 +90,7 @@ function BrandPage() {
                 Enquire about {brand.name}
               </a>
               <Link to="/brands" className="link mt-5 inline-flex items-center gap-1.5 text-sm">
-                ← All brands
+                {backLabel}
               </Link>
             </Reveal>
           </div>

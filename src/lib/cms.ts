@@ -113,10 +113,14 @@ export type SiteSettings = {
   brandLines: readonly string[];
   offices: typeof localOffices;
   coverage: typeof localCoverage;
-  soulCinema: typeof localSoulCinema;
+  soulCinema: typeof localSoulCinema & { videoSrc: string };
   stats: typeof localStats;
-  closingCta: { kicker: string; heading: string; button: string };
+  closingCta: { kicker: string; heading: string; button: string; imageKey: ImageKey };
   affiliations: { name: string; href: string }[];
+  chatbot: { greeting: string; prompt: string; handoff: string };
+  footerExplore: string;
+  footerStudios: string;
+  footerCoverage: string;
   notFound: {
     eyebrow: string;
     title: string;
@@ -139,14 +143,23 @@ const defaultSettings: SiteSettings = {
   brandLines: ["Indian Wedding Film Award Winner", "Couple Choice Award Winner"],
   offices: localOffices,
   coverage: localCoverage,
-  soulCinema: localSoulCinema,
+  soulCinema: { ...localSoulCinema, videoSrc: "/video/soul-cinema-stock.mp4" },
   stats: localStats,
   closingCta: {
     kicker: "ORIANAWEDDINGS · WEDDING PHOTOGRAPHY & FILMS",
     heading: "A day, held forever.",
     button: "Enquire on WhatsApp",
+    imageKey: "closing-cta-user",
   },
   affiliations: [],
+  chatbot: {
+    greeting: "Hi there! 👋 Welcome to Oriana Weddings.",
+    prompt: "Ask me anything — or share your name and I’ll get you a quick quote.",
+    handoff: "Perfect! Opening WhatsApp so our team can assist you right away. 💬",
+  },
+  footerExplore: "Explore",
+  footerStudios: "Studio",
+  footerCoverage: "Where we shoot",
   notFound: {
     eyebrow: "404",
     title: "This page has moved on.",
@@ -182,9 +195,13 @@ type RawSettings = {
   offices?: SiteSettings["offices"];
   coverage?: string[];
   stats?: { value?: string; label?: string }[];
-  soulCinema?: { title?: string; body?: string };
-  closingCta?: { kicker?: string; heading?: string; button?: string };
+  soulCinema?: { title?: string; body?: string; videoSrc?: string };
+  closingCta?: { kicker?: string; heading?: string; button?: string; imageKey?: string };
   affiliations?: { name?: string; href?: string }[];
+  chatbot?: Partial<SiteSettings["chatbot"]>;
+  footerExplore?: string;
+  footerStudios?: string;
+  footerCoverage?: string;
   notFound?: Partial<SiteSettings["notFound"]>;
   errorPage?: Partial<SiteSettings["errorPage"]>;
 };
@@ -232,12 +249,18 @@ export function getSiteSettings(): Promise<SiteSettings> {
       soulCinema: {
         title: doc.soulCinema?.title || localSoulCinema.title,
         body: doc.soulCinema?.body || localSoulCinema.body,
+        videoSrc: doc.soulCinema?.videoSrc || "/video/soul-cinema-stock.mp4",
       } as SiteSettings["soulCinema"],
       closingCta: {
         kicker: doc.closingCta?.kicker || defaultSettings.closingCta.kicker,
         heading: doc.closingCta?.heading || defaultSettings.closingCta.heading,
         button: doc.closingCta?.button || defaultSettings.closingCta.button,
+        imageKey: validKey(doc.closingCta?.imageKey, defaultSettings.closingCta.imageKey),
       },
+      chatbot: { ...defaultSettings.chatbot, ...(doc.chatbot ?? {}) },
+      footerExplore: doc.footerExplore || defaultSettings.footerExplore,
+      footerStudios: doc.footerStudios || defaultSettings.footerStudios,
+      footerCoverage: doc.footerCoverage || defaultSettings.footerCoverage,
       affiliations:
         Array.isArray(doc.affiliations) && doc.affiliations.length > 0
           ? doc.affiliations
@@ -287,6 +310,8 @@ export type HomePageContent = {
   heroEyebrow: string;
   heroTitle: string;
   heroSub: string;
+  heroPrimaryLabel: string;
+  heroSecondaryLabel: string;
   introEyebrow: string;
   introHeading: string;
   introBody: string;
@@ -312,6 +337,8 @@ const defaultHome: HomePageContent = {
   heroEyebrow: "Oriana Weddings · Photography & Films",
   heroTitle: "Your wedding, our responsibility.",
   heroSub: "Candid, traditional & cinematic — managed by Oriana.",
+  heroPrimaryLabel: "View our work",
+  heroSecondaryLabel: "Enquire",
   introEyebrow: "ORIANAWEDDINGS · PHOTOGRAPHY & CINEMA",
   introHeading: "Every story has its own rhythm.",
   introBody: "We hold on to the rituals, the in-between moments, and the joy.",
@@ -381,6 +408,7 @@ export type AboutPageContent = {
   heroEyebrow: string;
   heroTitle: string;
   heroLead: string;
+  heroMeta: { label: string; value: string }[];
   teamEyebrow: string;
   teamHeading: string;
   teamBody: string;
@@ -409,6 +437,10 @@ const defaultAbout: AboutPageContent = {
   heroTitle: "More than wedding photographers",
   heroLead:
     "Oriana Weddings has grown beyond the traditional idea of a wedding photography company. It is a photography and filmmaking brand built around experience, team selection, planning, management and trust.",
+  heroMeta: [
+    { label: "Founded", value: "12+ years experience" },
+    { label: "Main office", value: "Calicut, Kerala" },
+  ],
   teamEyebrow: "The team",
   teamHeading: "Meet the team",
   teamBody:
@@ -462,6 +494,10 @@ export type BrandsPageContent = {
   heroEyebrow: string;
   heroTitle: string;
   heroLead: string;
+  metaFirstLabel: string;
+  metaSecondLabel: string;
+  metaSecondValue: string;
+  backLabel: string;
   whyEyebrow: string;
   whyTitle: string;
   whyLead: string;
@@ -479,6 +515,10 @@ const defaultBrands: BrandsPageContent = {
   heroEyebrow: "Our brands",
   heroTitle: "Five brands, one house",
   heroLead: groupStatement,
+  metaFirstLabel: "Brands",
+  metaSecondLabel: "Offices",
+  metaSecondValue: "Calicut & Ahmedabad",
+  backLabel: "← All brands",
   whyEyebrow: "Why more than one brand",
   whyTitle: "Different work needs different people, but the same standard",
   whyLead:
@@ -511,6 +551,15 @@ export type ContactPageContent = {
   serviceOptions: { value: string; note: string }[];
   nextSteps: { title: string; body: string }[];
   stepsEyebrow: string;
+  formEyebrow: string;
+  formTitle: string;
+  formBody: string;
+  sentEyebrow: string;
+  sentTitle: string;
+  sentBody: string;
+  blockedTitle: string;
+  blockedBody: string;
+  blockedButton: string;
   asideEyebrow: string;
   asideTitle: string;
   asideBody: string;
@@ -533,6 +582,18 @@ const defaultContact: ContactPageContent = {
   serviceOptions: [],
   nextSteps: [],
   stepsEyebrow: "What happens next",
+  formEyebrow: "Enquiry",
+  formTitle: "Five boxes. That is the whole form.",
+  formBody:
+    "We only ask for what we need to answer you. Dates, venue and everything else can wait for the reply.",
+  sentEyebrow: "Sent",
+  sentTitle: "Thank you — we have your details.",
+  sentBody:
+    "Oriana will reply to you shortly, usually the same day. If it is urgent, call {phone}.",
+  blockedTitle: "One tap left.",
+  blockedBody:
+    "Your browser stopped the WhatsApp window from opening on its own, so this has not been sent yet. Nothing you typed is lost — press the button and it goes.",
+  blockedButton: "Open WhatsApp",
   asideEyebrow: "Faster than the form",
   asideTitle: "Message us on WhatsApp.",
   asideBody:
@@ -596,6 +657,8 @@ export type PortfolioPageContent = {
   seoDescription: string;
   eyebrow: string;
   sub: string;
+  storyBackLabel: string;
+  storiesBackLabel: string;
   countTemplate: string;
   showMoreTemplate: string;
   filterLabels: { id: string; label: string }[];
@@ -607,6 +670,8 @@ const defaultPortfolio: PortfolioPageContent = {
     "Browse wedding photographs by Oriana Weddings. Explore candid, traditional, intimate, pre-wedding and other photography styles.",
   eyebrow: "ORIANA WEDDINGS · PORTFOLIO",
   sub: "A few moments, held in still frames.",
+  storyBackLabel: "← All stories",
+  storiesBackLabel: "← All photography stories",
   countTemplate: "Showing {shown} of {total} images",
   showMoreTemplate: "Show more ({remaining} remaining)",
   filterLabels: [],

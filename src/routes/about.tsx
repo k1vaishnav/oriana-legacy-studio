@@ -126,10 +126,14 @@ function AboutPage() {
         lead={page.heroLead}
         image={asImageKey(page.heroImageKey, "calicut-church-wedding-ceremony")}
         alt={page.heroImageAlt}
-        meta={[
-          { label: "Founded", value: "12+ years experience" },
-          { label: "Main office", value: "Calicut, Kerala" },
-        ]}
+        meta={
+          page.heroMeta.length > 0
+            ? page.heroMeta
+            : [
+                { label: "Founded", value: "12+ years experience" },
+                { label: "Main office", value: "Calicut, Kerala" },
+              ]
+        }
         crumb={[{ name: "About" }]}
       />
 

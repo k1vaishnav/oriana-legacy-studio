@@ -47,6 +47,8 @@ function Home() {
         eyebrow={page.heroEyebrow}
         title={page.heroTitle}
         sub={page.heroSub}
+        primaryLabel={page.heroPrimaryLabel}
+        secondaryLabel={page.heroSecondaryLabel}
       />
 
       <section className="home-intro" aria-labelledby="home-intro-heading">

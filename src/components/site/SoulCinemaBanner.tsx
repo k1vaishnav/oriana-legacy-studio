@@ -75,7 +75,7 @@ export function SoulCinemaBanner() {
                 poster={poster.src}
                 aria-hidden="true"
               >
-                <source src="/video/soul-cinema-stock.mp4" type="video/mp4" />
+                <source src={soulCinema.videoSrc} type="video/mp4" />
               </video>
             ) : (
               <picture style={{ display: "contents" }}>

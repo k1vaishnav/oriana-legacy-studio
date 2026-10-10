@@ -19,8 +19,8 @@ export function FloatingWhatsApp() {
   const [nudgeVisible, setNudgeVisible] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [messages, setMessages] = useState<{ sender: "bot" | "user"; text: string }[]>([
-    { sender: "bot", text: "Hi there! 👋 Welcome to Oriana Weddings." },
-    { sender: "bot", text: "Ask me anything — or share your name and I’ll get you a quick quote." },
+    { sender: "bot", text: settings.chatbot.greeting },
+    { sender: "bot", text: settings.chatbot.prompt },
   ]);
   const [inputValue, setInputValue] = useState("");
   const [step, setStep] = useState<Step>("name");
@@ -372,7 +372,7 @@ export function FloatingWhatsApp() {
         ...prev,
         {
           sender: "bot",
-          text: "Perfect! Opening WhatsApp so our team can assist you right away. 💬",
+          text: settings.chatbot.handoff,
         },
       ]);
       window.setTimeout(() => {
