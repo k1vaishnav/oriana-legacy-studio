@@ -13,7 +13,7 @@
  * re-added. Deleting is hiding, never data loss.
  */
 import { useEffect, useState } from "react";
-import { set, useClient, type ArrayOfPrimitivesInputProps } from "sanity";
+import { PatchEvent, set, useClient, type ArrayOfPrimitivesInputProps } from "sanity";
 
 const ALL_FILTERS: readonly { value: string; title: string }[] = [
   { value: "candid", title: "Candid" },
@@ -65,7 +65,9 @@ export function FilterCategoriesInput(props: ArrayOfPrimitivesInputProps) {
     const next = stored.includes(filterValue)
       ? stored.filter((v) => v !== filterValue)
       : [...stored, filterValue];
-    onChange(set(next));
+    // Patches must travel as a PatchEvent — a bare patch object is ignored
+    // by the form, which is exactly a checkbox that won't tick.
+    onChange(PatchEvent.from(set(next)));
   };
 
   return (
