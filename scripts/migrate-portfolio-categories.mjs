@@ -92,16 +92,22 @@ const DEFAULT_LABELS = {
 
 // NOTE: the whole document is fetched and written back — projecting a subset
 // here once wiped the page's other fields, so never narrow this query.
-const doc = await client.fetch(`*[_type == "portfolioPage" && _id == "portfolioPage"][0]`);
-if (!doc) throw new Error('No "portfolioPage" document — run `npm run cms:seed` first.');
-if (Array.isArray(doc.categories) && doc.categories.length > 0) {
-  console.log("Already on the owned-photos shape — nothing to do.");
-  process.exit(0);
-}
-if (!Array.isArray(doc.library) || doc.library.length === 0) {
-  console.log("Library is empty — nothing to migrate.");
-  process.exit(0);
-}
+// Both the published document and any unpublished draft are migrated: a
+// stale draft keeping the old `library`/`filterLabels` shape is exactly what
+// surfaces in the Studio as "unknown fields" warnings.
+const migrateOne = async (id) => {
+  const doc = await client.fetch(`*[_id == "${id}"][0]`);
+  if (!doc) return null;
+  if (Array.isArray(doc.categories) && doc.categories.length > 0) {
+    console.log(`${id}: already on the owned-photos shape — skipped.`);
+    return null;
+  }
+  if (!Array.isArray(doc.library) || doc.library.length === 0) {
+    console.log(`${id}: library is empty — skipped.`);
+    return null;
+  }
+  return doc;
+};
 
 // Seed uploads store the archive key as the asset filename (`<key>.jpg`).
 const assets = await client.fetch(`*[_type == "sanity.imageAsset"]{ _id, originalFilename }`);
@@ -113,50 +119,59 @@ const keyByAssetId = new Map(
 
 // Labels and order follow the existing button rows (renames carry over,
 // deleted buttons stay deleted); anything missing falls back to defaults.
-const oldLabels = new Map(
-  (Array.isArray(doc.filterLabels) ? doc.filterLabels : [])
-    .filter((f) => f?.id && f?.label && f.id !== "all")
-    .map((f) => [f.id, f.label]),
-);
-const order = [...oldLabels.keys()];
-for (const id of Object.keys(DEFAULT_LABELS)) if (!oldLabels.has(id)) order.push(id);
+const migrateDoc = async (doc, keyByAssetId, prefix) => {
+  const oldLabels = new Map(
+    (Array.isArray(doc.filterLabels) ? doc.filterLabels : [])
+      .filter((f) => f?.id && f?.label && f.id !== "all")
+      .map((f) => [f.id, f.label]),
+  );
+  const order = [...oldLabels.keys()];
+  for (const id of Object.keys(DEFAULT_LABELS)) if (!oldLabels.has(id)) order.push(id);
 
-const buckets = new Map(order.map((id) => [id, []]));
-const unknown = [];
-for (const item of doc.library) {
-  const ref = item?.photo?.asset?._ref;
-  const key = ref ? keyByAssetId.get(ref) : undefined;
-  const bucket = key ? (BUCKET_BY_KEY[key] ?? null) : null;
-  const { categories: _dropped, ...photo } = item ?? {};
-  if (bucket && buckets.has(bucket)) buckets.get(bucket).push(photo);
-  else {
-    unknown.push(item?.caption ?? key ?? "(no caption)");
-    buckets.get(order[0]).push(photo);
+  const buckets = new Map(order.map((id) => [id, []]));
+  const unknown = [];
+  for (const item of doc.library) {
+    const ref = item?.photo?.asset?._ref;
+    const key = ref ? keyByAssetId.get(ref) : undefined;
+    const bucket = key ? (BUCKET_BY_KEY[key] ?? null) : null;
+    const { categories: _dropped, ...photo } = item ?? {};
+    if (bucket && buckets.has(bucket)) buckets.get(bucket).push(photo);
+    else {
+      unknown.push(item?.caption ?? key ?? "(no caption)");
+      buckets.get(order[0]).push(photo);
+    }
   }
-}
 
-const categories = order.map((id, i) => ({
-  _key: `cat-${i + 1}-${id}`,
-  label: oldLabels.get(id) ?? DEFAULT_LABELS[id] ?? id,
-  id: { _type: "slug", current: id },
-  photos: buckets.get(id),
-}));
+  const categories = order.map((id, i) => ({
+    _key: `${prefix}-${i + 1}-${id}`,
+    label: oldLabels.get(id) ?? DEFAULT_LABELS[id] ?? id,
+    id: { _type: "slug", current: id },
+    photos: buckets.get(id),
+  }));
 
-for (const cat of categories) {
-  console.log(`${cat.label}: ${cat.photos.length} photos`);
-}
-if (unknown.length > 0) {
-  console.log(`\nUnrecognised photos moved into "${categories[0].label}" (never dropped):`);
-  for (const caption of unknown) console.log(`  - ${caption}`);
+  for (const cat of categories) {
+    console.log(`${doc._id} :: ${cat.label}: ${cat.photos.length} photos`);
+  }
+  if (unknown.length > 0) {
+    console.log(`\nUnrecognised photos moved into "${categories[0].label}" (never dropped):`);
+    for (const caption of unknown) console.log(`  - ${caption}`);
+  }
+
+  if (!write) return;
+
+  const next = { ...doc, categories };
+  delete next.library;
+  delete next.filterLabels;
+  await client.createOrReplace(next);
+  console.log(`Migrated ${doc._id}: categories own their photos, ticks and button rows retired.`);
+};
+
+for (const id of ["portfolioPage", "drafts.portfolioPage"]) {
+  const doc = await migrateOne(id);
+  if (!doc) continue;
+  await migrateDoc(doc, keyByAssetId, id === "portfolioPage" ? "cat" : "dcat");
 }
 
 if (!write) {
   console.log("\nDry run — re-run with --write to apply.");
-  process.exit(0);
 }
-
-const next = { ...doc, categories };
-delete next.library;
-delete next.filterLabels;
-await client.createOrReplace(next);
-console.log("\nMigrated: categories own their photos, ticks and button rows retired.");
