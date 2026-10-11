@@ -6,20 +6,26 @@ import { PhotoImage } from "@/lib/images";
 import { FILTERS, GROUPS, PAGE_SIZE, parseFilter, type FilterId } from "@/lib/photoFilters";
 import { fillCount, fillRemaining, getPortfolioPage } from "@/lib/cms";
 import type { Photo } from "@/lib/photos";
-import { seo } from "@/lib/seo";
+import { lcpPreload, seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/portfolio/")({
   validateSearch: (search: Record<string, unknown>): { filter?: FilterId } =>
     parseFilter(search["filter"]),
   loader: async () => ({ page: await getPortfolioPage() }),
-  head: ({ loaderData }) =>
-    seo({
+  head: ({ loaderData }) => {
+    const base = seo({
       title: loaderData?.page.seoTitle || "Wedding Photography Portfolio | Oriana Weddings",
       description:
         loaderData?.page.seoDescription ||
         "Browse wedding photographs by Oriana Weddings. Explore candid, traditional, intimate, pre-wedding and other photography styles.",
       path: "/portfolio",
-    }),
+    });
+    // The first wall frame is this page's LCP — but every grid image renders
+    // lazy, so without a preload the largest paint waits for hydration.
+    const first: Photo | undefined = loaderData?.page.library[0]?.photo ?? GROUPS.all[0];
+    const preload = first ? lcpPreload(first, "(min-width: 1024px) 25vw, 50vw") : null;
+    return preload ? { ...base, links: [...base.links, preload] } : base;
+  },
   component: PortfolioPage,
 });
 
@@ -44,6 +50,19 @@ function PortfolioPage() {
   // for that filter — falling back to the curated archive slice only when
   // nothing is ticked, so a filter never goes empty.
   const libraryPhotos = page.library.length > 0 ? page.library : null;
+  // Deleting a filter row in the Studio hides that button here. An unedited
+  // (empty) CMS list means "show everything"; otherwise only the kept ids
+  // render, in the canonical order — with "All work" always first so the wall
+  // always has an entry point, even if its row was deleted.
+  const visibleFilters =
+    page.filterLabels.length > 0
+      ? FILTERS.filter((tag) => tag.id === "all" || page.filterLabels.some((f) => f.id === tag.id))
+      : FILTERS;
+  // A deep link to a now-hidden filter (?filter=haldi) lands on the wall
+  // instead of an empty grid.
+  const effectiveFilter = visibleFilters.some((tag) => tag.id === photoFilter)
+    ? photoFilter
+    : ("all" as FilterId);
   const taggedPhotos = (id: FilterId): readonly Photo[] | null => {
     if (!libraryPhotos || id === "all") return null;
     const matches = libraryPhotos
@@ -52,11 +71,11 @@ function PortfolioPage() {
     return matches.length > 0 ? matches : null;
   };
   const visiblePhotos: readonly Photo[] =
-    photoFilter === "all"
+    effectiveFilter === "all"
       ? libraryPhotos
         ? libraryPhotos.map((item) => item.photo)
         : GROUPS.all
-      : (taggedPhotos(photoFilter) ?? GROUPS[photoFilter]);
+      : (taggedPhotos(effectiveFilter) ?? GROUPS[effectiveFilter]);
   const shownPhotos = visiblePhotos.slice(0, visibleCount);
 
   // CMS renames a filter button by id; unknown ids and blanks keep the built-in.
@@ -86,13 +105,13 @@ function PortfolioPage() {
 
           <div className="portfolio-showcase-toolbar">
             <div className="portfolio-showcase-filters" role="group" aria-label="Filter portfolio">
-              {FILTERS.map((tag) => (
+              {visibleFilters.map((tag) => (
                 <button
                   key={tag.id}
                   type="button"
                   className="portfolio-filter"
-                  data-active={photoFilter === tag.id}
-                  aria-pressed={photoFilter === tag.id}
+                  data-active={effectiveFilter === tag.id}
+                  aria-pressed={effectiveFilter === tag.id}
                   onClick={() => pickFilter(tag.id)}
                 >
                   {labelFor(tag.id)}
@@ -118,6 +137,7 @@ function PortfolioPage() {
                     ratio="1.18 / 1"
                     sizes="(min-width: 1024px) 25vw, 50vw"
                     className="portfolio-work-picture"
+                    eager={index < 2}
                   />
                   <span className="portfolio-work-title">{photo.alt}</span>
                 </button>

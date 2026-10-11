@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { seo } from "@/lib/seo";
+import { lcpPreload, seo } from "@/lib/seo";
 import { getFilms, getHomePage, getWeddings, useSiteSettings } from "@/lib/cms";
 import { EditorialHero } from "@/components/site/Hero";
 import { EditorialGrid } from "@/components/site/EditorialGrid";
@@ -23,8 +23,8 @@ export const Route = createFileRoute("/")({
     films: await getFilms(),
     page: await getHomePage(),
   }),
-  head: ({ loaderData }) =>
-    seo({
+  head: ({ loaderData }) => {
+    const base = seo({
       title:
         loaderData?.page.seoTitle ||
         "Best Photographer in Calicut | Best Photographer in Kerala | Oriana Weddings",
@@ -32,7 +32,14 @@ export const Route = createFileRoute("/")({
         loaderData?.page.seoDescription ||
         "Oriana Weddings is a 12+ year wedding photography and filmmaking brand based in Calicut and Ahmedabad, managing personalised weddings across Kerala, Gujarat, India and international destinations.",
       path: "/",
-    }),
+    });
+    // The home hero is the LCP element: preload its ladder so the browser
+    // starts it before React hydrates, instead of discovering it after.
+    const preload = loaderData?.page.heroImage
+      ? lcpPreload(loaderData.page.heroImage, "100vw")
+      : null;
+    return preload ? { ...base, links: [...base.links, preload] } : base;
+  },
   component: Home,
 });
 function Home() {

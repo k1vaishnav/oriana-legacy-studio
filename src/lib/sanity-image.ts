@@ -45,7 +45,32 @@ export function cmsImageUrl(asset: CmsAsset, width: number): string | null {
     ...(asset.crop ? { crop: asset.crop } : {}),
     ...(asset.hotspot ? { hotspot: asset.hotspot } : {}),
   } as ImageSource;
-  return builder.image(source).width(Math.min(width, asset.width)).auto("format").quality(80).url();
+  // Quality 72 (was 80): ~20% fewer bytes, visually identical for wedding
+  // photography at these widths. `auto=format` still negotiates AVIF/WebP.
+  return builder.image(source).width(Math.min(width, asset.width)).auto("format").quality(72).url();
+}
+
+/** Full `srcset` across the asset's width ladder (clamped, never upscaled). */
+export function cmsSrcSet(asset: CmsAsset): string {
+  return assetWidths(asset)
+    .map((w) => {
+      const url = cmsImageUrl(asset, w);
+      return url ? `${url} ${w}w` : null;
+    })
+    .filter((s): s is string => s !== null)
+    .join(", ");
+}
+
+/**
+ * Sensible `<img src>` fallback: the smallest width ≥ 800, else the largest.
+ * The old code used the largest (1600w) as `src`, so any browser parsing `src`
+ * before `srcset` — plus the LCP preload — paid full price. 800w is sharp on
+ * phones and a fine placeholder until `srcset` resolves on desktop.
+ */
+export function cmsFallbackSrc(asset: CmsAsset): string | null {
+  const widths = assetWidths(asset);
+  const fallback = widths.find((w) => w >= 800) ?? widths[widths.length - 1]!;
+  return cmsImageUrl(asset, fallback);
 }
 
 /** Largest useful CDN URL (share images, SEO) — null when unconfigured. */

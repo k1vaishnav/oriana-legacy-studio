@@ -9,14 +9,29 @@ import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/wedding-films")({
   loader: async () => ({ films: await getFilms(), page: await getFilmsPage() }),
-  head: ({ loaderData }) =>
-    seo({
+  head: ({ loaderData }) => {
+    const base = seo({
       title: loaderData?.page.seoTitle || "Wedding Films | Oriana Weddings",
       description:
         loaderData?.page.seoDescription ||
         "Watch wedding films, teasers, highlights and storytelling films by Oriana Weddings.",
       path: "/wedding-films",
-    }),
+    });
+    // First film poster is this page's LCP — preload it (ytimg serves the
+    // right width via its own srcset; preload the default + srcset pair).
+    const first = loaderData?.films[0];
+    const preload = first
+      ? {
+          rel: "preload" as const,
+          as: "image" as const,
+          href: first.poster,
+          imageSrcSet: first.posterSrcSet,
+          imageSizes: "(min-width: 1024px) 25vw, 50vw",
+          fetchPriority: "high" as const,
+        }
+      : null;
+    return preload ? { ...base, links: [...base.links, preload] } : base;
+  },
   component: FilmsPage,
 });
 
@@ -46,7 +61,8 @@ function FilmsPage() {
             Wedding films
           </h1>
           <div className="films-library-grid">
-            {films.map((film) => {
+            {films.map((film, index) => {
+              const eager = index === 0;
               return (
                 <article className="films-library-card" key={film.slug}>
                   <button
@@ -61,7 +77,8 @@ function FilmsPage() {
                         srcSet={film.posterSrcSet}
                         sizes="(min-width: 1024px) 25vw, 50vw"
                         alt=""
-                        loading="lazy"
+                        loading={eager ? "eager" : "lazy"}
+                        fetchPriority={eager ? "high" : "low"}
                         decoding="async"
                         width={film.posterWidth}
                         height={film.posterHeight}

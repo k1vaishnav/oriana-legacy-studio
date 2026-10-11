@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 
-import { seo } from "@/lib/seo";
+import { lcpPreload, seo } from "@/lib/seo";
 import { ClosingCTA } from "@/components/site/ClosingCTA";
 import { Reveal } from "@/components/site/Reveal";
 import { Marquee } from "@/components/site/Marquee";
@@ -15,14 +15,19 @@ export const Route = createFileRoute("/brands")({
     brands: await getBrands(),
     page: await getBrandsPage(),
   }),
-  head: ({ loaderData }) =>
-    seo({
+  head: ({ loaderData }) => {
+    const base = seo({
       title: loaderData?.page.seoTitle || "Our Brands | Oriana Weddings | Creative Brands",
       description:
         loaderData?.page.seoDescription ||
         "Meet the creative brands of Oriana — Oriana Weddings, Baby Crew Studios, DEOR Fashion, ORION Events and Odonata Republic.",
       path: "/brands",
-    }),
+    });
+    const preload = loaderData?.page.heroImage
+      ? lcpPreload(loaderData.page.heroImage, "100vw")
+      : null;
+    return preload ? { ...base, links: [...base.links, preload] } : base;
+  },
   component: BrandsPage,
 });
 

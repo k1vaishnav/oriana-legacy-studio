@@ -61,8 +61,15 @@ const seoFields = [
 
 export const schemaTypes = [
   singleton("siteSettings", "⚙️ Site settings", [
+    {
+      name: "tagline",
+      title: "Tagline",
+      type: "string",
+    },
     { name: "phone", title: "Phone", type: "string" },
     { name: "phoneHref", title: "Phone link (tel:…)", type: "string" },
+    { name: "phoneSecondary", title: "Second phone", type: "string" },
+    { name: "phoneSecondaryHref", title: "Second phone link (tel:…)", type: "string" },
     { name: "whatsapp", title: "WhatsApp number (digits only)", type: "string" },
     { name: "email", title: "Email", type: "string" },
     { name: "instagram", title: "Instagram URL", type: "url" },
@@ -432,10 +439,14 @@ export const schemaTypes = [
             {
               name: "categories",
               title: "Shows in filters",
-              description: "Unticked frames appear only under “All work”.",
+              description:
+                "Tick the filters this frame belongs to. Unticked frames appear only under “All work”.",
               type: "array",
               of: [{ type: "string" }],
               options: {
+                // `layout: "grid"` renders real checkboxes with ticks instead
+                // of a plain dropdown list, so existing ticks stay visible.
+                layout: "grid",
                 list: [
                   { title: "Candid", value: "candid" },
                   { title: "Traditional", value: "traditional" },
@@ -471,7 +482,8 @@ export const schemaTypes = [
     {
       name: "filterLabels",
       title: "Filter labels",
-      description: "Renames a filter button; the id must stay one of the eight below.",
+      description:
+        "Rename a filter button, or delete its row to hide that filter on the site. The id must stay one of the eight below.",
       type: "array",
       of: [
         {
@@ -482,6 +494,9 @@ export const schemaTypes = [
               title: "Filter id",
               type: "string",
               options: {
+                // Dropdown (not checkboxes) on purpose: each row maps exactly
+                // one button id to one label.
+                layout: "dropdown",
                 list: [
                   "all",
                   "candid",
@@ -531,6 +546,8 @@ export const schemaTypes = [
         ...photoListField("Detail-page gallery", "Frames shown on the brand's own page."),
         name: "gallery",
       },
+      { name: "seoTitle", title: "Search title override", type: "string" },
+      { name: "seoDescription", title: "Search description override", type: "text" },
     ],
     preview: {
       select: { title: "name", subtitle: "tagline", media: "cover" },
@@ -570,6 +587,13 @@ export const schemaTypes = [
           list: ["Candid", "Traditional", "Church", "Pre-wedding", "Destination", "Intimate"],
         },
       },
+      {
+        name: "coverage",
+        title: "Coverage",
+        type: "string",
+        options: { list: ["Photography", "Videography", "Photography + Videography"] },
+      },
+      { name: "season", title: "Season / month", type: "string" },
       { name: "summary", title: "Summary (cards + search)", type: "text" },
       { name: "story", title: "Story paragraphs", type: "array", of: [{ type: "text" }] },
       { name: "services", title: "Services delivered", type: "array", of: [{ type: "string" }] },
@@ -581,6 +605,8 @@ export const schemaTypes = [
         ...photoListField("Story frames", "Photographs on the story page."),
         name: "frames",
       },
+      { name: "seoTitle", title: "Search title override", type: "string" },
+      { name: "seoDescription", title: "Search description override", type: "text" },
     ],
     preview: {
       select: { title: "title", subtitle: "couple", media: "cover" },

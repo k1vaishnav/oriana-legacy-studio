@@ -249,7 +249,7 @@ export function getSiteSettings(): Promise<SiteSettings> {
     `*[_type == "siteSettings" && _id == "siteSettings"][0]{
       tagline, phone, phoneHref, phoneSecondary, phoneSecondaryHref, whatsapp,
       email, instagram, youtube, facebook, establishedYear, brandLines, offices,
-      coverage, stats, chatbot, footerExplore, footerStudios, footerCoverage,
+      coverage, stats, affiliations, chatbot, footerExplore, footerStudios, footerCoverage,
       notFound, errorPage,
       soulCinema{title, body, videoSrc, poster${IMG}},
       closingCta{kicker, heading, button, image${IMG}}
@@ -857,12 +857,20 @@ export function getPortfolioPage(): Promise<PortfolioPageContent> {
     if (!doc) return defaultPortfolio;
     const labels = Array.isArray(doc.filterLabels) ? doc.filterLabels : [];
     const library = Array.isArray(doc.library) ? doc.library : [];
+    // Deleting a filter row in the Studio hides that button on the site, so
+    // only known ids survive here (plus dedupe — one row per button). An
+    // empty list means "unedited": the site falls back to all eight buttons.
+    const seen = new Set<string>();
+    const validIds = new Set(["all", ...FILTER_IDS]);
+    const filterLabels = labels
+      .filter(
+        (f) => f?.id && f?.label && validIds.has(f.id) && !seen.has(f.id) && (seen.add(f.id), true),
+      )
+      .map((f) => ({ id: f.id as string, label: f.label as string }));
     return {
       ...defaultPortfolio,
       ...doc,
-      filterLabels: labels
-        .filter((f) => f?.id && f?.label)
-        .map((f) => ({ id: f.id as string, label: f.label as string })),
+      filterLabels,
       library: library
         .map((item) => {
           const asset = mapAsset(item?.photo);

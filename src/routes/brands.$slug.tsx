@@ -8,7 +8,7 @@ import { PhotoImage } from "@/lib/images";
 import { business } from "@/lib/site";
 import { getBrand, getBrandsPage, photoSrc, useSiteSettings, whatsappHrefFor } from "@/lib/cms";
 import { PageHero } from "@/components/site/PageHero";
-import { seo } from "@/lib/seo";
+import { lcpPreload, seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/brands/$slug")({
   loader: async ({ params }) => {
@@ -21,12 +21,14 @@ export const Route = createFileRoute("/brands/$slug")({
   },
   head: ({ loaderData }) => {
     const brand = loaderData!.brand;
-    return seo({
+    const base = seo({
       title: brand.seoTitle ?? `${brand.name} | Our Brands | ${business.name}`,
       description: brand.seoDescription ?? `${brand.tagline} ${brand.description}`,
       path: `/brands/${brand.slug}`,
       image: photoSrc(brand.cover),
     });
+    const preload = lcpPreload(brand.cover, "100vw");
+    return preload ? { ...base, links: [...base.links, preload] } : base;
   },
   component: BrandPage,
 });

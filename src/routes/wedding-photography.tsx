@@ -6,18 +6,25 @@ import { business } from "@/lib/site";
 import { getPhotographyPage, getWeddings } from "@/lib/cms";
 import { photoAlt } from "@/lib/photos";
 import { getImage } from "@/lib/image-manifest";
-import { seo } from "@/lib/seo";
+import { lcpPreload, seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/wedding-photography")({
   loader: async () => ({ weddings: await getWeddings(), page: await getPhotographyPage() }),
-  head: ({ loaderData }) =>
-    seo({
+  head: ({ loaderData }) => {
+    const base = seo({
       title: loaderData?.page.seoTitle || `Wedding Photography Stories | ${business.name}`,
       description:
         loaderData?.page.seoDescription ||
         "A collection of wedding photography stories from Oriana Weddings.",
       path: "/wedding-photography",
-    }),
+    });
+    // The first story card is this page's LCP — preload it and render it eager.
+    const first = loaderData?.weddings[0]?.cover;
+    const preload = first
+      ? lcpPreload(first, "(min-width: 1100px) 19rem, (min-width: 700px) 30vw, 88vw")
+      : null;
+    return preload ? { ...base, links: [...base.links, preload] } : base;
+  },
   component: PhotographyStories,
 });
 
@@ -40,6 +47,7 @@ function PhotographyStories() {
                     ratio="4 / 5"
                     sizes="(min-width: 1100px) 19rem, (min-width: 700px) 30vw, 88vw"
                     zoom
+                    eager={index === 0}
                   />
                   <div className="story-card-copy">
                     <p className="story-card-kicker">

@@ -1,4 +1,7 @@
 import { SITE_URL, breadcrumbSchema } from "./site";
+import { getImage, srcSet } from "./image-manifest";
+import { cmsFallbackSrc, cmsSrcSet } from "./sanity-image";
+import type { Photo } from "./photos";
 
 /**
  * One place to assemble a route's head, so eleven routes cannot drift apart on
@@ -31,6 +34,59 @@ type SeoHead = {
   links: Record<string, string>[];
   scripts: { type: string; children: string }[];
 };
+
+/**
+ * LCP preload for the hero photograph, so the browser starts the largest paint
+ * before React hydrates instead of after.
+ *
+ * The hero `<img>` is rendered client-side (after loaders resolve + hydration),
+ * which puts LCP discovery a full round-trip late. A `<link rel="preload"
+ * as="image" imagesrcset>` in `<head>` lets the browser pick the right width
+ * from the same ladder the `<img>` will use — CMS asset → Sanity CDN ladder,
+ * otherwise the local AVIF ladder — at high priority.
+ */
+export type LcpPreloadLink = {
+  rel: "preload";
+  as: "image";
+  href: string;
+  imageSrcSet: string;
+  imageSizes: string;
+  fetchPriority: "high";
+};
+
+export function lcpPreload(
+  photo: Photo | null | undefined,
+  imageSizes = "100vw",
+): LcpPreloadLink | null {
+  try {
+    if (!photo) return null;
+    if (photo.asset) {
+      const href = cmsFallbackSrc(photo.asset);
+      const set = cmsSrcSet(photo.asset);
+      if (!href || !set) return null;
+      return {
+        rel: "preload",
+        as: "image",
+        href,
+        imageSrcSet: set,
+        imageSizes,
+        fetchPriority: "high",
+      };
+    }
+    if (!photo.key) return null;
+    const entry = getImage(photo.key);
+    return {
+      rel: "preload",
+      as: "image",
+      href: entry.src,
+      imageSrcSet: srcSet(photo.key, "avif"),
+      imageSizes,
+      fetchPriority: "high",
+    };
+  } catch {
+    return null;
+  }
+}
 
 export function seo({
   title,

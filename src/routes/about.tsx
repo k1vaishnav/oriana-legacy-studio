@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { seo } from "@/lib/seo";
+import { lcpPreload, seo } from "@/lib/seo";
 import { ClosingCTA } from "@/components/site/ClosingCTA";
 import { TeamEditorial } from "@/components/site/TeamEditorial";
 import { Reveal } from "@/components/site/Reveal";
@@ -27,8 +27,8 @@ import {
 
 export const Route = createFileRoute("/about")({
   loader: async () => ({ page: await getAboutPage() }),
-  head: ({ loaderData }) =>
-    seo({
+  head: ({ loaderData }) => {
+    const base = seo({
       title:
         loaderData?.page.seoTitle ||
         "About Oriana Weddings | Best Photographer in Calicut | Best Photographer in Kerala",
@@ -36,7 +36,12 @@ export const Route = createFileRoute("/about")({
         loaderData?.page.seoDescription ||
         "Discover Oriana Weddings, a 12+ year wedding photography and filmmaking brand based in Calicut and Ahmedabad, managing weddings across Kerala, Gujarat, India and beyond.",
       path: "/about",
-    }),
+    });
+    const preload = loaderData?.page.heroImage
+      ? lcpPreload(loaderData.page.heroImage, "100vw")
+      : null;
+    return preload ? { ...base, links: [...base.links, preload] } : base;
+  },
   component: AboutPage,
 });
 

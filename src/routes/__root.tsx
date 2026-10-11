@@ -128,6 +128,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       // connection early so the first poster paint costs one less handshake.
       { rel: "preconnect", href: "https://i.ytimg.com" },
       { rel: "dns-prefetch", href: "https://i.ytimg.com" },
+      // CMS photographs are served from Sanity's CDN — same idea: warm the
+      // connection once, in <head>, so hero/CTA images from the CMS skip the
+      // TLS + handshake round-trip when they are discovered.
+      { rel: "preconnect", href: "https://cdn.sanity.io", crossOrigin: "anonymous" },
+      { rel: "dns-prefetch", href: "https://cdn.sanity.io" },
     ],
     scripts: [
       {

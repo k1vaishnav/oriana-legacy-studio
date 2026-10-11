@@ -6,7 +6,7 @@ import { Reveal } from "@/components/site/Reveal";
 import { PhotoImage } from "@/lib/images";
 import { getPortfolioPage, getWedding, photoSrc } from "@/lib/cms";
 import { business } from "@/lib/site";
-import { seo } from "@/lib/seo";
+import { lcpPreload, seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/portfolio/real-weddings/$slug")({
   loader: async ({ params }) => {
@@ -21,12 +21,17 @@ export const Route = createFileRoute("/portfolio/real-weddings/$slug")({
   },
   head: ({ loaderData }) => {
     const wedding = loaderData!.wedding;
-    return seo({
+    const base = seo({
       title: wedding.seoTitle ?? `${wedding.couple} — Wedding Story | ${business.name}`,
       description: wedding.seoDescription ?? wedding.summary,
       path: `/portfolio/real-weddings/${wedding.slug}`,
       image: photoSrc(wedding.cover),
     });
+    // The lead gallery frame is this page's LCP — preload it.
+    const preload = wedding.frames[0]
+      ? lcpPreload(wedding.frames[0], "(min-width: 900px) 48vw, 100vw")
+      : null;
+    return preload ? { ...base, links: [...base.links, preload] } : base;
   },
   component: StoryPage,
 });
@@ -60,7 +65,12 @@ function StoryPage() {
               className="block w-full cursor-zoom-in"
               aria-label={`View ${photo.alt} full-screen`}
             >
-              <PhotoImage photo={photo} sizes="(min-width: 900px) 48vw, 100vw" zoom />
+              <PhotoImage
+                photo={photo}
+                sizes="(min-width: 900px) 48vw, 100vw"
+                zoom
+                eager={index === 0}
+              />
             </button>
           </Reveal>
         ))}

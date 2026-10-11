@@ -1,7 +1,7 @@
 import type { CSSProperties } from "react";
 
 import { getImage, srcSet, type ImageKey } from "./image-manifest";
-import { assetWidths, cmsImageUrl, type CmsAsset } from "./sanity-image";
+import { assetWidths, cmsFallbackSrc, cmsImageUrl, cmsSrcSet, type CmsAsset } from "./sanity-image";
 import type { Photo } from "./photos";
 
 type CommonProps = {
@@ -72,6 +72,7 @@ export function ResponsiveImage({
           height={entry.height}
           decoding="async"
           loading="lazy"
+          fetchPriority="low"
           className={imgClassName}
           ref={(node) => {
             // A warm cache can finish decoding before React attaches onLoad.
@@ -124,7 +125,7 @@ export function PriorityImage(props: ResponsiveImageProps) {
           width={entry.width}
           height={entry.height}
           fetchPriority="high"
-          decoding="sync"
+          decoding="async"
           loading="eager"
           className={props.imgClassName ?? ""}
           ref={(node) => {
@@ -190,7 +191,11 @@ export function PhotoImage({
   }
 
   const widths = assetWidths(asset);
-  const src = (w: number) => cmsImageUrl(asset, w) ?? "";
+  // `src` is only the fallback — browsers with `srcset` (all modern ones)
+  // resolve from the ladder below. Point it at ~800w instead of the largest
+  // file so the fallback itself is never a 1600w download.
+  const fallbackSrc = cmsFallbackSrc(asset) ?? cmsImageUrl(asset, widths[widths.length - 1]!);
+  const set = cmsSrcSet(asset);
   // Sanity ships the placeholder as a full data URI; prefix ours only if bare.
   const lqip =
     asset.lqip != null && asset.lqip !== ""
@@ -212,16 +217,19 @@ export function PhotoImage({
     >
       <picture>
         <img
-          src={src(widths[widths.length - 1]!)}
-          srcSet={widths.map((w) => `${src(w)} ${w}w`).join(", ")}
+          src={fallbackSrc ?? ""}
+          srcSet={set}
           sizes={sizes}
           alt={text}
           width={asset.width}
           height={asset.height}
           loading={eager ? "eager" : "lazy"}
-          {...(eager
-            ? { fetchPriority: "high" as const, decoding: "sync" as const }
-            : { decoding: "async" as const })}
+          // Eager images decode async too: `sync` blocks the main thread and
+          // delays LCP interactivity for no visual gain. `high` priority only
+          // on eager (hero); everything below the fold is `low` so it never
+          // competes with the LCP image.
+          decoding="async"
+          fetchPriority={eager ? "high" : "low"}
           className={imgClassName}
           ref={(node) => {
             if (node?.complete) node.classList.add("is-loaded");
