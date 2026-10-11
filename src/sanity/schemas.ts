@@ -46,13 +46,19 @@ const titleBodyCard = {
   ],
 };
 
-const singleton = (name: string, title: string, fields: unknown[]) => ({
+const singleton = (
+  name: string,
+  title: string,
+  fields: unknown[],
+  groups?: { name: string; title: string }[],
+) => ({
   name,
   title,
   type: "document",
   // Singletons: one document each, edited in place — no "create new".
   __experimental_omnisearch_visibility: false,
   fields,
+  ...(groups ? { groups } : {}),
 });
 
 const seoFields = [
@@ -415,97 +421,159 @@ export const schemaTypes = [
 
   singleton("photographyPage", "📷 Photography page", [...seoFields]),
 
-  singleton("portfolioPage", "🖼️ Portfolio page", [
-    ...seoFields,
-    { name: "eyebrow", title: "Eyebrow", type: "string" },
-    { name: "sub", title: "Sub-line under the title", type: "string" },
-    {
-      name: "library",
-      title: "The portfolio wall (30 frames)",
-      description:
-        "What the “All work” wall shows, in order — add, remove, reorder, replace. Tick the filters each frame belongs to and it appears in those filtered views too.",
-      type: "array",
-      of: [
-        {
-          type: "object",
-          fields: [
-            {
-              name: "photo",
-              title: "Photograph",
-              type: "image",
-              options: { hotspot: true },
-              validation: required,
-            },
-            { name: "caption", title: "Caption under the frame", type: "string" },
-            {
-              name: "categories",
-              title: "Shows in filters",
-              description:
-                "Tick the filters this frame belongs to. Unticked frames appear only under “All work”. The tick boxes follow “Filter labels” below — delete a filter there and its box disappears here too (its stored ticks are kept, and return if the filter is re-added).",
-              type: "array",
-              of: [{ type: "string" }],
-              // Custom checkboxes (see FilterCategoriesInput): a static list
-              // can neither follow filter deletions nor guarantee real ticks.
-              components: { input: FilterCategoriesInput },
-            },
-          ],
-          preview: {
-            select: { title: "caption", media: "photo" },
-          },
-        },
-      ],
-    },
-    { name: "storyBackLabel", title: "Story page “back” link", type: "string" },
-    { name: "storiesBackLabel", title: "Stories footer “back” link", type: "string" },
-    {
-      name: "countTemplate",
-      title: "Count line",
-      description: "Use {shown} and {total}, e.g. “Showing {shown} of {total} images”.",
-      type: "string",
-    },
-    {
-      name: "showMoreTemplate",
-      title: "“Show more” button",
-      description: "Use {remaining}, e.g. “Show more ({remaining} remaining)”.",
-      type: "string",
-    },
-    {
-      name: "filterLabels",
-      title: "Filter labels",
-      description:
-        "Rename a filter button, or delete its row to hide that filter everywhere: its website button and its tick box inside every photo both disappear. The id must stay one of the eight below. Re-adding a row restores its photo ticks.",
-      type: "array",
-      of: [
-        {
-          type: "object",
-          fields: [
-            {
-              name: "id",
-              title: "Filter id",
-              type: "string",
-              options: {
-                // Dropdown (not checkboxes) on purpose: each row maps exactly
-                // one button id to one label.
-                layout: "dropdown",
-                list: [
-                  "all",
-                  "candid",
-                  "traditional",
-                  "intimate",
-                  "haldi",
-                  "christian",
-                  "pre",
-                  "venue",
-                ],
+  singleton(
+    "portfolioPage",
+    "🖼️ Portfolio page",
+    [
+      ...seoFields.map((f) => ({ ...f, group: "settings" })),
+      { name: "eyebrow", title: "Eyebrow", type: "string", group: "settings" },
+      { name: "sub", title: "Sub-line under the title", type: "string", group: "settings" },
+      {
+        name: "library",
+        title: "Photo wall",
+        description:
+          "Your photos, in order — this is the “All work” wall. Click any frame to change its photo, edit its caption, or tick which filter buttons it appears under. Drag rows to reorder, use the menu to remove one.",
+        type: "array",
+        group: "wall",
+        of: [
+          {
+            type: "object",
+            fields: [
+              {
+                name: "photo",
+                title: "Photograph",
+                description: "Click to replace it with another photo, or remove it.",
+                type: "image",
+                options: { hotspot: true },
+                validation: required,
               },
-              validation: required,
+              {
+                name: "caption",
+                title: "Caption",
+                description:
+                  "Shown under the frame, and read by Google. A few words: who and where.",
+                type: "string",
+              },
+              {
+                name: "categories",
+                title: "Show this photo under",
+                description:
+                  "Tick the buttons this photo appears under. Unticked photos appear only under “All work”. The boxes follow the “Filters” tab — delete a button there and its box disappears here too (stored ticks are kept, and return if the button is re-added).",
+                type: "array",
+                of: [{ type: "string" }],
+                // Custom checkboxes (see FilterCategoriesInput): a static list
+                // can neither follow filter deletions nor guarantee real ticks.
+                components: { input: FilterCategoriesInput },
+              },
+            ],
+            preview: {
+              select: { title: "caption", media: "photo", categories: "categories" },
+              prepare: (selection: Record<string, unknown>) => {
+                const names: Record<string, string> = {
+                  candid: "Candid",
+                  traditional: "Traditional",
+                  intimate: "Intimate",
+                  haldi: "Haldi & Mehendi",
+                  christian: "Christian",
+                  pre: "Pre-wedding",
+                  venue: "Venues",
+                };
+                const cats = Array.isArray(selection["categories"])
+                  ? (selection["categories"] as unknown[])
+                      .filter((c): c is string => typeof c === "string")
+                      .map((c) => names[c] ?? c)
+                  : [];
+                return {
+                  title: (selection["title"] as string) || "Untitled frame",
+                  subtitle: cats.length > 0 ? cats.join(" · ") : "All work only",
+                  media: selection["media"],
+                };
+              },
             },
-            { name: "label", title: "Button label", type: "string", validation: required },
-          ],
-        },
-      ],
-    },
-  ]),
+          },
+        ],
+      },
+      {
+        name: "storyBackLabel",
+        title: "Story page “back” link",
+        type: "string",
+        group: "settings",
+      },
+      {
+        name: "storiesBackLabel",
+        title: "Stories footer “back” link",
+        type: "string",
+        group: "settings",
+      },
+      {
+        name: "countTemplate",
+        title: "Count line",
+        description: "The line under the buttons. Keep {shown} and {total} exactly as they are.",
+        type: "string",
+        group: "settings",
+      },
+      {
+        name: "showMoreTemplate",
+        title: "“Show more” button",
+        description: "The button under the wall. Keep {remaining} exactly as it is.",
+        type: "string",
+        group: "settings",
+      },
+      {
+        name: "filterLabels",
+        title: "Filter buttons",
+        description:
+          "The buttons above the wall. Change a name to rename a button. Delete a whole row to remove that button everywhere — from the website and from every photo's tick boxes. Re-adding a row brings its photo ticks back.",
+        type: "array",
+        group: "filters",
+        of: [
+          {
+            type: "object",
+            fields: [
+              {
+                name: "id",
+                title: "Which button",
+                description: "Pick from the list — don't type.",
+                type: "string",
+                options: {
+                  // Dropdown (not checkboxes) on purpose: each row maps exactly
+                  // one button id to one label.
+                  layout: "dropdown",
+                  list: [
+                    "all",
+                    "candid",
+                    "traditional",
+                    "intimate",
+                    "haldi",
+                    "christian",
+                    "pre",
+                    "venue",
+                  ],
+                },
+                validation: required,
+              },
+              { name: "label", title: "Name on the button", type: "string", validation: required },
+            ],
+            preview: {
+              select: { id: "id", label: "label" },
+              prepare: (selection: Record<string, unknown>) => ({
+                title: (selection["label"] as string) || (selection["id"] as string) || "Button",
+                subtitle:
+                  selection["label"] && selection["id"]
+                    ? `Shows photos ticked “${selection["id"] as string}”`
+                    : undefined,
+              }),
+            },
+          },
+        ],
+      },
+    ],
+    [
+      { name: "wall", title: "📷 Photo wall" },
+      { name: "filters", title: "🔖 Filter buttons" },
+      { name: "settings", title: "⚙️ Words & settings" },
+    ],
+  ),
 
   {
     name: "brand",
