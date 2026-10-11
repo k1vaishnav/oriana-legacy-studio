@@ -1,17 +1,11 @@
 /**
- * One-time re-curation: point each brand's cover + gallery at brand-fitting
- * archive photos.
+ * Repair: stamp `_key` on brand gallery images missing one.
  *
- * The seed aimed every brand at generic wedding frames; a baby studio showing
- * wedding-day frames reads wrong. This maps each brand to the closest frames
- * in the local archive (tender close-ups for Baby Crew, editorial monochrome
- * for DEOR, gatherings and reception for ORION, fine-art details for Odonata)
- * so every brand page opens on photos that feel like that brand — until real
- * brand shoots replace them in one click in the Studio.
- *
- * Only `cover` and `gallery` are touched; every other field (and the Oriana
- * Weddings house brand) is left exactly as is. The whole document is fetched
- * and written back — never narrow that query.
+ * An earlier re-curation wrote gallery image objects without `_key`, and the
+ * Studio locks any such list with a "Missing keys" error until every item
+ * has one. This walks the four sub-brands' galleries and stamps a stable key
+ * on key-less items only — photos, captions, and order are never touched, so
+ * Studio edits made since are preserved.
  *
  *   node scripts/recurate-brands.mjs
  *   SANITY_API_TOKEN=<editor-token> node scripts/recurate-brands.mjs --write
@@ -45,76 +39,25 @@ const client = createClient({
   useCdn: false,
 });
 
-/** Brand slug → {cover, gallery} archive keys. Oriana Weddings untouched. */
-const CURATION = {
-  "baby-crew-studios": {
-    cover: "portrait-bride-sunlight",
-    gallery: [
-      "haldi-bride-with-friends",
-      "detail-bride-henna-face",
-      "detail-bouquet",
-      "church-outside-joy",
-    ],
-  },
-  "deor-fashion": {
-    cover: "detail-reception-monochrome",
-    gallery: [
-      "calicut-cinematic-wedding-hero",
-      "hero-traditional-intimate",
-      "kerala-cinematic-wedding-film-still",
-      "portrait-bride-sunlight",
-    ],
-  },
-  "orion-events": {
-    cover: "detail-reception-cake",
-    gallery: [
-      "closing-cta-user",
-      "church-altar-candid",
-      "calicut-church-wedding-ceremony",
-      "haldi-bride-with-friends",
-    ],
-  },
-  "odonata-republic": {
-    cover: "detail-bouquet",
-    gallery: [
-      "detail-bride-henna-face",
-      "detail-bride-groom-feet",
-      "detail-reception-monochrome",
-      "ceremony-temple-ritual",
-    ],
-  },
-};
+const SLUGS = ["baby-crew-studios", "deor-fashion", "orion-events", "odonata-republic"];
 
-const assets = await client.fetch(`*[_type == "sanity.imageAsset"]{ _id, originalFilename }`);
-const refByKey = new Map(
-  (assets ?? [])
-    .filter((a) => typeof a.originalFilename === "string" && a.originalFilename.endsWith(".jpg"))
-    .map((a) => [a.originalFilename.slice(0, -".jpg".length), a._id]),
-);
-const img = (key) => ({
-  _type: "image",
-  asset: { _type: "reference", _ref: refByKey.get(key) },
-});
-
-for (const [slug, { cover, gallery }] of Object.entries(CURATION)) {
+for (const slug of SLUGS) {
   const doc = await client.fetch(`*[_type == "brand" && slug.current == $slug][0]`, { slug });
   if (!doc) {
     console.log(`skip   ${slug} — no such brand`);
     continue;
   }
-  const missing = [cover, ...gallery].filter((k) => !refByKey.has(k));
-  if (missing.length > 0) {
-    console.log(`skip   ${slug} — no uploaded asset for: ${missing.join(", ")}`);
-    continue;
-  }
-  console.log(`curate ${slug}: cover=${cover} gallery=[${gallery.join(",")}]`);
-  if (!write) continue;
+  const gallery = Array.isArray(doc.gallery) ? doc.gallery : [];
+  const missing = gallery.filter((g) => g && typeof g === "object" && !g._key).length;
+  console.log(`${missing === 0 ? "ok     " : "repair "}${slug}: ${gallery.length} photos, ${missing} missing keys`);
+  if (!write || missing === 0) continue;
   await client.createOrReplace({
     ...doc,
-    cover: img(cover),
-    gallery: gallery.map(img),
+    gallery: gallery.map((g, i) =>
+      g && typeof g === "object" && !g._key ? { ...g, _key: `gallery-${slug}-${i + 1}` } : g,
+    ),
   });
 }
 
 if (!write) console.log("\nDry run — re-run with --write to apply.");
-else console.log("\nDone: brand pages point at brand-fitting photos.");
+else console.log("\nDone: every gallery photo has a key.");
