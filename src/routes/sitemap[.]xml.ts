@@ -24,9 +24,10 @@ export const Route = createFileRoute("/sitemap.xml")({
         let weddingPaths = localWeddings.map(
           (wedding) => `/portfolio/real-weddings/${wedding.slug}`,
         );
+        // Brands live at top-level addresses (`/deor-fashion`) — short links.
         let brandPaths = localBrands
           .filter((brand) => brand.slug !== "oriana-weddings")
-          .map((brand) => `/brands/${brand.slug}`);
+          .map((brand) => `/${brand.slug}`);
         try {
           const [weddings, brands] = await Promise.all([getWeddings(), getBrands()]);
           if (weddings.length > 0) {
@@ -34,7 +35,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           }
           const shareable = brands.filter((b) => b.slug !== "oriana-weddings");
           if (shareable.length > 0) {
-            brandPaths = shareable.map((b) => `/brands/${b.slug}`);
+            brandPaths = shareable.map((b) => `/${b.slug}`);
           }
         } catch {
           /* static fallbacks above stand */

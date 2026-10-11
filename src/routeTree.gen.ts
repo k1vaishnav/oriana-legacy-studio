@@ -11,9 +11,13 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as BabyCrewStudiosRouteImport } from './routes/baby-crew-studios'
 import { Route as BrandsRouteImport } from './routes/brands'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as DeorFashionRouteImport } from './routes/deor-fashion'
+import { Route as OdonataRepublicRouteImport } from './routes/odonata-republic'
 import { Route as OrianaGroupRouteImport } from './routes/oriana-group'
+import { Route as OrionEventsRouteImport } from './routes/orion-events'
 import { Route as PortfolioRouteImport } from './routes/portfolio'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as StudioRouteRouteImport } from './routes/studio.route'
@@ -36,6 +40,11 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BabyCrewStudiosRoute = BabyCrewStudiosRouteImport.update({
+  id: '/baby-crew-studios',
+  path: '/baby-crew-studios',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BrandsRoute = BrandsRouteImport.update({
   id: '/brands',
   path: '/brands',
@@ -46,9 +55,24 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DeorFashionRoute = DeorFashionRouteImport.update({
+  id: '/deor-fashion',
+  path: '/deor-fashion',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OdonataRepublicRoute = OdonataRepublicRouteImport.update({
+  id: '/odonata-republic',
+  path: '/odonata-republic',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OrianaGroupRoute = OrianaGroupRouteImport.update({
   id: '/oriana-group',
   path: '/oriana-group',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrionEventsRoute = OrionEventsRouteImport.update({
+  id: '/orion-events',
+  path: '/orion-events',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PortfolioRoute = PortfolioRouteImport.update({
@@ -112,9 +136,13 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/studio': typeof StudioRouteRouteWithChildren
   '/about': typeof AboutRoute
+  '/baby-crew-studios': typeof BabyCrewStudiosRoute
   '/brands': typeof BrandsRouteWithChildren
   '/contact': typeof ContactRoute
+  '/deor-fashion': typeof DeorFashionRoute
+  '/odonata-republic': typeof OdonataRepublicRoute
   '/oriana-group': typeof OrianaGroupRoute
+  '/orion-events': typeof OrionEventsRoute
   '/portfolio': typeof PortfolioRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/wedding-films': typeof WeddingFilmsRoute
@@ -129,8 +157,12 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/baby-crew-studios': typeof BabyCrewStudiosRoute
   '/contact': typeof ContactRoute
+  '/deor-fashion': typeof DeorFashionRoute
+  '/odonata-republic': typeof OdonataRepublicRoute
   '/oriana-group': typeof OrianaGroupRoute
+  '/orion-events': typeof OrionEventsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/wedding-films': typeof WeddingFilmsRoute
   '/wedding-photography': typeof WeddingPhotographyRoute
@@ -146,9 +178,13 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/studio': typeof StudioRouteRouteWithChildren
   '/about': typeof AboutRoute
+  '/baby-crew-studios': typeof BabyCrewStudiosRoute
   '/brands': typeof BrandsRouteWithChildren
   '/contact': typeof ContactRoute
+  '/deor-fashion': typeof DeorFashionRoute
+  '/odonata-republic': typeof OdonataRepublicRoute
   '/oriana-group': typeof OrianaGroupRoute
+  '/orion-events': typeof OrionEventsRoute
   '/portfolio': typeof PortfolioRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/wedding-films': typeof WeddingFilmsRoute
@@ -166,9 +202,13 @@ export interface FileRouteTypes {
     | '/'
     | '/studio'
     | '/about'
+    | '/baby-crew-studios'
     | '/brands'
     | '/contact'
+    | '/deor-fashion'
+    | '/odonata-republic'
     | '/oriana-group'
+    | '/orion-events'
     | '/portfolio'
     | '/sitemap.xml'
     | '/wedding-films'
@@ -183,8 +223,12 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/baby-crew-studios'
     | '/contact'
+    | '/deor-fashion'
+    | '/odonata-republic'
     | '/oriana-group'
+    | '/orion-events'
     | '/sitemap.xml'
     | '/wedding-films'
     | '/wedding-photography'
@@ -199,9 +243,13 @@ export interface FileRouteTypes {
     | '/'
     | '/studio'
     | '/about'
+    | '/baby-crew-studios'
     | '/brands'
     | '/contact'
+    | '/deor-fashion'
+    | '/odonata-republic'
     | '/oriana-group'
+    | '/orion-events'
     | '/portfolio'
     | '/sitemap.xml'
     | '/wedding-films'
@@ -218,9 +266,13 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   StudioRouteRoute: typeof StudioRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
+  BabyCrewStudiosRoute: typeof BabyCrewStudiosRoute
   BrandsRoute: typeof BrandsRouteWithChildren
   ContactRoute: typeof ContactRoute
+  DeorFashionRoute: typeof DeorFashionRoute
+  OdonataRepublicRoute: typeof OdonataRepublicRoute
   OrianaGroupRoute: typeof OrianaGroupRoute
+  OrionEventsRoute: typeof OrionEventsRoute
   PortfolioRoute: typeof PortfolioRouteWithChildren
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   WeddingFilmsRoute: typeof WeddingFilmsRoute
@@ -243,6 +295,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/baby-crew-studios': {
+      id: '/baby-crew-studios'
+      path: '/baby-crew-studios'
+      fullPath: '/baby-crew-studios'
+      preLoaderRoute: typeof BabyCrewStudiosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/brands': {
       id: '/brands'
       path: '/brands'
@@ -257,11 +316,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/deor-fashion': {
+      id: '/deor-fashion'
+      path: '/deor-fashion'
+      fullPath: '/deor-fashion'
+      preLoaderRoute: typeof DeorFashionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/odonata-republic': {
+      id: '/odonata-republic'
+      path: '/odonata-republic'
+      fullPath: '/odonata-republic'
+      preLoaderRoute: typeof OdonataRepublicRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/oriana-group': {
       id: '/oriana-group'
       path: '/oriana-group'
       fullPath: '/oriana-group'
       preLoaderRoute: typeof OrianaGroupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/orion-events': {
+      id: '/orion-events'
+      path: '/orion-events'
+      fullPath: '/orion-events'
+      preLoaderRoute: typeof OrionEventsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/portfolio': {
@@ -389,9 +469,13 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   StudioRouteRoute: StudioRouteRouteWithChildren,
   AboutRoute: AboutRoute,
+  BabyCrewStudiosRoute: BabyCrewStudiosRoute,
   BrandsRoute: BrandsRouteWithChildren,
   ContactRoute: ContactRoute,
+  DeorFashionRoute: DeorFashionRoute,
+  OdonataRepublicRoute: OdonataRepublicRoute,
   OrianaGroupRoute: OrianaGroupRoute,
+  OrionEventsRoute: OrionEventsRoute,
   PortfolioRoute: PortfolioRouteWithChildren,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   WeddingFilmsRoute: WeddingFilmsRoute,
