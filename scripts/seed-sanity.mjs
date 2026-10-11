@@ -736,12 +736,12 @@ const docs = [
       "Baby photography and related creative services — newborn, baby and family portraiture.",
     audience: "Parents with newborns, babies and young children.",
     offerings: ["Newborn photography", "Baby and milestone sessions", "Family portraiture"],
-    coverKey: "haldi-bride-with-friends",
+    coverKey: "portrait-bride-sunlight",
     galleryKeys: [
       "haldi-bride-with-friends",
+      "detail-bride-henna-face",
       "detail-bouquet",
-      "portrait-bride-sunlight",
-      "instagram-03",
+      "church-outside-joy",
     ],
   },
   {
@@ -757,10 +757,10 @@ const docs = [
     offerings: ["Editorial photography", "Lookbook shoots", "Campaign photography"],
     coverKey: "detail-reception-monochrome",
     galleryKeys: [
-      "detail-reception-monochrome",
       "calicut-cinematic-wedding-hero",
-      "instagram-07",
-      "instagram-08",
+      "hero-traditional-intimate",
+      "kerala-cinematic-wedding-film-still",
+      "portrait-bride-sunlight",
     ],
   },
   {
@@ -776,10 +776,10 @@ const docs = [
     offerings: ["Event design", "Wedding and corporate coordination", "On-ground production"],
     coverKey: "detail-reception-cake",
     galleryKeys: [
-      "detail-reception-cake",
       "closing-cta-user",
       "church-altar-candid",
-      "instagram-05",
+      "calicut-church-wedding-ceremony",
+      "haldi-bride-with-friends",
     ],
   },
   {
@@ -795,10 +795,10 @@ const docs = [
     offerings: ["Specialty collections", "Handcrafted wedding albums", "Fine-art prints"],
     coverKey: "detail-bouquet",
     galleryKeys: [
-      "detail-bouquet",
+      "detail-bride-henna-face",
       "detail-bride-groom-feet",
       "detail-reception-monochrome",
-      "instagram-11",
+      "ceremony-temple-ritual",
     ],
   },
   {
