@@ -351,6 +351,20 @@ export function whatsappHrefFor(settings: SiteSettings, message: string) {
 /* Page copy (singletons, merged over the built-in words)              */
 /* ------------------------------------------------------------------ */
 
+/**
+ * Merge a CMS document over built-in defaults, ignoring explicitly nullish
+ * fields. A cleared Studio field (or a partially-written document) must fall
+ * back to the built-in copy — never overwrite it with null and crash a page
+ * calling `.replace` / `.split` on the result.
+ */
+function over<T extends object>(defaults: T, doc: unknown): T {
+  if (!doc || typeof doc !== "object") return defaults;
+  const clean = Object.fromEntries(
+    Object.entries(doc as Record<string, unknown>).filter(([, v]) => v !== null && v !== undefined),
+  ) as Partial<T>;
+  return { ...defaults, ...clean };
+}
+
 export type CollectionFilterId = "candid" | "traditional" | "intimate" | "pre";
 
 export type HomeCollection = {
@@ -453,8 +467,7 @@ export function getHomePage(): Promise<HomePageContent> {
       return asset ? { key: null, alt, asset } : null;
     };
     return {
-      ...defaultHome,
-      ...doc,
+      ...over(defaultHome, doc),
       heroImage: {
         ...defaultHome.heroImage,
         asset: mapAsset(doc.heroImage),
@@ -594,8 +607,7 @@ export function getAboutPage(): Promise<AboutPageContent> {
     const members = Array.isArray(doc.teamMembers) ? doc.teamMembers : [];
     const meta = Array.isArray(doc.heroMeta) ? doc.heroMeta : [];
     return {
-      ...defaultAbout,
-      ...doc,
+      ...over(defaultAbout, doc),
       heroImage: {
         ...defaultAbout.heroImage,
         asset: mapAsset(doc.heroImage),
@@ -688,8 +700,7 @@ export function getBrandsPage(): Promise<BrandsPageContent> {
       heroImage?: RawImage;
     };
     return {
-      ...defaultBrands,
-      ...rest,
+      ...over(defaultBrands, rest),
       heroImage: { ...defaultBrands.heroImage, asset: mapAsset(rawHero) },
     };
   });
@@ -767,8 +778,7 @@ export function getContactPage(): Promise<ContactPageContent> {
     if (!doc) return defaultContact;
     const options = Array.isArray(doc.serviceOptions) ? doc.serviceOptions : [];
     return {
-      ...defaultContact,
-      ...doc,
+      ...over(defaultContact, doc),
       serviceOptions: options
         .filter((o) => o?.value)
         .map((o) => ({ value: o.value as string, note: o.note || "" })),
@@ -788,7 +798,7 @@ export function getFilmsPage(): Promise<FilmsPageContent> {
   return fetchDoc<Partial<FilmsPageContent> | null>(
     `*[_type == "filmsPage" && _id == "filmsPage"][0]`,
     null,
-  ).then((doc) => ({ ...defaultFilms, ...(doc ?? {}) }));
+  ).then((doc) => over(defaultFilms, doc));
 }
 
 export type PhotographyPageContent = { seoTitle: string; seoDescription: string };
@@ -802,7 +812,7 @@ export function getPhotographyPage(): Promise<PhotographyPageContent> {
   return fetchDoc<Partial<PhotographyPageContent> | null>(
     `*[_type == "photographyPage" && _id == "photographyPage"][0]`,
     null,
-  ).then((doc) => ({ ...defaultPhotography, ...(doc ?? {}) }));
+  ).then((doc) => over(defaultPhotography, doc));
 }
 
 export type PortfolioPageContent = {
@@ -875,8 +885,7 @@ export function getPortfolioPage(): Promise<PortfolioPageContent> {
       )
       .map((f) => ({ id: f.id as string, label: f.label as string }));
     return {
-      ...defaultPortfolio,
-      ...doc,
+      ...over(defaultPortfolio, doc),
       filterLabels,
       library: library
         .map((item) => {
@@ -900,12 +909,17 @@ export function getPortfolioPage(): Promise<PortfolioPageContent> {
 }
 
 /** "Showing 12 of 30 images" — fills {shown} and {total}. */
-export const fillCount = (template: string, shown: number, total: number) =>
-  template.replace("{shown}", String(shown)).replace("{total}", String(total));
+export const fillCount = (template: string | null | undefined, shown: number, total: number) =>
+  (typeof template === "string" && template !== "" ? template : "Showing {shown} of {total} images")
+    .replace("{shown}", String(shown))
+    .replace("{total}", String(total));
 
 /** "Show more (18 remaining)" — fills {remaining}. */
-export const fillRemaining = (template: string, remaining: number) =>
-  template.replace("{remaining}", String(remaining));
+export const fillRemaining = (template: string | null | undefined, remaining: number) =>
+  (typeof template === "string" && template !== ""
+    ? template
+    : "Show more ({remaining} remaining)"
+  ).replace("{remaining}", String(remaining));
 
 /* ------------------------------------------------------------------ */
 /* Collections                                                         */

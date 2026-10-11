@@ -105,8 +105,11 @@ const keyByAssetId = new Map(
     .map((a) => [a._id, a.originalFilename.slice(0, -".jpg".length)]),
 );
 
-const doc = await client.fetch(`*[_type == "portfolioPage" && _id == "portfolioPage"][0]{ _id, _type, library }`);
+const doc = await client.fetch(`*[_type == "portfolioPage" && _id == "portfolioPage"][0]`);
 if (!doc) throw new Error('No "portfolioPage" document — run `npm run cms:seed` first.');
+// NOTE: the whole document is fetched (not a projection) and written back
+// with only `library` changed — projecting a subset here once wiped the
+// page's other fields, so never narrow this query.
 if (!Array.isArray(doc.library) || doc.library.length === 0) {
   console.log("Library is empty — nothing to tick.");
   process.exit(0);
@@ -154,5 +157,5 @@ if (!write) {
   process.exit(0);
 }
 
-await client.createOrReplace({ _id: doc._id, _type: doc._type, ...doc, library: next });
+await client.createOrReplace({ ...doc, library: next });
 console.log(`\nDone: ${updated} ticked, ${skippedTicked} kept, ${skippedUnknown} skipped.`);
