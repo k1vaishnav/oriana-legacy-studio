@@ -4388,3 +4388,63 @@ select.field {
 .sanity-root > div {
   height: 100%;
 }
+
+/* Brand profile pages — one calm page per company.
+ *
+ * Compact editorial header (words first, cover as an inset band at a normal
+ * size), an abstract beside a facts card, and a mosaic gallery of modest
+ * frames. Nothing here is full-bleed: the page reads as a document about the
+ * company, not as a slideshow.
+ */
+.brand-profile-head {
+  padding-top: clamp(5rem, 10vw, 7.5rem);
+}
+.brand-cover {
+  max-height: min(58svh, 34rem);
+  margin-top: clamp(2rem, 4vw, 3rem);
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+}
+.brand-facts {
+  position: sticky;
+  top: 6rem;
+  border: 1px solid var(--color-ink);
+  border-radius: var(--radius-card, 0.75rem);
+  background: var(--color-bone);
+  padding: clamp(1.4rem, 2.5vw, 2rem);
+}
+.brand-gallery {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: clamp(0.75rem, 2vw, 1.5rem);
+  align-items: start;
+}
+.brand-span-wide {
+  grid-column: span 7;
+}
+.brand-span-narrow {
+  grid-column: span 5;
+}
+.brand-frame {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+  text-align: inherit;
+  font: inherit;
+}
+.brand-frame-image {
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+}
+@media (max-width: 720px) {
+  .brand-facts {
+    position: static;
+  }
+  .brand-span-wide,
+  .brand-span-narrow {
+    grid-column: 1 / -1;
+  }
+}
