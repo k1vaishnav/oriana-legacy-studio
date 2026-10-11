@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 
-import { getImage, type ImageKey } from "@/lib/image-manifest";
+import type { ImageKey } from "@/lib/image-manifest";
 import { useSiteSettings, whatsappHrefFor } from "@/lib/cms";
 import { PhotoImage } from "@/lib/images";
 import type { CmsAsset } from "@/lib/sanity-image";
@@ -13,12 +13,13 @@ import type { CmsAsset } from "@/lib/sanity-image";
  * Bottom-anchored and safe-area aware: the headline never hides behind the
  * floating call bar, and both targets clear 44px.
  *
- * The frame is the LCP element, so it is never lazy: eager, synchronous
- * decode, `fetchPriority="high"`, and a full AVIF → WebP → JPEG ladder at
- * 100vw so the browser picks the right bytes instead of a too-small default.
- * Width/height from the manifest reserve the space before a byte arrives, and
- * the blurred placeholder plus dominant colour sit behind it — inlined, so
- * they cost no request.
+ * The frame is the LCP element, so it is never lazy: eager, asynchronous
+ * decode, `fetchPriority="high"`, a `<link rel="preload">` from the route
+ * head, and a full AVIF → WebP → JPEG ladder at 100vw so the browser picks
+ * the right bytes instead of a too-small default. Width/height reserve the
+ * space before a byte arrives. There is deliberately no blurred placeholder
+ * and no fade: a solid dark frame until the real photograph decodes, then it
+ * appears instantly.
  */
 export function EditorialHero({
   image = "home-hero-user",
@@ -41,28 +42,21 @@ export function EditorialHero({
   secondaryLabel?: string;
 }) {
   const settings = useSiteSettings();
-  const entry = getImage(image);
-  // The frame's blurred backdrop: prefer the CMS asset's own blur-up when a
-  // Studio upload is active, so the placeholder matches the photograph that
-  // is about to arrive instead of the archive fallback's.
-  const rawLqip = asset?.lqip && asset.lqip !== "" ? asset.lqip : entry.lqip;
-  const frameLqip = rawLqip.startsWith("data:") ? rawLqip : `data:image/jpeg;base64,${rawLqip}`;
 
   return (
     <section className="home-hero-wrap" aria-label="Oriana Weddings Hero">
-      <div
-        className="home-hero-frame"
-        style={{
-          backgroundColor: entry.color,
-          backgroundImage: `url("${frameLqip}")`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
+      {/*
+        Solid dark frame, no blurred placeholder: the hero shows nothing until
+        the real photograph decodes, then it appears instantly (see `instant`
+        below). No blur phase, no fade, no white flash — the ground matches
+        the surrounding dark canvas.
+      */}
+      <div className="home-hero-frame" style={{ backgroundColor: "#171615" }}>
         <PhotoImage
           photo={{ key: image, alt, asset: asset ?? null }}
           sizes="100vw"
           eager
+          instant
           className="contents"
           imgClassName="home-hero-image"
         />

@@ -105,6 +105,7 @@ export function PageHero({
               ratio="21 / 9"
               sizes="(min-width: 1024px) 68rem, 92vw"
               eager
+              instant
               imgClassName="page-hero-image"
             />
           </div>
@@ -116,6 +117,7 @@ export function PageHero({
           sizes="100vw"
           className="rounded-none"
           eager
+          instant
           imgClassName="page-hero-image"
         />
       )}

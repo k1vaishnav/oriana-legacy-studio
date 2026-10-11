@@ -18,6 +18,12 @@ type CommonProps = {
   style?: CSSProperties | undefined;
   /** Opt-in slow zoom on load / hover. Used to give a wall of images some life. */
   zoom?: boolean;
+  /**
+   * No placeholder, no fade — the frame is a solid colour until the real
+   * photograph decodes, then it appears instantly. Only for LCP heroes, where
+   * any blur-up phase reads as slowness. Galleries keep the blur + fade.
+   */
+  instant?: boolean | undefined;
 };
 
 export type ResponsiveImageProps = CommonProps;
@@ -100,9 +106,15 @@ export function PriorityImage(props: ResponsiveImageProps) {
       style={{
         aspectRatio: props.ratio ?? `${entry.width} / ${entry.height}`,
         backgroundColor: entry.color,
-        backgroundImage: `url("${entry.lqip}")`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
+        // Instant heroes skip the blurred placeholder: solid colour, then the
+        // real photo. Anything else keeps the blur-up behind the fade.
+        ...(props.instant
+          ? {}
+          : {
+              backgroundImage: `url("${entry.lqip}")`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }),
         ...props.style,
       }}
     >
@@ -128,6 +140,7 @@ export function PriorityImage(props: ResponsiveImageProps) {
           decoding="async"
           loading="eager"
           className={props.imgClassName ?? ""}
+          {...(props.instant ? { style: { opacity: 1, transition: "none" } } : {})}
           ref={(node) => {
             if (node?.complete) node.classList.add("is-loaded");
           }}
@@ -151,6 +164,11 @@ export type PhotoImageProps = {
   zoom?: boolean;
   /** Above-the-fold: eager, synchronous decode, high fetch priority. */
   eager?: boolean;
+  /**
+   * No placeholder, no fade — solid frame colour until the real photograph
+   * decodes, then it appears instantly. Only for LCP heroes.
+   */
+  instant?: boolean | undefined;
 };
 
 /**
@@ -171,6 +189,7 @@ export function PhotoImage({
   style,
   zoom = false,
   eager = false,
+  instant = false,
 }: PhotoImageProps) {
   const text = alt ?? photo.alt;
   const asset: CmsAsset | null = photo.asset ?? null;
@@ -186,6 +205,7 @@ export function PhotoImage({
       imgClassName,
       style,
       zoom,
+      instant,
     };
     return eager ? <PriorityImage {...shared} /> : <ResponsiveImage {...shared} />;
   }
@@ -209,9 +229,13 @@ export function PhotoImage({
       style={{
         aspectRatio: ratio ?? `${asset.width} / ${asset.height}`,
         backgroundColor: "#e8e2d8",
-        ...(lqip
-          ? { backgroundImage: lqip, backgroundSize: "cover", backgroundPosition: "center" }
-          : {}),
+        // Instant heroes skip the blurred placeholder: solid colour, then the
+        // real photo. Anything else keeps the blur-up behind the fade.
+        ...(instant
+          ? {}
+          : lqip
+            ? { backgroundImage: lqip, backgroundSize: "cover", backgroundPosition: "center" }
+            : {}),
         ...style,
       }}
     >
@@ -231,6 +255,7 @@ export function PhotoImage({
           decoding="async"
           fetchPriority={eager ? "high" : "low"}
           className={imgClassName}
+          {...(instant ? { style: { opacity: 1, transition: "none" } } : {})}
           ref={(node) => {
             if (node?.complete) node.classList.add("is-loaded");
           }}
