@@ -12,6 +12,7 @@
  * companies' trademarks, not content, so only their names/links are editable.
  */
 import { FilterCategoriesInput } from "./FilterCategoriesInput";
+import { PortfolioWallInput } from "./PortfolioWallInput";
 type Rule = { required: () => unknown };
 const required = (r: Rule) => r.required();
 
@@ -432,9 +433,13 @@ export const schemaTypes = [
         name: "library",
         title: "Photo wall",
         description:
-          "Your photos, in order — this is the “All work” wall. Click any frame to change its photo, edit its caption, or tick which filter buttons it appears under. Drag rows to reorder, use the menu to remove one.",
+          "Your photos, filter by filter — plus the full wall below. This is the “All work” wall: everything lives here.",
         type: "array",
         group: "wall",
+        // Section-per-filter management above the default wall editor; see
+        // PortfolioWallInput. Ticking here and ticking inside a photo are the
+        // same stored value.
+        components: { input: PortfolioWallInput },
         of: [
           {
             type: "object",
@@ -532,24 +537,10 @@ export const schemaTypes = [
             fields: [
               {
                 name: "id",
-                title: "Which button",
-                description: "Pick from the list — don't type.",
+                title: "Button id",
+                description:
+                  "One lowercase word, e.g. mehendi — this is what photo tick boxes and the website address (?filter=mehendi) use. Set it once and don't change it after photos are ticked. Built-ins: all, candid, traditional, intimate, haldi, christian, pre, venue.",
                 type: "string",
-                options: {
-                  // Dropdown (not checkboxes) on purpose: each row maps exactly
-                  // one button id to one label.
-                  layout: "dropdown",
-                  list: [
-                    "all",
-                    "candid",
-                    "traditional",
-                    "intimate",
-                    "haldi",
-                    "christian",
-                    "pre",
-                    "venue",
-                  ],
-                },
                 validation: required,
               },
               { name: "label", title: "Name on the button", type: "string", validation: required },

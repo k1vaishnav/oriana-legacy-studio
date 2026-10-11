@@ -3,7 +3,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
 import { Lightbox } from "@/components/site/Lightbox";
 import { PhotoImage } from "@/lib/images";
-import { FILTERS, GROUPS, PAGE_SIZE, parseFilter, type FilterId } from "@/lib/photoFilters";
+import { FILTERS, PAGE_SIZE, groupFor, parseFilter, type FilterId } from "@/lib/photoFilters";
 import { fillCount, fillRemaining, getPortfolioPage } from "@/lib/cms";
 import type { Photo } from "@/lib/photos";
 import { lcpPreload, seo } from "@/lib/seo";
@@ -22,7 +22,7 @@ export const Route = createFileRoute("/portfolio/")({
     });
     // The first wall frame is this page's LCP — but every grid image renders
     // lazy, so without a preload the largest paint waits for hydration.
-    const first: Photo | undefined = loaderData?.page.library[0]?.photo ?? GROUPS.all[0];
+    const first: Photo | undefined = loaderData?.page.library[0]?.photo ?? groupFor("all")?.[0];
     const preload = first ? lcpPreload(first, "(min-width: 1024px) 25vw, 50vw") : null;
     return preload ? { ...base, links: [...base.links, preload] } : base;
   },
@@ -52,14 +52,23 @@ function PortfolioPage() {
   // curated archive slice is only a fallback for a brand-new CMS whose library
   // is still empty.
   const libraryPhotos = page.library.length > 0 ? page.library : null;
-  // Deleting a filter row in the Studio hides that button here. An unedited
-  // (empty) CMS list means "show everything"; otherwise only the kept ids
-  // render, in the canonical order — with "All work" always first so the wall
-  // always has an entry point, even if its row was deleted.
-  const visibleFilters =
+  // Deleting a filter row in the Studio hides that button here; adding a row
+  // (built-in or brand-new id) adds a button. An unedited (empty) CMS list
+  // means "show the built-in set". "All work" always leads, so the wall always
+  // has an entry point, even if its row was deleted.
+  const allLabel =
+    page.filterLabels.find((f) => f.id === "all")?.label ??
+    FILTERS.find((f) => f.id === "all")?.label ??
+    "All work";
+  const visibleFilters: { id: FilterId; label: string }[] =
     page.filterLabels.length > 0
-      ? FILTERS.filter((tag) => tag.id === "all" || page.filterLabels.some((f) => f.id === tag.id))
-      : FILTERS;
+      ? [
+          { id: "all", label: allLabel },
+          ...page.filterLabels
+            .filter((f) => f.id !== "all")
+            .map((f) => ({ id: f.id, label: f.label })),
+        ]
+      : FILTERS.map((f) => ({ ...f }));
   // A deep link to a now-hidden filter (?filter=haldi) lands on the wall
   // instead of an empty grid.
   const effectiveFilter = visibleFilters.some((tag) => tag.id === photoFilter)
@@ -73,17 +82,11 @@ function PortfolioPage() {
     effectiveFilter === "all"
       ? libraryPhotos
         ? libraryPhotos.map((item) => item.photo)
-        : GROUPS.all
+        : (groupFor("all") ?? [])
       : libraryPhotos
         ? taggedPhotos(effectiveFilter)
-        : GROUPS[effectiveFilter];
+        : (groupFor(effectiveFilter) ?? []);
   const shownPhotos = visiblePhotos.slice(0, visibleCount);
-
-  // CMS renames a filter button by id; unknown ids and blanks keep the built-in.
-  const labelFor = (id: FilterId) =>
-    page.filterLabels.find((f) => f.id === id)?.label ||
-    FILTERS.find((f) => f.id === id)?.label ||
-    id;
 
   const pickFilter = (id: FilterId) => {
     setPhotoFilter(id);
@@ -115,7 +118,7 @@ function PortfolioPage() {
                   aria-pressed={effectiveFilter === tag.id}
                   onClick={() => pickFilter(tag.id)}
                 >
-                  {labelFor(tag.id)}
+                  {tag.label}
                 </button>
               ))}
             </div>

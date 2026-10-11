@@ -20,6 +20,7 @@ import { weddings as localWeddings, type Wedding } from "./portfolio";
 import { getImage } from "./image-manifest";
 import { photoAlt, type Photo } from "./photos";
 import type { FilterId } from "./photoFilters";
+import { FILTER_ID_PATTERN, isCategoryId } from "./photoFilters";
 import {
   business as localBusiness,
   coverage as localCoverage,
@@ -834,16 +835,6 @@ export type LibraryItem = {
   categories: FilterId[];
 };
 
-const FILTER_IDS = [
-  "candid",
-  "traditional",
-  "intimate",
-  "haldi",
-  "christian",
-  "pre",
-  "venue",
-] as const;
-
 const defaultPortfolio: PortfolioPageContent = {
   seoTitle: "Wedding Photography Portfolio | Oriana Weddings",
   seoDescription:
@@ -875,13 +866,15 @@ export function getPortfolioPage(): Promise<PortfolioPageContent> {
     const labels = Array.isArray(doc.filterLabels) ? doc.filterLabels : [];
     const library = Array.isArray(doc.library) ? doc.library : [];
     // Deleting a filter row in the Studio hides that button on the site, so
-    // only known ids survive here (plus dedupe — one row per button). An
-    // empty list means "unedited": the site falls back to all eight buttons.
+    // only well-formed ids survive here (built-in or custom, plus dedupe —
+    // one row per button). An empty list means "unedited": the site falls back
+    // to the built-in buttons.
     const seen = new Set<string>();
-    const validIds = new Set(["all", ...FILTER_IDS]);
+    const isButtonId = (id: unknown): id is string =>
+      typeof id === "string" && FILTER_ID_PATTERN.test(id);
     const filterLabels = labels
       .filter(
-        (f) => f?.id && f?.label && validIds.has(f.id) && !seen.has(f.id) && (seen.add(f.id), true),
+        (f) => f?.id && f?.label && isButtonId(f.id) && !seen.has(f.id) && (seen.add(f.id), true),
       )
       .map((f) => ({ id: f.id as string, label: f.label as string }));
     return {
@@ -898,7 +891,7 @@ export function getPortfolioPage(): Promise<PortfolioPageContent> {
                   asset,
                 } as Photo,
                 categories: (Array.isArray(item?.categories) ? item.categories : []).filter(
-                  (c): c is FilterId => (FILTER_IDS as readonly string[]).includes(c),
+                  (c): c is FilterId => isCategoryId(c),
                 ),
               } as LibraryItem)
             : null;

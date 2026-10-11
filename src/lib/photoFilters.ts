@@ -41,7 +41,19 @@ export const FILTERS = [
   { id: "venue", label: "Venues" },
 ] as const;
 
-export type FilterId = (typeof FILTERS)[number]["id"];
+/**
+ * A filter id. The eight built-in ids below are the defaults, but the Studio
+ * can add custom ones (a "Filter buttons" row with any lowercase id) — the
+ * website renders whatever the CMS lists, so ids stay an open string type.
+ */
+export type FilterId = string;
+
+/** Lowercase words and dashes only — the shape every filter id must take. */
+export const FILTER_ID_PATTERN = /^[a-z0-9-]{1,32}$/;
+
+/** True for usable ids, including custom Studio ones (but never "all"). */
+export const isCategoryId = (id: unknown): id is FilterId =>
+  typeof id === "string" && id !== "all" && FILTER_ID_PATTERN.test(id);
 
 /** The active filter's own name, so the count line names what it is counting. */
 export const filterLabel = (id: FilterId) =>
@@ -49,7 +61,7 @@ export const filterLabel = (id: FilterId) =>
 
 const ceremonyKeys = new Set(ceremonies.map((photo) => photo.key));
 
-export const GROUPS: Record<FilterId, Photo[]> = {
+export const GROUPS: Record<string, Photo[]> = {
   all: allPhotos,
   candid: portraits.slice(0, 10),
   traditional: [...ceremonies, ...churchWeddings.filter((photo) => !ceremonyKeys.has(photo.key))],
@@ -60,6 +72,12 @@ export const GROUPS: Record<FilterId, Photo[]> = {
   venue: [...venues, ...details.slice(0, 2)],
 };
 
+/** Archive fallback for one filter id, or null for custom ids without one. */
+export function groupFor(id: FilterId): Photo[] | null {
+  const group = GROUPS[id];
+  return Array.isArray(group) && group.length > 0 ? group : null;
+}
+
 /** The grid opens at this many photographs and grows by the same amount. */
 export const PAGE_SIZE = 12;
 
@@ -68,11 +86,12 @@ export const PAGE_SIZE = 12;
  *
  * "all" is expressed by omitting the key rather than setting it, so it never
  * appears in the address bar and `<Link to="/wedding-photography">` stays valid
- * without a `search` prop. Anything unrecognised is dropped rather than
- * rejected, so a stale or mistyped query still lands on a populated page.
+ * without a `search` prop. Any well-formed id passes (built-in or a custom
+ * Studio filter); the page itself falls back to the wall when the id names no
+ * visible button, so a stale or mistyped query still lands on a populated page.
  */
 export function parseFilter(raw: unknown): { filter?: FilterId } {
-  return typeof raw === "string" && FILTERS.some((f) => f.id === raw) && raw !== "all"
-    ? { filter: raw as FilterId }
+  return typeof raw === "string" && FILTER_ID_PATTERN.test(raw) && raw !== "all"
+    ? { filter: raw }
     : {};
 }
