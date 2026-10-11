@@ -10,10 +10,13 @@
  *
  * Safe to re-run: frames that already have ticks are left untouched, unknown
  * photos are reported and skipped, and without `--write` it only prints what
- * it WOULD do (dry run).
+ * it WOULD do (dry run). Pass `--force` to overwrite existing ticks with the
+ * map below (used when re-assigning the whole wall, e.g. after deleting a
+ * filter) — still dry-run unless `--write` is also given.
  *
  *   node scripts/backfill-portfolio-categories.mjs            # dry run
  *   SANITY_API_TOKEN=<editor-token> node scripts/backfill-portfolio-categories.mjs --write
+ *   SANITY_API_TOKEN=<editor-token> node scripts/backfill-portfolio-categories.mjs --force --write
  *
  * Project/dataset resolve from SANITY_PROJECT_ID / SANITY_DATASET, the
  * VITE_SANITY_* equivalents, or a local `.env` file — same as `cms:seed`.
@@ -35,6 +38,7 @@ const projectId = env("SANITY_PROJECT_ID") ?? env("VITE_SANITY_PROJECT_ID");
 const dataset = env("SANITY_DATASET") ?? env("VITE_SANITY_DATASET") ?? "production";
 const token = env("SANITY_API_TOKEN");
 const write = process.argv.includes("--write");
+const force = process.argv.includes("--force");
 
 if (!projectId) throw new Error("Set SANITY_PROJECT_ID (or VITE_SANITY_PROJECT_ID).");
 if (write && !token)
@@ -48,38 +52,47 @@ const client = createClient({
   useCdn: false,
 });
 
-/** Archive key → the filters its frame belongs to (mirrors the seed wall). */
+/**
+ * Archive key → the filters its frame belongs to.
+ *
+ * Every frame sits in at least one filter (nothing unticked); the deleted
+ * "venue" filter appears nowhere, so no photo carries a tick the Studio can
+ * no longer show. Assignments follow the photo content (couple portraits →
+ * candid/intimate, temple jewellery & garlands → traditional, outdoor
+ * pre-wedding-style shoots → pre, church frames → christian, haldi frames →
+ * haldi).
+ */
 const CATEGORIES_BY_KEY = {
-  "home-hero-user": [],
+  "home-hero-user": ["candid", "intimate"],
   "hero-traditional-intimate": ["candid", "intimate"],
   "calicut-cinematic-wedding-hero": ["candid"],
   "kerala-cinematic-wedding-film-still": ["candid"],
   "calicut-church-wedding-ceremony": ["traditional", "christian"],
   "church-golden-altar": ["traditional", "christian"],
   "portrait-bride-sunlight": ["candid", "intimate", "haldi", "pre"],
-  "closing-cta-user": ["venue"],
+  "closing-cta-user": ["candid", "intimate", "pre"],
   "ceremony-temple-ritual": ["traditional"],
   "ceremony-south-asian-prewedding": ["traditional"],
-  "church-altar-candid": ["traditional", "christian", "venue"],
+  "church-altar-candid": ["traditional", "christian"],
   "church-outside-joy": ["traditional", "christian"],
   "haldi-bride-with-friends": ["candid", "intimate", "traditional", "haldi", "pre"],
-  "detail-bride-henna-face": ["traditional", "haldi", "pre", "venue"],
-  "detail-bouquet": ["haldi", "pre", "venue"],
-  "detail-bride-groom-feet": [],
-  "detail-reception-cake": ["venue"],
-  "detail-reception-monochrome": ["candid", "intimate", "venue"],
+  "detail-bride-henna-face": ["traditional", "haldi", "pre"],
+  "detail-bouquet": ["haldi", "pre"],
+  "detail-bride-groom-feet": ["candid", "traditional", "intimate"],
+  "detail-reception-cake": ["candid", "traditional", "intimate"],
+  "detail-reception-monochrome": ["candid", "intimate"],
   "instagram-01": ["candid", "pre"],
   "instagram-02": ["candid", "pre"],
   "instagram-07": ["candid", "pre"],
   "instagram-08": ["candid", "pre"],
-  "instagram-03": [],
-  "instagram-04": [],
-  "instagram-05": [],
-  "instagram-06": [],
-  "instagram-09": [],
-  "instagram-10": [],
-  "instagram-11": [],
-  "instagram-12": [],
+  "instagram-03": ["candid", "traditional", "intimate"],
+  "instagram-04": ["candid", "intimate"],
+  "instagram-05": ["candid", "traditional", "intimate"],
+  "instagram-06": ["candid", "traditional", "intimate"],
+  "instagram-09": ["candid", "intimate", "pre"],
+  "instagram-10": ["candid", "intimate", "pre"],
+  "instagram-11": ["candid", "intimate", "pre"],
+  "instagram-12": ["candid", "intimate"],
 };
 
 // Seed uploads store the archive key as the asset filename (`<key>.jpg`),
@@ -106,10 +119,14 @@ const next = doc.library.map((item, index) => {
   const ref = item?.photo?.asset?._ref;
   const key = ref ? keyByAssetId.get(ref) : undefined;
   const wanted = key ? (CATEGORIES_BY_KEY[key] ?? null) : null;
-  const has = Array.isArray(item?.categories) && item.categories.length > 0;
-  if (has) {
+  const current = Array.isArray(item?.categories) ? item.categories : [];
+  const sameAsWanted =
+    wanted !== null &&
+    current.length === wanted.length &&
+    wanted.every((c) => current.includes(c));
+  if (!force && current.length > 0) {
     skippedTicked++;
-    console.log(`keep   #${index} ${key ?? "?"} (${(item.categories ?? []).join(",")})`);
+    console.log(`keep   #${index} ${key ?? "?"} (${current.join(",")})`);
     return item;
   }
   if (!wanted) {
@@ -117,8 +134,16 @@ const next = doc.library.map((item, index) => {
     console.log(`skip   #${index} ${item?.caption ?? "(no caption)"} — photo not in the archive set`);
     return item;
   }
+  if (force && sameAsWanted) {
+    skippedTicked++;
+    console.log(`keep   #${index} ${key} (already [${current.join(",")}])`);
+    return item;
+  }
   updated++;
-  console.log(`tick   #${index} ${key} -> [${wanted.join(",") || "all-work only"}]`);
+  const verb = force && current.length > 0 ? "retick" : "tick";
+  console.log(
+    `${verb}   #${index} ${key} [${current.join(",") || "unticked"}] -> [${wanted.join(",")}]`,
+  );
   return { ...item, categories: wanted };
 });
 
