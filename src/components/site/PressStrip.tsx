@@ -109,6 +109,7 @@ export function CouturePressStrip({ items }: { items?: { name: string; href: str
                   width={imageWidth}
                   height={imageHeight}
                   loading="lazy"
+                  fetchPriority="low"
                   decoding="async"
                 />
               ) : null}

@@ -98,6 +98,7 @@ export function FilmsGrid({
                   sizes="(min-width: 100rem) 50rem, (min-width: 640px) 50vw, 100vw"
                   alt=""
                   loading="lazy"
+                  fetchPriority="low"
                   decoding="async"
                   width={film.posterWidth}
                   height={film.posterHeight}

@@ -42,6 +42,11 @@ export function EditorialHero({
 }) {
   const settings = useSiteSettings();
   const entry = getImage(image);
+  // The frame's blurred backdrop: prefer the CMS asset's own blur-up when a
+  // Studio upload is active, so the placeholder matches the photograph that
+  // is about to arrive instead of the archive fallback's.
+  const rawLqip = asset?.lqip && asset.lqip !== "" ? asset.lqip : entry.lqip;
+  const frameLqip = rawLqip.startsWith("data:") ? rawLqip : `data:image/jpeg;base64,${rawLqip}`;
 
   return (
     <section className="home-hero-wrap" aria-label="Oriana Weddings Hero">
@@ -49,7 +54,7 @@ export function EditorialHero({
         className="home-hero-frame"
         style={{
           backgroundColor: entry.color,
-          backgroundImage: `url("${entry.lqip}")`,
+          backgroundImage: `url("${frameLqip}")`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}

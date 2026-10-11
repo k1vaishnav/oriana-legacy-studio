@@ -86,6 +86,7 @@ export function Awards({
                     height={420}
                     className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
                     loading="lazy"
+                    fetchPriority="low"
                     decoding="async"
                   />
                 </picture>

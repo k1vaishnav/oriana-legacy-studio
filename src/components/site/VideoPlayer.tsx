@@ -74,6 +74,7 @@ export function VideoPlayer({
               width={posterWidth}
               height={posterHeight}
               loading="lazy"
+              fetchPriority="low"
               decoding="async"
               sizes="(min-width: 1024px) 44rem, 92vw"
               style={{

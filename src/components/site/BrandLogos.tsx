@@ -73,6 +73,7 @@ function MarkTile({
           width={imageWidth}
           height={imageHeight}
           loading="lazy"
+          fetchPriority="low"
           decoding="async"
         />
       ) : (
@@ -613,6 +614,7 @@ export function SoftwareLogos() {
               width={mark.imageWidth ?? 48}
               height={mark.imageHeight ?? 48}
               loading="lazy"
+              fetchPriority="low"
               decoding="async"
             />
           ) : (

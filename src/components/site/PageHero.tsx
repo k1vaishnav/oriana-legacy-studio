@@ -105,11 +105,19 @@ export function PageHero({
               ratio="21 / 9"
               sizes="(min-width: 1024px) 68rem, 92vw"
               eager
+              imgClassName="page-hero-image"
             />
           </div>
         </div>
       ) : (
-        <PhotoImage photo={photo} ratio={ratio} sizes="100vw" className="rounded-none" eager />
+        <PhotoImage
+          photo={photo}
+          ratio={ratio}
+          sizes="100vw"
+          className="rounded-none"
+          eager
+          imgClassName="page-hero-image"
+        />
       )}
     </header>
   );

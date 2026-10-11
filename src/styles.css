@@ -3424,6 +3424,16 @@ select.field {
     font-size: clamp(1.5rem, 7vw, 2.25rem);
   }
 }
+/*
+ * Heroes arrive fast: the LCP image fades in quickly once its bytes land.
+ * The site-wide 0.9s cinematic fade stays for gallery grids (where it reads
+ * as polish), but on a full-viewport hero it reads as slowness — the frame
+ * sits visibly empty for almost a second after download on every visit.
+ */
+.img-shell img.home-hero-image,
+.img-shell img.page-hero-image {
+  transition: opacity 0.35s var(--ease-cinema);
+}
 @media (min-width: 700px) {
   .affiliations-grid {
     grid-template-columns: repeat(7, minmax(0, 1fr));
