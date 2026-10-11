@@ -45,12 +45,11 @@ function PortfolioPage() {
     setVisibleCount(PAGE_SIZE);
   }, [search.filter]);
 
-  // "All work" shows the CMS library when it has frames (full CRUD: add,
-  // remove, reorder, replace). A filtered view shows ONLY the library frames
-  // ticked for that filter — what you tick in the Studio is exactly what the
-  // site shows, so the CMS wall and the website wall can never disagree. The
-  // curated archive slice is only a fallback for a brand-new CMS whose library
-  // is still empty.
+  // "All work" shows every category, top to bottom, in Studio order. A
+  // filtered view shows exactly that category's photos — each photo lives in
+  // one category, so the Studio and the website always agree and nothing ever
+  // appears twice. The curated archive slice is only a fallback for a
+  // brand-new CMS with no categories yet.
   const libraryPhotos = page.library.length > 0 ? page.library : null;
   // Deleting a filter row in the Studio hides that button here; adding a row
   // (built-in or brand-new id) adds a button. An unedited (empty) CMS list
@@ -76,7 +75,7 @@ function PortfolioPage() {
     : ("all" as FilterId);
   const taggedPhotos = (id: FilterId): readonly Photo[] => {
     if (!libraryPhotos || id === "all") return [];
-    return libraryPhotos.filter((item) => item.categories.includes(id)).map((item) => item.photo);
+    return libraryPhotos.filter((item) => item.category === id).map((item) => item.photo);
   };
   const visiblePhotos: readonly Photo[] =
     effectiveFilter === "all"

@@ -69,6 +69,7 @@ const imgs = (keys) => keys.map(img);
 
 // The portfolio wall in wall order, with the registry captions and the
 // filters each frame belongs to (mirrors the built-in filter groups).
+// Captions double as the seed source for category buckets (see below).
 const LIBRARY = [
   ["home-hero-user", "Newlywed couple sharing a quiet moment, photographed by Oriana Weddings", []],
   [
@@ -166,6 +167,39 @@ const LIBRARY = [
   ["instagram-12", "Wedding moment, photographed by Oriana Weddings", []],
 ];
 
+// Each category owns its photos (no ticks, no duplicates): archive keys per
+// category, assigned by photo content. "All work" on the website shows every
+// category, top to bottom, in this order.
+const PHOTOS_BY_CATEGORY = {
+  candid: [
+    "home-hero-user",
+    "calicut-cinematic-wedding-hero",
+    "kerala-cinematic-wedding-film-still",
+    "haldi-bride-with-friends",
+    "detail-reception-monochrome",
+    "instagram-04",
+    "instagram-12",
+  ],
+  traditional: [
+    "ceremony-temple-ritual",
+    "ceremony-south-asian-prewedding",
+    "detail-bride-groom-feet",
+    "detail-reception-cake",
+    "instagram-03",
+    "instagram-05",
+    "instagram-06",
+  ],
+  intimate: ["hero-traditional-intimate", "instagram-09", "instagram-10", "instagram-11"],
+  haldi: ["detail-bride-henna-face", "detail-bouquet", "portrait-bride-sunlight"],
+  christian: [
+    "calicut-church-wedding-ceremony",
+    "church-golden-altar",
+    "church-altar-candid",
+    "church-outside-joy",
+  ],
+  pre: ["instagram-01", "instagram-02", "instagram-07", "instagram-08", "closing-cta-user"],
+};
+
 /**
  * Docs below keep readable archive keys (`coverKey`, `frameKeys`, …); this
  * converts them to image-asset references before upload, so the source stays
@@ -222,11 +256,15 @@ const toImageFields = (doc) => {
     });
   }
   if (out._id === "portfolioPage") {
-    out.library = LIBRARY.map(([key, caption, categories]) => ({
-      photo: img(key),
-      caption,
-      categories,
+    const captionByKey = new Map(LIBRARY.map(([key, caption]) => [key, caption]));
+    out.categories = out.categories.map((cat) => ({
+      id: { _type: "slug", current: cat.id },
+      label: cat.label,
+      photos: (cat.photoKeys ?? [])
+        .filter((k) => refByKey[k])
+        .map((k) => ({ photo: img(k), caption: captionByKey.get(k) ?? "Wedding photograph" })),
     }));
+    for (const cat of out.categories) delete cat.photoKeys;
   }
   return out;
 };
@@ -651,16 +689,17 @@ const docs = [
     storiesBackLabel: "← All photography stories",
     countTemplate: "Showing {shown} of {total} images",
     showMoreTemplate: "Show more ({remaining} remaining)",
-    filterLabels: [
-      { id: "all", label: "All work" },
+    // One category owns its photos (no ticks, no duplicates): label, id, and
+    // the archive keys that start inside it. toImageFields below converts keys
+    // to asset references, keeping captions from the LIBRARY table.
+    categories: [
       { id: "candid", label: "Candid" },
       { id: "traditional", label: "Traditional" },
       { id: "intimate", label: "Intimate" },
       { id: "haldi", label: "Haldi & Mehendi" },
       { id: "christian", label: "Christian" },
       { id: "pre", label: "Pre-wedding" },
-      { id: "venue", label: "Venues" },
-    ],
+    ].map((c) => ({ ...c, photoKeys: PHOTOS_BY_CATEGORY[c.id] })),
   },
   {
     _id: "brand-oriana-weddings",

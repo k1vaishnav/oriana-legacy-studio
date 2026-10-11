@@ -20,7 +20,7 @@ import { weddings as localWeddings, type Wedding } from "./portfolio";
 import { getImage } from "./image-manifest";
 import { photoAlt, type Photo } from "./photos";
 import type { FilterId } from "./photoFilters";
-import { FILTER_ID_PATTERN, isCategoryId } from "./photoFilters";
+import { FILTER_ID_PATTERN } from "./photoFilters";
 import {
   business as localBusiness,
   coverage as localCoverage,
@@ -829,10 +829,10 @@ export type PortfolioPageContent = {
   library: LibraryItem[];
 };
 
-/** One wall frame: its photograph plus the filters it appears in. */
+/** One wall frame: its photograph plus the single category that owns it. */
 export type LibraryItem = {
   photo: Photo;
-  categories: FilterId[];
+  category: FilterId;
 };
 
 const defaultPortfolio: PortfolioPageContent = {
@@ -849,38 +849,53 @@ const defaultPortfolio: PortfolioPageContent = {
   library: [],
 };
 
-type RawLibraryItem = { photo?: RawImage; caption?: string; categories?: string[] };
+type RawCategoryPhoto = { photo?: RawImage; caption?: string };
+
+type RawCategory = {
+  id?: { current?: string } | string;
+  label?: string;
+  photos?: RawCategoryPhoto[];
+};
 
 export function getPortfolioPage(): Promise<PortfolioPageContent> {
   return fetchDoc<
-    (Partial<Omit<PortfolioPageContent, "library">> & { library?: RawLibraryItem[] }) | null
+    | (Partial<Omit<PortfolioPageContent, "library" | "filterLabels">> & {
+        categories?: RawCategory[];
+        filterLabels?: { id?: string; label?: string }[];
+        library?: { photo?: RawImage; caption?: string; categories?: string[] }[];
+      })
+    | null
   >(
     `*[_type == "portfolioPage" && _id == "portfolioPage"][0]{
       seoTitle, seoDescription, eyebrow, sub, storyBackLabel, storiesBackLabel,
-      countTemplate, showMoreTemplate, filterLabels,
-      library[]{caption, categories, photo${IMG}}
+      countTemplate, showMoreTemplate,
+      categories[]{label, "id": coalesce(id.current, id), photos[]{caption, photo${IMG}}},
+      filterLabels, library[]{caption, categories, photo${IMG}}
     }`,
     null,
   ).then((doc) => {
     if (!doc) return defaultPortfolio;
-    const labels = Array.isArray(doc.filterLabels) ? doc.filterLabels : [];
-    const library = Array.isArray(doc.library) ? doc.library : [];
-    // Deleting a filter row in the Studio hides that button on the site, so
-    // only well-formed ids survive here (built-in or custom, plus dedupe —
-    // one row per button). An empty list means "unedited": the site falls back
-    // to the built-in buttons.
+    // One category owns its photos: the buttons and the "All work" wall
+    // (every category, top to bottom, in this order) both derive from this
+    // list, so the Studio and the website can never disagree — and a photo
+    // can never appear twice.
     const seen = new Set<string>();
-    const isButtonId = (id: unknown): id is string =>
-      typeof id === "string" && FILTER_ID_PATTERN.test(id);
-    const filterLabels = labels
+    const cats = (Array.isArray(doc.categories) ? doc.categories : [])
+      .map((c) => {
+        const id = typeof c?.id === "string" ? c.id : (c?.id?.current ?? "");
+        return { id, label: c?.label || "", photos: Array.isArray(c?.photos) ? c.photos : [] };
+      })
       .filter(
-        (f) => f?.id && f?.label && isButtonId(f.id) && !seen.has(f.id) && (seen.add(f.id), true),
-      )
-      .map((f) => ({ id: f.id as string, label: f.label as string }));
-    return {
-      ...over(defaultPortfolio, doc),
-      filterLabels,
-      library: library
+        (c) =>
+          c.id !== "all" &&
+          FILTER_ID_PATTERN.test(c.id) &&
+          c.label !== "" &&
+          !seen.has(c.id) &&
+          (seen.add(c.id), true),
+      );
+    const filterLabels = cats.map((c) => ({ id: c.id, label: c.label }));
+    const library: LibraryItem[] = cats.flatMap((cat) =>
+      cat.photos
         .map((item) => {
           const asset = mapAsset(item?.photo);
           return asset
@@ -890,13 +905,50 @@ export function getPortfolioPage(): Promise<PortfolioPageContent> {
                   alt: item?.caption || "Wedding photograph",
                   asset,
                 } as Photo,
-                categories: (Array.isArray(item?.categories) ? item.categories : []).filter(
-                  (c): c is FilterId => isCategoryId(c),
-                ),
+                category: cat.id,
               } as LibraryItem)
             : null;
         })
         .filter((item): item is LibraryItem => item !== null),
+    );
+    if (library.length > 0 || filterLabels.length > 0) {
+      return {
+        ...over(defaultPortfolio, doc),
+        filterLabels,
+        library,
+      };
+    }
+    // Legacy tick shape (documents not yet migrated): buttons from the button
+    // rows, each photo filed under its first tick — unticked photos live under
+    // "All work" only. Retires itself the moment the migration lands.
+    const seenLegacy = new Set<string>();
+    const legacyLabels = (Array.isArray(doc.filterLabels) ? doc.filterLabels : [])
+      .filter(
+        (f) =>
+          f?.id &&
+          f?.label &&
+          FILTER_ID_PATTERN.test(f.id) &&
+          !seenLegacy.has(f.id) &&
+          (seenLegacy.add(f.id), true),
+      )
+      .map((f) => ({ id: f.id as string, label: f.label as string }));
+    const legacyLibrary: LibraryItem[] = (Array.isArray(doc.library) ? doc.library : [])
+      .map((item) => {
+        const asset = mapAsset(item?.photo);
+        if (!asset) return null;
+        const ticks = (Array.isArray(item?.categories) ? item.categories : []).filter(
+          (c): c is string => typeof c === "string" && FILTER_ID_PATTERN.test(c) && c !== "all",
+        );
+        return {
+          photo: { key: null, alt: item?.caption || "Wedding photograph", asset } as Photo,
+          category: ticks[0] ?? "all",
+        } as LibraryItem;
+      })
+      .filter((item): item is LibraryItem => item !== null);
+    return {
+      ...over(defaultPortfolio, doc),
+      filterLabels: legacyLabels,
+      library: legacyLibrary,
     };
   });
 }

@@ -11,8 +11,6 @@
  * (camera/software marks, press seals) stays in the repo: those are other
  * companies' trademarks, not content, so only their names/links are editable.
  */
-import { FilterCategoriesInput } from "./FilterCategoriesInput";
-import { PortfolioWallInput } from "./PortfolioWallInput";
 type Rule = { required: () => unknown };
 const required = (r: Rule) => r.required();
 
@@ -52,6 +50,7 @@ const singleton = (
   title: string,
   fields: unknown[],
   groups?: { name: string; title: string }[],
+  fieldsets?: unknown[],
 ) => ({
   name,
   title,
@@ -60,6 +59,7 @@ const singleton = (
   __experimental_omnisearch_visibility: false,
   fields,
   ...(groups ? { groups } : {}),
+  ...(fieldsets ? { fieldsets } : {}),
 });
 
 const seoFields = [
@@ -426,74 +426,83 @@ export const schemaTypes = [
     "portfolioPage",
     "🖼️ Portfolio page",
     [
-      ...seoFields.map((f) => ({ ...f, group: "settings" })),
-      { name: "eyebrow", title: "Eyebrow", type: "string", group: "settings" },
-      { name: "sub", title: "Sub-line under the title", type: "string", group: "settings" },
+      { name: "eyebrow", title: "Eyebrow", type: "string", fieldset: "settings" },
+      { name: "sub", title: "Sub-line under the title", type: "string", fieldset: "settings" },
+      ...seoFields.map((f) => ({ ...f, fieldset: "settings" })),
+      // One category owns its photos — open it to add, remove, reorder or
+      // change them. No ticks anywhere: a photo lives in exactly one place,
+      // so it can never appear twice. “All work” on the website simply shows
+      // every category, top to bottom, in this order (drag rows to reorder).
       {
-        name: "library",
-        title: "Photo wall",
+        name: "categories",
+        title: "Photo categories",
         description:
-          "Your photos, filter by filter — plus the full wall below. This is the “All work” wall: everything lives here.",
+          "Each category is a button on the website with its own photos inside. Open one to manage its photos. Add a row for a new button, delete a row to remove it.",
         type: "array",
-        group: "wall",
-        // Section-per-filter management above the default wall editor; see
-        // PortfolioWallInput. Ticking here and ticking inside a photo are the
-        // same stored value.
-        components: { input: PortfolioWallInput },
         of: [
           {
             type: "object",
             fields: [
               {
-                name: "photo",
-                title: "Photograph",
-                description: "Click to replace it with another photo, or remove it.",
-                type: "image",
-                options: { hotspot: true },
+                name: "label",
+                title: "Button name",
+                description: "What visitors see, e.g. Candid or Mehendi.",
+                type: "string",
                 validation: required,
               },
               {
-                name: "caption",
-                title: "Caption",
+                name: "id",
+                title: "Website address",
                 description:
-                  "Shown under the frame, and read by Google. A few words: who and where.",
-                type: "string",
+                  "Fills itself in from the name — leave it alone afterwards, or the button's address changes.",
+                type: "slug",
+                options: { source: "label" },
+                validation: required,
               },
               {
-                name: "categories",
-                title: "Show this photo under",
-                description:
-                  "Tick the buttons this photo appears under. Unticked photos appear only under “All work”. The boxes follow the “Filters” tab — delete a button there and its box disappears here too (stored ticks are kept, and return if the button is re-added).",
+                name: "photos",
+                title: "Photos in this category",
+                description: "Add, remove, reorder, or click one to change it.",
                 type: "array",
-                of: [{ type: "string" }],
-                // Custom checkboxes (see FilterCategoriesInput): a static list
-                // can neither follow filter deletions nor guarantee real ticks.
-                components: { input: FilterCategoriesInput },
+                of: [
+                  {
+                    type: "object",
+                    fields: [
+                      {
+                        name: "photo",
+                        title: "Photograph",
+                        description: "Click to replace it with another photo, or remove it.",
+                        type: "image",
+                        options: { hotspot: true },
+                        validation: required,
+                      },
+                      {
+                        name: "caption",
+                        title: "Caption",
+                        description:
+                          "Shown under the frame, and read by Google. A few words: who and where.",
+                        type: "string",
+                      },
+                    ],
+                    preview: {
+                      select: { title: "caption", media: "photo" },
+                      prepare: (selection: Record<string, unknown>) => ({
+                        title: (selection["title"] as string) || "Untitled frame",
+                        media: selection["media"],
+                      }),
+                    },
+                  },
+                ],
               },
             ],
             preview: {
-              select: { title: "caption", media: "photo", categories: "categories" },
-              prepare: (selection: Record<string, unknown>) => {
-                const names: Record<string, string> = {
-                  candid: "Candid",
-                  traditional: "Traditional",
-                  intimate: "Intimate",
-                  haldi: "Haldi & Mehendi",
-                  christian: "Christian",
-                  pre: "Pre-wedding",
-                  venue: "Venues",
-                };
-                const cats = Array.isArray(selection["categories"])
-                  ? (selection["categories"] as unknown[])
-                      .filter((c): c is string => typeof c === "string")
-                      .map((c) => names[c] ?? c)
-                  : [];
-                return {
-                  title: (selection["title"] as string) || "Untitled frame",
-                  subtitle: cats.length > 0 ? cats.join(" · ") : "All work only",
-                  media: selection["media"],
-                };
-              },
+              select: { label: "label", photos: "photos" },
+              prepare: (selection: Record<string, unknown>) => ({
+                title: (selection["label"] as string) || "Untitled category",
+                subtitle: Array.isArray(selection["photos"])
+                  ? `${(selection["photos"] as unknown[]).length} photos`
+                  : "No photos yet",
+              }),
             },
           },
         ],
@@ -502,67 +511,36 @@ export const schemaTypes = [
         name: "storyBackLabel",
         title: "Story page “back” link",
         type: "string",
-        group: "settings",
+        fieldset: "settings",
       },
       {
         name: "storiesBackLabel",
         title: "Stories footer “back” link",
         type: "string",
-        group: "settings",
+        fieldset: "settings",
       },
       {
         name: "countTemplate",
         title: "Count line",
         description: "The line under the buttons. Keep {shown} and {total} exactly as they are.",
         type: "string",
-        group: "settings",
+        fieldset: "settings",
       },
       {
         name: "showMoreTemplate",
         title: "“Show more” button",
         description: "The button under the wall. Keep {remaining} exactly as it is.",
         type: "string",
-        group: "settings",
-      },
-      {
-        name: "filterLabels",
-        title: "Filter buttons",
-        description:
-          "The buttons above the wall. Change a name to rename a button. Delete a whole row to remove that button everywhere — from the website and from every photo's tick boxes. Re-adding a row brings its photo ticks back.",
-        type: "array",
-        group: "filters",
-        of: [
-          {
-            type: "object",
-            fields: [
-              {
-                name: "id",
-                title: "Button id",
-                description:
-                  "One lowercase word, e.g. mehendi — this is what photo tick boxes and the website address (?filter=mehendi) use. Set it once and don't change it after photos are ticked. Built-ins: all, candid, traditional, intimate, haldi, christian, pre, venue.",
-                type: "string",
-                validation: required,
-              },
-              { name: "label", title: "Name on the button", type: "string", validation: required },
-            ],
-            preview: {
-              select: { id: "id", label: "label" },
-              prepare: (selection: Record<string, unknown>) => ({
-                title: (selection["label"] as string) || (selection["id"] as string) || "Button",
-                subtitle:
-                  selection["label"] && selection["id"]
-                    ? `Shows photos ticked “${selection["id"] as string}”`
-                    : undefined,
-              }),
-            },
-          },
-        ],
+        fieldset: "settings",
       },
     ],
+    undefined,
     [
-      { name: "wall", title: "📷 Photo wall" },
-      { name: "filters", title: "🔖 Filter buttons" },
-      { name: "settings", title: "⚙️ Words & settings" },
+      {
+        name: "settings",
+        title: "Words & settings",
+        options: { collapsible: true, collapsed: true },
+      },
     ],
   ),
 
