@@ -19,6 +19,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as StudioRouteRouteImport } from './routes/studio.route'
 import { Route as WeddingFilmsRouteImport } from './routes/wedding-films'
 import { Route as WeddingPhotographyRouteImport } from './routes/wedding-photography'
+import { Route as BrandsIndexRouteImport } from './routes/brands.index'
 import { Route as BrandsSlugRouteImport } from './routes/brands.$slug'
 import { Route as PortfolioIndexRouteImport } from './routes/portfolio.index'
 import { Route as StudioIndexRouteImport } from './routes/studio.index'
@@ -75,6 +76,11 @@ const WeddingPhotographyRoute = WeddingPhotographyRouteImport.update({
   path: '/wedding-photography',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BrandsIndexRoute = BrandsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => BrandsRoute,
+} as any)
 const BrandsSlugRoute = BrandsSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -115,6 +121,7 @@ export interface FileRoutesByFullPath {
   '/wedding-photography': typeof WeddingPhotographyRoute
   '/brands/$slug': typeof BrandsSlugRoute
   '/studio/$': typeof StudioSplatRoute
+  '/brands/': typeof BrandsIndexRoute
   '/portfolio/': typeof PortfolioIndexRoute
   '/studio/': typeof StudioIndexRoute
   '/portfolio/real-weddings/$slug': typeof PortfolioRealWeddingsSlugRoute
@@ -122,7 +129,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/brands': typeof BrandsRouteWithChildren
   '/contact': typeof ContactRoute
   '/oriana-group': typeof OrianaGroupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -130,6 +136,7 @@ export interface FileRoutesByTo {
   '/wedding-photography': typeof WeddingPhotographyRoute
   '/brands/$slug': typeof BrandsSlugRoute
   '/studio/$': typeof StudioSplatRoute
+  '/brands': typeof BrandsIndexRoute
   '/portfolio': typeof PortfolioIndexRoute
   '/studio': typeof StudioIndexRoute
   '/portfolio/real-weddings/$slug': typeof PortfolioRealWeddingsSlugRoute
@@ -148,6 +155,7 @@ export interface FileRoutesById {
   '/wedding-photography': typeof WeddingPhotographyRoute
   '/brands/$slug': typeof BrandsSlugRoute
   '/studio/$': typeof StudioSplatRoute
+  '/brands/': typeof BrandsIndexRoute
   '/portfolio/': typeof PortfolioIndexRoute
   '/studio/': typeof StudioIndexRoute
   '/portfolio/real-weddings/$slug': typeof PortfolioRealWeddingsSlugRoute
@@ -167,6 +175,7 @@ export interface FileRouteTypes {
     | '/wedding-photography'
     | '/brands/$slug'
     | '/studio/$'
+    | '/brands/'
     | '/portfolio/'
     | '/studio/'
     | '/portfolio/real-weddings/$slug'
@@ -174,7 +183,6 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
-    | '/brands'
     | '/contact'
     | '/oriana-group'
     | '/sitemap.xml'
@@ -182,6 +190,7 @@ export interface FileRouteTypes {
     | '/wedding-photography'
     | '/brands/$slug'
     | '/studio/$'
+    | '/brands'
     | '/portfolio'
     | '/studio'
     | '/portfolio/real-weddings/$slug'
@@ -199,6 +208,7 @@ export interface FileRouteTypes {
     | '/wedding-photography'
     | '/brands/$slug'
     | '/studio/$'
+    | '/brands/'
     | '/portfolio/'
     | '/studio/'
     | '/portfolio/real-weddings/$slug'
@@ -289,6 +299,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WeddingPhotographyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/brands/': {
+      id: '/brands/'
+      path: '/'
+      fullPath: '/brands/'
+      preLoaderRoute: typeof BrandsIndexRouteImport
+      parentRoute: typeof BrandsRoute
+    }
     '/brands/$slug': {
       id: '/brands/$slug'
       path: '/$slug'
@@ -343,10 +360,12 @@ const StudioRouteRouteWithChildren = StudioRouteRoute._addFileChildren(
 
 interface BrandsRouteChildren {
   BrandsSlugRoute: typeof BrandsSlugRoute
+  BrandsIndexRoute: typeof BrandsIndexRoute
 }
 
 const BrandsRouteChildren: BrandsRouteChildren = {
   BrandsSlugRoute: BrandsSlugRoute,
+  BrandsIndexRoute: BrandsIndexRoute,
 }
 
 const BrandsRouteWithChildren =
