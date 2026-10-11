@@ -41,6 +41,11 @@ const PAGES = {
   "wedding-films.tsx": "/wedding-films",
   "portfolio.index.tsx": "/portfolio",
   "brands.tsx": "/brands",
+  "brands.index.tsx": "/brands",
+  "baby-crew-studios.tsx": "/baby-crew-studios",
+  "deor-fashion.tsx": "/deor-fashion",
+  "orion-events.tsx": "/orion-events",
+  "odonata-republic.tsx": "/odonata-republic",
   "oriana-group.tsx": "/oriana-group",
   "contact.tsx": "/contact",
 };

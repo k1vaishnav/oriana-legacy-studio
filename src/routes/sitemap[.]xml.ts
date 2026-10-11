@@ -11,6 +11,10 @@ const staticPaths = [
   "/wedding-films",
   "/portfolio",
   "/brands",
+  "/baby-crew-studios",
+  "/deor-fashion",
+  "/orion-events",
+  "/odonata-republic",
   "/oriana-group",
   "/contact",
 ];
@@ -40,7 +44,9 @@ export const Route = createFileRoute("/sitemap.xml")({
         } catch {
           /* static fallbacks above stand */
         }
-        const paths = [...staticPaths, ...weddingPaths, ...brandPaths];
+        // Static paths already name the four brand pages above; CMS brands
+        // only add future ones — deduped so no URL is ever listed twice.
+        const paths = [...new Set([...staticPaths, ...weddingPaths, ...brandPaths])];
 
         const body = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
