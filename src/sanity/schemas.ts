@@ -11,6 +11,7 @@
  * (camera/software marks, press seals) stays in the repo: those are other
  * companies' trademarks, not content, so only their names/links are editable.
  */
+import { FilterCategoriesInput } from "./FilterCategoriesInput";
 type Rule = { required: () => unknown };
 const required = (r: Rule) => r.required();
 
@@ -440,23 +441,12 @@ export const schemaTypes = [
               name: "categories",
               title: "Shows in filters",
               description:
-                "Tick the filters this frame belongs to. Unticked frames appear only under “All work”.",
+                "Tick the filters this frame belongs to. Unticked frames appear only under “All work”. The tick boxes follow “Filter labels” below — delete a filter there and its box disappears here too (its stored ticks are kept, and return if the filter is re-added).",
               type: "array",
               of: [{ type: "string" }],
-              options: {
-                // `layout: "grid"` renders real checkboxes with ticks instead
-                // of a plain dropdown list, so existing ticks stay visible.
-                layout: "grid",
-                list: [
-                  { title: "Candid", value: "candid" },
-                  { title: "Traditional", value: "traditional" },
-                  { title: "Intimate", value: "intimate" },
-                  { title: "Haldi & Mehendi", value: "haldi" },
-                  { title: "Christian", value: "christian" },
-                  { title: "Pre-wedding", value: "pre" },
-                  { title: "Venues", value: "venue" },
-                ],
-              },
+              // Custom checkboxes (see FilterCategoriesInput): a static list
+              // can neither follow filter deletions nor guarantee real ticks.
+              components: { input: FilterCategoriesInput },
             },
           ],
           preview: {
@@ -483,7 +473,7 @@ export const schemaTypes = [
       name: "filterLabels",
       title: "Filter labels",
       description:
-        "Rename a filter button, or delete its row to hide that filter on the site. The id must stay one of the eight below.",
+        "Rename a filter button, or delete its row to hide that filter everywhere: its website button and its tick box inside every photo both disappear. The id must stay one of the eight below. Re-adding a row restores its photo ticks.",
       type: "array",
       of: [
         {
