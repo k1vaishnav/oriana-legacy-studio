@@ -46,9 +46,11 @@ function PortfolioPage() {
   }, [search.filter]);
 
   // "All work" shows the CMS library when it has frames (full CRUD: add,
-  // remove, reorder, replace). A filtered view shows the library frames ticked
-  // for that filter — falling back to the curated archive slice only when
-  // nothing is ticked, so a filter never goes empty.
+  // remove, reorder, replace). A filtered view shows ONLY the library frames
+  // ticked for that filter — what you tick in the Studio is exactly what the
+  // site shows, so the CMS wall and the website wall can never disagree. The
+  // curated archive slice is only a fallback for a brand-new CMS whose library
+  // is still empty.
   const libraryPhotos = page.library.length > 0 ? page.library : null;
   // Deleting a filter row in the Studio hides that button here. An unedited
   // (empty) CMS list means "show everything"; otherwise only the kept ids
@@ -63,19 +65,18 @@ function PortfolioPage() {
   const effectiveFilter = visibleFilters.some((tag) => tag.id === photoFilter)
     ? photoFilter
     : ("all" as FilterId);
-  const taggedPhotos = (id: FilterId): readonly Photo[] | null => {
-    if (!libraryPhotos || id === "all") return null;
-    const matches = libraryPhotos
-      .filter((item) => item.categories.includes(id))
-      .map((item) => item.photo);
-    return matches.length > 0 ? matches : null;
+  const taggedPhotos = (id: FilterId): readonly Photo[] => {
+    if (!libraryPhotos || id === "all") return [];
+    return libraryPhotos.filter((item) => item.categories.includes(id)).map((item) => item.photo);
   };
   const visiblePhotos: readonly Photo[] =
     effectiveFilter === "all"
       ? libraryPhotos
         ? libraryPhotos.map((item) => item.photo)
         : GROUPS.all
-      : (taggedPhotos(effectiveFilter) ?? GROUPS[effectiveFilter]);
+      : libraryPhotos
+        ? taggedPhotos(effectiveFilter)
+        : GROUPS[effectiveFilter];
   const shownPhotos = visiblePhotos.slice(0, visibleCount);
 
   // CMS renames a filter button by id; unknown ids and blanks keep the built-in.
@@ -144,6 +145,13 @@ function PortfolioPage() {
               </article>
             ))}
           </div>
+
+          {visiblePhotos.length === 0 ? (
+            <p className="portfolio-showcase-count" role="status">
+              No photographs in this filter yet — tick frames for it in the Studio portfolio wall
+              and they will appear here.
+            </p>
+          ) : null}
 
           {visibleCount < visiblePhotos.length ? (
             <div className="portfolio-showcase-more">

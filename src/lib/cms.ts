@@ -56,10 +56,17 @@ async function getClient(): Promise<SanityClient | null> {
   return client;
 }
 
-const memo = new Map<string, Promise<unknown>>();
+const memo = new Map<string, { task: Promise<unknown>; at: number }>();
+/**
+ * Studio publishes must reach the site quickly: entries expire after 60s, so
+ * a renamed/deleted filter or a re-ticked photo shows up without a server
+ * restart. Within the minute, a root loader plus a page loader asking for
+ * the same document still costs one request.
+ */
+const MEMO_TTL_MS = 60_000;
 function cached<T>(key: string, fetch: () => Promise<T>, fallback: T): Promise<T> {
-  const hit = memo.get(key) as Promise<T> | undefined;
-  if (hit) return hit;
+  const hit = memo.get(key) as { task: Promise<T>; at: number } | undefined;
+  if (hit && Date.now() - hit.at < MEMO_TTL_MS) return hit.task;
   const task = (async () => {
     try {
       return await fetch();
@@ -67,7 +74,7 @@ function cached<T>(key: string, fetch: () => Promise<T>, fallback: T): Promise<T
       return fallback;
     }
   })();
-  memo.set(key, task);
+  memo.set(key, { task, at: Date.now() });
   return task;
 }
 
