@@ -15,6 +15,7 @@ import { Route as BabyCrewStudiosRouteImport } from './routes/baby-crew-studios'
 import { Route as BrandsRouteImport } from './routes/brands'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DeorFashionRouteImport } from './routes/deor-fashion'
+import { Route as LlmsDottxtRouteImport } from './routes/llms[.]txt'
 import { Route as OdonataRepublicRouteImport } from './routes/odonata-republic'
 import { Route as OrianaGroupRouteImport } from './routes/oriana-group'
 import { Route as OrionEventsRouteImport } from './routes/orion-events'
@@ -58,6 +59,11 @@ const ContactRoute = ContactRouteImport.update({
 const DeorFashionRoute = DeorFashionRouteImport.update({
   id: '/deor-fashion',
   path: '/deor-fashion',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LlmsDottxtRoute = LlmsDottxtRouteImport.update({
+  id: '/llms.txt',
+  path: '/llms.txt',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OdonataRepublicRoute = OdonataRepublicRouteImport.update({
@@ -140,6 +146,7 @@ export interface FileRoutesByFullPath {
   '/brands': typeof BrandsRouteWithChildren
   '/contact': typeof ContactRoute
   '/deor-fashion': typeof DeorFashionRoute
+  '/llms.txt': typeof LlmsDottxtRoute
   '/odonata-republic': typeof OdonataRepublicRoute
   '/oriana-group': typeof OrianaGroupRoute
   '/orion-events': typeof OrionEventsRoute
@@ -160,6 +167,7 @@ export interface FileRoutesByTo {
   '/baby-crew-studios': typeof BabyCrewStudiosRoute
   '/contact': typeof ContactRoute
   '/deor-fashion': typeof DeorFashionRoute
+  '/llms.txt': typeof LlmsDottxtRoute
   '/odonata-republic': typeof OdonataRepublicRoute
   '/oriana-group': typeof OrianaGroupRoute
   '/orion-events': typeof OrionEventsRoute
@@ -182,6 +190,7 @@ export interface FileRoutesById {
   '/brands': typeof BrandsRouteWithChildren
   '/contact': typeof ContactRoute
   '/deor-fashion': typeof DeorFashionRoute
+  '/llms.txt': typeof LlmsDottxtRoute
   '/odonata-republic': typeof OdonataRepublicRoute
   '/oriana-group': typeof OrianaGroupRoute
   '/orion-events': typeof OrionEventsRoute
@@ -206,6 +215,7 @@ export interface FileRouteTypes {
     | '/brands'
     | '/contact'
     | '/deor-fashion'
+    | '/llms.txt'
     | '/odonata-republic'
     | '/oriana-group'
     | '/orion-events'
@@ -226,6 +236,7 @@ export interface FileRouteTypes {
     | '/baby-crew-studios'
     | '/contact'
     | '/deor-fashion'
+    | '/llms.txt'
     | '/odonata-republic'
     | '/oriana-group'
     | '/orion-events'
@@ -247,6 +258,7 @@ export interface FileRouteTypes {
     | '/brands'
     | '/contact'
     | '/deor-fashion'
+    | '/llms.txt'
     | '/odonata-republic'
     | '/oriana-group'
     | '/orion-events'
@@ -270,6 +282,7 @@ export interface RootRouteChildren {
   BrandsRoute: typeof BrandsRouteWithChildren
   ContactRoute: typeof ContactRoute
   DeorFashionRoute: typeof DeorFashionRoute
+  LlmsDottxtRoute: typeof LlmsDottxtRoute
   OdonataRepublicRoute: typeof OdonataRepublicRoute
   OrianaGroupRoute: typeof OrianaGroupRoute
   OrionEventsRoute: typeof OrionEventsRoute
@@ -321,6 +334,13 @@ declare module '@tanstack/react-router' {
       path: '/deor-fashion'
       fullPath: '/deor-fashion'
       preLoaderRoute: typeof DeorFashionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/llms.txt': {
+      id: '/llms.txt'
+      path: '/llms.txt'
+      fullPath: '/llms.txt'
+      preLoaderRoute: typeof LlmsDottxtRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/odonata-republic': {
@@ -473,6 +493,7 @@ const rootRouteChildren: RootRouteChildren = {
   BrandsRoute: BrandsRouteWithChildren,
   ContactRoute: ContactRoute,
   DeorFashionRoute: DeorFashionRoute,
+  LlmsDottxtRoute: LlmsDottxtRoute,
   OdonataRepublicRoute: OdonataRepublicRoute,
   OrianaGroupRoute: OrianaGroupRoute,
   OrionEventsRoute: OrionEventsRoute,
