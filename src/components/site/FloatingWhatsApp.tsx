@@ -9,6 +9,9 @@ const NUDGE_DELAY = 2500;
 export function FloatingWhatsApp() {
   const settings = useSiteSettings();
   const { business } = settings;
+  // Every word below comes from the Studio (Site settings → Chatbot words),
+  // with built-in fallbacks — clearing a field restores its default.
+  const copy = settings.chatbot;
   const whatsappHref = (message: string) => whatsappHrefFor(settings, message);
   const [atBottom, setAtBottom] = useState(false);
 
@@ -19,8 +22,8 @@ export function FloatingWhatsApp() {
   const [nudgeVisible, setNudgeVisible] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [messages, setMessages] = useState<{ sender: "bot" | "user"; text: string }[]>([
-    { sender: "bot", text: settings.chatbot.greeting },
-    { sender: "bot", text: settings.chatbot.prompt },
+    { sender: "bot", text: copy.greeting },
+    { sender: "bot", text: copy.prompt },
   ]);
   const [inputValue, setInputValue] = useState("");
   const [step, setStep] = useState<Step>("name");
@@ -334,9 +337,7 @@ export function FloatingWhatsApp() {
       if (looksLikeQuestion) {
         // They asked something instead of giving a name — log the text anyway.
         void sendLeadData(lead, "started", withUserLine);
-        botSay(
-          `Great question! Our team will give you exact pricing & dates — could I get your name first so they can reply personally?`,
-        );
+        botSay(copy.questionDeflection);
         return;
       }
       const updated = { ...lead, name: userMsg };
@@ -344,7 +345,7 @@ export function FloatingWhatsApp() {
       // Log the name immediately — if they leave now, we still have it.
       void sendLeadData(updated, "name-captured", withUserLine);
       setStep("phone");
-      botSay(`Nice to meet you, ${userMsg}! What's the best phone number to reach you at?`);
+      botSay(copy.nameReply.replace("{name}", userMsg));
     } else if (step === "phone") {
       const updated = { ...lead, phone: userMsg };
       setLead(updated);
@@ -354,7 +355,7 @@ export function FloatingWhatsApp() {
         { sender: "user" as const, text: userMsg },
       ]);
       setStep("interest");
-      botSay("Got it! What are you looking for? Just tap one below 👇");
+      botSay(copy.phoneQuestion);
     }
   };
 
@@ -372,7 +373,7 @@ export function FloatingWhatsApp() {
         ...prev,
         {
           sender: "bot",
-          text: settings.chatbot.handoff,
+          text: copy.handoff,
         },
       ]);
       window.setTimeout(() => {
@@ -411,10 +412,8 @@ export function FloatingWhatsApp() {
                   </span>
                 </span>
                 <div className="min-w-0">
-                  <p className="text-sm font-semibold leading-snug">Planning a wedding? 💍</p>
-                  <p className="mt-0.5 text-xs leading-relaxed text-white/75">
-                    Get a quick quote — we usually reply instantly.
-                  </p>
+                  <p className="text-sm font-semibold leading-snug">{copy.teaserTitle}</p>
+                  <p className="mt-0.5 text-xs leading-relaxed text-white/75">{copy.teaserBody}</p>
                 </div>
                 <button
                   onClick={() => {
@@ -438,7 +437,7 @@ export function FloatingWhatsApp() {
                 onClick={() => openChat()}
                 className="mx-4 mb-4 flex w-[calc(100%-2rem)] items-center justify-center gap-2 rounded-full bg-gold-ink py-2.5 text-xs font-bold text-white transition-colors hover:bg-gold-ink/90"
               >
-                Get a Quote
+                {copy.teaserButton}
                 <svg
                   viewBox="0 0 24 24"
                   className="size-3.5"
@@ -469,7 +468,7 @@ export function FloatingWhatsApp() {
                   <h3 className="font-display font-semibold leading-tight">Oriana Weddings</h3>
                   <p className="text-xs text-white/70">
                     <span className="mr-1 inline-block size-1.5 rounded-full bg-green-400 align-middle"></span>
-                    Online — replies instantly
+                    {copy.onlineStatus}
                   </p>
                 </div>
               </div>
@@ -517,12 +516,7 @@ export function FloatingWhatsApp() {
 
               {step === "interest" && !isTyping && (
                 <div className="flex flex-col gap-2 mt-1">
-                  {[
-                    "Wedding Photography",
-                    "Wedding Films",
-                    "Photography + Films",
-                    "Other Enquiries",
-                  ].map((opt) => (
+                  {copy.interestOptions.map((opt) => (
                     <button
                       key={opt}
                       onClick={() => handleChipClick(opt)}
@@ -549,10 +543,10 @@ export function FloatingWhatsApp() {
                 disabled={step === "interest" || step === "done"}
                 placeholder={
                   step === "name"
-                    ? "Ask anything, or type your name…"
+                    ? copy.inputNameHint
                     : step === "phone"
-                      ? "Your phone number…"
-                      : "Tap an option above 👆"
+                      ? copy.inputPhoneHint
+                      : copy.inputTapHint
                 }
                 aria-label="Type your message"
                 autoComplete={step === "phone" ? "tel" : "name"}
@@ -611,7 +605,7 @@ export function FloatingWhatsApp() {
                 </svg>
               )}
             </span>
-            {chatOpen ? "Close Chat" : "Get a Quote"}
+            {chatOpen ? "Close Chat" : copy.teaserButton}
           </button>
         </div>
 
@@ -668,7 +662,7 @@ export function FloatingWhatsApp() {
                 />
               </svg>
             )}
-            {chatOpen ? "Close" : "Get Quote"}
+            {chatOpen ? "Close" : copy.teaserButton}
           </button>
           <a
             href={business.phoneHref}
@@ -712,7 +706,7 @@ export function FloatingWhatsApp() {
               <h3 className="font-display text-sm font-semibold leading-tight">Oriana Weddings</h3>
               <p className="text-[11px] text-white/60">
                 <span className="mr-1 inline-block size-1.5 rounded-full bg-green-400 align-middle"></span>
-                Online now
+                {copy.onlineStatus}
               </p>
             </div>
           </div>
@@ -759,12 +753,7 @@ export function FloatingWhatsApp() {
 
           {step === "interest" && !isTyping && (
             <div className="flex flex-col gap-1.5 mt-1">
-              {[
-                "Wedding Photography",
-                "Wedding Films",
-                "Photography + Films",
-                "Other Enquiries",
-              ].map((opt) => (
+              {copy.interestOptions.map((opt) => (
                 <button
                   key={opt}
                   onClick={() => handleChipClick(opt)}
@@ -791,10 +780,10 @@ export function FloatingWhatsApp() {
             disabled={step === "interest" || step === "done"}
             placeholder={
               step === "name"
-                ? "Ask anything, or type your name…"
+                ? copy.inputNameHint
                 : step === "phone"
-                  ? "Your phone number…"
-                  : "Tap an option above 👆"
+                  ? copy.inputPhoneHint
+                  : copy.inputTapHint
             }
             aria-label="Type your message"
             autoComplete={step === "phone" ? "tel" : "name"}

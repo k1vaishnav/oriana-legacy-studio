@@ -154,7 +154,7 @@ export type SiteSettings = {
   stats: typeof localStats;
   closingCta: { kicker: string; heading: string; button: string; image: Photo };
   affiliations: { name: string; href: string }[];
-  chatbot: { greeting: string; prompt: string; handoff: string };
+  chatbot: ChatbotCopy;
   footerExplore: string;
   footerStudios: string;
   footerCoverage: string;
@@ -174,6 +174,48 @@ export type SiteSettings = {
   };
 };
 
+/** Every word the floating chatbot can say — all CMS-editable, all optional. */
+export type ChatbotCopy = {
+  greeting: string;
+  prompt: string;
+  questionDeflection: string;
+  /** Use {name} where the visitor's name goes. */
+  nameReply: string;
+  phoneQuestion: string;
+  interestOptions: string[];
+  handoff: string;
+  teaserTitle: string;
+  teaserBody: string;
+  teaserButton: string;
+  onlineStatus: string;
+  inputNameHint: string;
+  inputPhoneHint: string;
+  inputTapHint: string;
+};
+
+export const defaultChatbot: ChatbotCopy = {
+  greeting: "Hi there! 👋 Welcome to Oriana Weddings.",
+  prompt: "Ask me anything — or share your name and I’ll get you a quick quote.",
+  questionDeflection:
+    "Great question! Our team will give you exact pricing & dates — could I get your name first so they can reply personally?",
+  nameReply: "Nice to meet you, {name}! What's the best phone number to reach you at?",
+  phoneQuestion: "Got it! What are you looking for? Just tap one below 👇",
+  interestOptions: [
+    "Wedding Photography",
+    "Wedding Films",
+    "Photography + Films",
+    "Other Enquiries",
+  ],
+  handoff: "Perfect! Opening WhatsApp so our team can assist you right away. 💬",
+  teaserTitle: "Planning a wedding? 💍",
+  teaserBody: "Get a quick quote — we usually reply instantly.",
+  teaserButton: "Get a Quote",
+  onlineStatus: "Online — replies instantly",
+  inputNameHint: "Ask anything, or type your name…",
+  inputPhoneHint: "Your phone number…",
+  inputTapHint: "Tap an option above 👆",
+};
+
 const defaultSettings: SiteSettings = {
   business: localBusiness,
   establishedYear: 1996,
@@ -188,11 +230,7 @@ const defaultSettings: SiteSettings = {
     image: { key: "closing-cta-user", alt: "", asset: null },
   },
   affiliations: [],
-  chatbot: {
-    greeting: "Hi there! 👋 Welcome to Oriana Weddings.",
-    prompt: "Ask me anything — or share your name and I’ll get you a quick quote.",
-    handoff: "Perfect! Opening WhatsApp so our team can assist you right away. 💬",
-  },
+  chatbot: defaultChatbot,
   footerExplore: "Explore",
   footerStudios: "Studio",
   footerCoverage: "Where we shoot",
@@ -302,7 +340,21 @@ export function getSiteSettings(): Promise<SiteSettings> {
               .filter((a) => a?.name)
               .map((a) => ({ name: a.name as string, href: a.href || "" }))
           : [],
-      chatbot: { ...defaultSettings.chatbot, ...(doc.chatbot ?? {}) },
+      chatbot: {
+        ...defaultChatbot,
+        ...Object.fromEntries(
+          Object.entries(doc.chatbot ?? {}).filter(
+            ([, v]) => v !== null && v !== undefined && v !== "",
+          ),
+        ),
+        interestOptions:
+          Array.isArray(doc.chatbot?.interestOptions) &&
+          doc.chatbot.interestOptions.some((o) => typeof o === "string" && o.trim() !== "")
+            ? (doc.chatbot.interestOptions as string[]).filter(
+                (o) => typeof o === "string" && o.trim() !== "",
+              )
+            : [...defaultChatbot.interestOptions],
+      },
       footerExplore: doc.footerExplore || defaultSettings.footerExplore,
       footerStudios: doc.footerStudios || defaultSettings.footerStudios,
       footerCoverage: doc.footerCoverage || defaultSettings.footerCoverage,
