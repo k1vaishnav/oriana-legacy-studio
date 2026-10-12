@@ -12,7 +12,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "@/lib/lovable-error-reporting";
-import { getSiteSettings, useSiteSettings } from "@/lib/cms";
+import { getBrands, getSiteSettings, useSiteSettings } from "@/lib/cms";
 import { useIsStudio } from "@/lib/use-is-studio";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -72,9 +72,13 @@ function ErrorComponent({ error, reset }: { error: unknown; reset: () => void })
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   // Site-wide editable content (contact details, socials, manifesto, closing
-  // CTA). Served from Sanity when configured, otherwise the built-in copy —
-  // and memoized per session, so it costs one request at most.
-  loader: async () => ({ settings: await getSiteSettings() }),
+  // CTA) plus the brand list for the header dropdown. Served from Sanity when
+  // configured, otherwise the built-in copy — and memoized per session, so it
+  // costs one request at most.
+  loader: async () => {
+    const [settings, brands] = await Promise.all([getSiteSettings(), getBrands()]);
+    return { settings, brands };
+  },
   head: () => ({
     meta: [
       { charSet: "utf-8" },

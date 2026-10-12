@@ -343,6 +343,38 @@ export function useSiteSettings(): SiteSettings {
   }
 }
 
+/** All brands inside any component (header dropdown, sitemap), CMS-first. */
+export function useBrands(): readonly GroupBrand[] {
+  try {
+    const data = getRouteApi("__root__").useLoaderData() as
+      { brands?: readonly GroupBrand[] } | undefined;
+    return data?.brands && data.brands.length > 0 ? data.brands : localBrands;
+  } catch {
+    return localBrands;
+  }
+}
+
+/** Where a brand name links: home for the house, short page for the four, brands index otherwise. */
+export function brandTo(
+  slug: string,
+):
+  "/" | "/baby-crew-studios" | "/deor-fashion" | "/orion-events" | "/odonata-republic" | "/brands" {
+  switch (slug) {
+    case "oriana-weddings":
+      return "/";
+    case "baby-crew-studios":
+      return "/baby-crew-studios";
+    case "deor-fashion":
+      return "/deor-fashion";
+    case "orion-events":
+      return "/orion-events";
+    case "odonata-republic":
+      return "/odonata-republic";
+    default:
+      return "/brands";
+  }
+}
+
 /** WhatsApp link against CMS settings (falls back to the built-in number). */
 export function whatsappHrefFor(settings: SiteSettings, message: string) {
   return `https://wa.me/${settings.business.whatsapp}?text=${encodeURIComponent(message)}`;
