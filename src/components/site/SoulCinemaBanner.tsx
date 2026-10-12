@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-import { photoSrc, useSiteSettings } from "@/lib/cms";
+import { defaultSoulCinema, photoSrc, type SoulCinemaContent } from "@/lib/cms";
 import { PhotoImage } from "@/lib/images";
 
 /**
@@ -19,11 +19,12 @@ import { PhotoImage } from "@/lib/images";
  * The still poster is CMS-replaceable with the archive frame as fallback,
  * so the band never flashes a broken frame before the video arrives.
  *
- * The copy comes from the CMS rather than being written here, so the
- * manifesto is the same sentence everywhere it appears.
+ * The copy comes from the home page in the CMS (the Soul + Cinema band
+ * section) rather than being written here, so the manifesto is edited where
+ * the band lives.
  */
-export function SoulCinemaBanner() {
-  const { soulCinema } = useSiteSettings();
+export function SoulCinemaBanner({ cinema = defaultSoulCinema }: { cinema?: SoulCinemaContent }) {
+  const soulCinema = cinema;
   const frameRef = useRef<HTMLDivElement>(null);
   const [playVideo, setPlayVideo] = useState(false);
   const still = { ...soulCinema.poster, alt: "" };

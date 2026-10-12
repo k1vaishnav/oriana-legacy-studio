@@ -37,22 +37,26 @@ const DEFAULT_COVERS: readonly Photo[] = [
  * Four featured films with inline playback, plus the image-only cover row.
  *
  * `films` comes from the CMS via the home loader when configured (newest four
- * win); otherwise the built-in catalogue's last four — the same four frames as
- * before, so the section looks identical until the CMS takes over. Headings
- * and the six cover frames are CMS-editable the same way.
+ * win); `featured` overrides it when the home page hand-picks four —
+ * otherwise the built-in catalogue's last four, so the section looks
+ * identical until the CMS takes over. Headings and the six cover frames are
+ * CMS-editable the same way.
  */
 export function FilmsGrid({
   films = localFilms.slice(-4),
+  featured = [],
   eyebrow = "WEDDING FILMS",
   title = "Stories, in motion.",
   covers,
 }: {
   films?: Film[];
+  /** Hand-picked home films from the CMS; empty means "use `films`". */
+  featured?: Film[];
   eyebrow?: string;
   title?: string;
   covers?: Photo[];
 }) {
-  const featuredFilms = films.slice(-4).map(toCard);
+  const featuredFilms = (featured.length > 0 ? featured : films).slice(-4).map(toCard);
   const editorialCovers: readonly Photo[] =
     covers && covers.length > 0 ? covers.slice(0, 6) : DEFAULT_COVERS;
   // Which card is playing inline. The film opens right inside its own

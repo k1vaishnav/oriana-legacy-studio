@@ -131,25 +131,6 @@ export const schemaTypes = [
       ],
     },
     {
-      name: "soulCinema",
-      title: "Soul + Cinema manifesto",
-      type: "object",
-      fields: [
-        { name: "title", title: "Title", type: "string" },
-        { name: "body", title: "Body", type: "text" },
-        {
-          name: "videoSrc",
-          title: "Film file (blank = built-in)",
-          description: "Path or URL of the ambient film. Leave blank to keep the built-in one.",
-          type: "string",
-        },
-        {
-          ...photoField("Still poster (blank = built-in)", "Shown until the film loads.", true),
-          name: "poster",
-        },
-      ],
-    },
-    {
       name: "closingCta",
       title: "Closing call to action (every page foot)",
       type: "object",
@@ -260,8 +241,38 @@ export const schemaTypes = [
     { name: "filmsEyebrow", title: "Films eyebrow", type: "string" },
     { name: "filmsTitle", title: "Films title", type: "string" },
     {
+      name: "featuredFilms",
+      title: "Featured films (4 videos)",
+      description:
+        "Pick the 4 wedding films for “Stories, in motion” — in order, top first. Add existing films, or create a new one (title + 11-character YouTube ID). Empty = the newest 4 automatically.",
+      type: "array",
+      of: [{ type: "reference", to: [{ type: "film" }] }],
+      validation: (Rule: { max: (n: number) => unknown }) => Rule.max(4),
+    },
+    {
       ...photoListField("Film cover row (6 small frames)"),
       name: "filmCovers",
+    },
+    {
+      name: "soulCinema",
+      title: "Soul + Cinema band",
+      description: "The wide film strip with the manifesto — words, background film, and still.",
+      type: "object",
+      fields: [
+        { name: "title", title: "Title", type: "string" },
+        { name: "body", title: "Body", type: "text" },
+        {
+          name: "videoSrc",
+          title: "Background film",
+          description:
+            "Web address (https://…) of the background film, or a file under /video/. Blank = the built-in film.",
+          type: "string",
+        },
+        {
+          ...photoField("Still poster (blank = built-in)", "Shown until the film loads.", true),
+          name: "poster",
+        },
+      ],
     },
     { name: "awardsEyebrow", title: "Awards eyebrow", type: "string" },
     { name: "awardsTitle", title: "Awards title", type: "string" },

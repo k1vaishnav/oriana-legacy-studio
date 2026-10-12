@@ -151,7 +151,6 @@ export type SiteSettings = {
   brandLines: readonly string[];
   offices: typeof localOffices;
   coverage: typeof localCoverage;
-  soulCinema: typeof localSoulCinema & { videoSrc: string; poster: Photo };
   stats: typeof localStats;
   closingCta: { kicker: string; heading: string; button: string; image: Photo };
   affiliations: { name: string; href: string }[];
@@ -181,15 +180,6 @@ const defaultSettings: SiteSettings = {
   brandLines: ["Indian Wedding Film Award Winner", "Couple Choice Award Winner"],
   offices: localOffices,
   coverage: localCoverage,
-  soulCinema: {
-    ...localSoulCinema,
-    videoSrc: "/video/soul-cinema-stock.mp4",
-    poster: {
-      key: "kerala-cinematic-wedding-film-still",
-      alt: "",
-      asset: null,
-    },
-  },
   stats: localStats,
   closingCta: {
     kicker: "ORIANAWEDDINGS · WEDDING PHOTOGRAPHY & FILMS",
@@ -241,7 +231,6 @@ type RawSettings = {
   offices?: SiteSettings["offices"];
   coverage?: string[];
   stats?: { value?: string; label?: string }[];
-  soulCinema?: { title?: string; body?: string; videoSrc?: string; poster?: RawImage };
   closingCta?: { kicker?: string; heading?: string; button?: string; image?: RawImage };
   affiliations?: { name?: string; href?: string }[];
   chatbot?: Partial<SiteSettings["chatbot"]>;
@@ -259,7 +248,6 @@ export function getSiteSettings(): Promise<SiteSettings> {
       email, instagram, youtube, facebook, establishedYear, brandLines, offices,
       coverage, stats, affiliations, chatbot, footerExplore, footerStudios, footerCoverage,
       notFound, errorPage,
-      soulCinema{title, body, videoSrc, poster${IMG}},
       closingCta{kicker, heading, button, image${IMG}}
     }`,
     null,
@@ -299,15 +287,6 @@ export function getSiteSettings(): Promise<SiteSettings> {
             .filter((s) => s?.value && s?.label)
             .map((s) => ({ value: s.value as string, label: s.label as string }))
         : [...localStats]) as SiteSettings["stats"],
-      soulCinema: {
-        title: doc.soulCinema?.title || localSoulCinema.title,
-        body: doc.soulCinema?.body || localSoulCinema.body,
-        videoSrc: doc.soulCinema?.videoSrc || "/video/soul-cinema-stock.mp4",
-        poster: {
-          ...defaultSettings.soulCinema.poster,
-          asset: mapAsset(doc.soulCinema?.poster),
-        },
-      } as SiteSettings["soulCinema"],
       closingCta: {
         kicker: doc.closingCta?.kicker || defaultSettings.closingCta.kicker,
         heading: doc.closingCta?.heading || defaultSettings.closingCta.heading,
@@ -413,6 +392,24 @@ export type AwardBadgeContent = {
   organization?: string;
 };
 
+/** The Soul + Cinema band: manifesto copy plus its background film and still. */
+export type SoulCinemaContent = {
+  title: string;
+  body: string;
+  videoSrc: string;
+  poster: Photo;
+};
+
+export const defaultSoulCinema: SoulCinemaContent = {
+  ...localSoulCinema,
+  videoSrc: "/video/soul-cinema-stock.mp4",
+  poster: {
+    key: "kerala-cinematic-wedding-film-still",
+    alt: "",
+    asset: null,
+  },
+};
+
 export type HomePageContent = {
   seoTitle: string;
   seoDescription: string;
@@ -431,6 +428,9 @@ export type HomePageContent = {
   filmsEyebrow: string;
   filmsTitle: string;
   filmCovers: Photo[];
+  /** Hand-picked home films; empty means "newest four" (resolved by the caller). */
+  featuredFilms: Film[];
+  soulCinema: SoulCinemaContent;
   awardsEyebrow: string;
   awardsTitle: string;
   awardsBadges: AwardBadgeContent[];
@@ -457,6 +457,8 @@ const defaultHome: HomePageContent = {
   filmsEyebrow: "WEDDING FILMS",
   filmsTitle: "Stories, in motion.",
   filmCovers: [],
+  featuredFilms: [],
+  soulCinema: defaultSoulCinema,
   awardsEyebrow: "DECADE OF EXCELLENCE",
   awardsTitle: "Awards & Accolades",
   awardsBadges: [],
@@ -472,13 +474,20 @@ type RawHomeCollection = {
   image?: RawImage;
 };
 
+type RawSoulCinema = { title?: string; body?: string; videoSrc?: string; poster?: RawImage };
+
 type RawHome = Partial<
-  Omit<HomePageContent, "collections" | "mosaic" | "filmCovers" | "heroImage">
+  Omit<
+    HomePageContent,
+    "collections" | "mosaic" | "filmCovers" | "heroImage" | "featuredFilms" | "soulCinema"
+  >
 > & {
   heroImage?: RawImage;
   collections?: RawHomeCollection[];
   mosaic?: RawImage[];
   filmCovers?: RawImage[];
+  featuredFilms?: RawFilm[];
+  soulCinema?: RawSoulCinema;
 };
 
 export function getHomePage(): Promise<HomePageContent> {
@@ -489,7 +498,9 @@ export function getHomePage(): Promise<HomePageContent> {
       mosaicLines, filmsEyebrow, filmsTitle, awardsEyebrow, awardsTitle,
       awardsBadges, gearCamerasLabel, gearPostLabel,
       heroImage${IMG}, collections[]{id, title, image${IMG}},
-      mosaic[]${IMG}, filmCovers[]${IMG}
+      mosaic[]${IMG}, filmCovers[]${IMG},
+      featuredFilms[]->{ "slug": slug.current, title, location, duration, description, youtubeId },
+      soulCinema{title, body, videoSrc, poster${IMG}}
     }`,
     null,
   ).then((doc) => {
@@ -499,6 +510,7 @@ export function getHomePage(): Promise<HomePageContent> {
       const asset = mapAsset(raw);
       return asset ? { key: null, alt, asset } : null;
     };
+    const soul = doc.soulCinema ?? {};
     return {
       ...over(defaultHome, doc),
       heroImage: {
@@ -532,6 +544,16 @@ export function getHomePage(): Promise<HomePageContent> {
       filmCovers: (Array.isArray(doc.filmCovers) ? doc.filmCovers : [])
         .map((raw) => toPhoto(raw, "Wedding story"))
         .filter((p): p is Photo => p !== null),
+      featuredFilms: mapFilmList(doc.featuredFilms),
+      soulCinema: {
+        title: soul.title || localSoulCinema.title,
+        body: soul.body || localSoulCinema.body,
+        videoSrc: soul.videoSrc || defaultSoulCinema.videoSrc,
+        poster: {
+          ...defaultSoulCinema.poster,
+          asset: mapAsset(soul.poster),
+        },
+      },
       awardsBadges:
         Array.isArray(doc.awardsBadges) && doc.awardsBadges.length > 0
           ? doc.awardsBadges
@@ -1236,15 +1258,23 @@ export function getFilms(): Promise<Film[]> {
     }`,
     null,
   ).then((docs) => {
-    if (!docs || docs.length === 0) return localFilms;
-    const bySlug = new Map(localFilms.map((f) => [f.slug, f]));
-    const mapped = docs
-      .map((raw, index) => {
-        const slug = typeof raw.slug === "string" ? raw.slug : (raw.slug?.current ?? "");
-        const fallback = bySlug.get(slug) ?? localFilms[index % localFilms.length]!;
-        return mapFilm(raw, fallback);
-      })
-      .filter((f): f is Film => f !== null);
+    const mapped = mapFilmList(docs);
     return mapped.length > 0 ? mapped : localFilms;
   });
+}
+
+/**
+ * Map raw film docs to site films, with the built-in catalogue as fallback
+ * per slug. Shared by the films page and the home page's hand-picked four.
+ */
+export function mapFilmList(raws: RawFilm[] | null | undefined): Film[] {
+  if (!raws || raws.length === 0) return [];
+  const bySlug = new Map(localFilms.map((f) => [f.slug, f]));
+  return raws
+    .map((raw, index) => {
+      const slug = typeof raw.slug === "string" ? raw.slug : (raw.slug?.current ?? "");
+      const fallback = bySlug.get(slug) ?? localFilms[index % localFilms.length]!;
+      return mapFilm(raw, fallback);
+    })
+    .filter((f): f is Film => f !== null);
 }

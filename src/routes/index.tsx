@@ -80,7 +80,7 @@ function Home() {
       <FeaturedWeddingStories weddings={weddings} />
 
       {/* 06 — Wide Soul + Cinema film interlude */}
-      <SoulCinemaBanner />
+      <SoulCinemaBanner cinema={page.soulCinema} />
 
       {/* 07 — Award Leaf Badges */}
       <Awards eyebrow={page.awardsEyebrow} title={page.awardsTitle} badges={page.awardsBadges} />
@@ -88,6 +88,7 @@ function Home() {
       {/* 08 — Film portraits and image-only editorial covers */}
       <FilmsGrid
         films={films}
+        featured={page.featuredFilms}
         eyebrow={page.filmsEyebrow}
         title={page.filmsTitle}
         covers={page.filmCovers}

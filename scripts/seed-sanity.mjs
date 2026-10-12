@@ -349,11 +349,6 @@ const docs = [
       { value: "02", label: "Offices — Calicut & Ahmedabad" },
       { value: "04", label: "Kerala · Gujarat · India · Beyond" },
     ],
-    soulCinema: {
-      title: "Soul + Cinema",
-      body: "Every wedding is unique and so are our films. For the past 12 years, Oriana has set new benchmarks of storytelling within the wedding realm and beyond. We are fortunate to have experienced such unique cultures and traditions across Kerala, Gujarat, India and beyond, and to document stories that continuously overwhelm us.",
-      videoSrc: "/video/soul-cinema-stock.mp4",
-    },
     closingCta: {
       kicker: "ORIANAWEDDINGS · WEDDING PHOTOGRAPHY & FILMS",
       heading: "A day, held forever.",
@@ -447,6 +442,11 @@ const docs = [
       "haldi-bride-with-friends",
       "detail-bouquet",
     ],
+    soulCinema: {
+      title: "Soul + Cinema",
+      body: "Every wedding is unique and so are our films. For the past 12 years, Oriana has set new benchmarks of storytelling within the wedding realm and beyond. We are fortunate to have experienced such unique cultures and traditions across Kerala, Gujarat, India and beyond, and to document stories that continuously overwhelm us.",
+      videoSrc: "/video/soul-cinema-stock.mp4",
+    },
     awardsEyebrow: "DECADE OF EXCELLENCE",
     awardsTitle: "Awards & Accolades",
     awardsBadges: [
