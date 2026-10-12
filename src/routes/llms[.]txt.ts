@@ -20,7 +20,6 @@ import {
   getPhotographyPage,
   getPortfolioPage,
   getSiteSettings,
-  getWeddings,
 } from "@/lib/cms";
 
 /**
@@ -41,7 +40,7 @@ const oneLine = (value: unknown, fallback = ""): string =>
     : fallback;
 
 async function buildLlms(): Promise<string> {
-  const [settings, home, about, brandsPage, contact, portfolio, filmsMeta, photoMeta, brands, films, weddings] =
+  const [settings, home, about, brandsPage, contact, portfolio, filmsMeta, photoMeta, brands, films] =
     await Promise.all([
       getSiteSettings(),
       getHomePage(),
@@ -53,7 +52,6 @@ async function buildLlms(): Promise<string> {
       getPhotographyPage(),
       getBrands(),
       getFilms(),
-      getWeddings(),
     ]);
 
   const business = settings.business ?? localBusiness;
@@ -111,13 +109,6 @@ async function buildLlms(): Promise<string> {
       const url = b.slug === "oriana-weddings" ? `${SITE_URL}/` : `${SITE_URL}/${b.slug}`;
       return `- [${oneLine(b.name)}](${url}): ${oneLine(b.tagline)} ${oneLine(b.description)} Audience: ${oneLine(b.audience)} Offerings: ${b.offerings.map((o) => oneLine(o)).join("; ")}`;
     }),
-    "",
-    "## Wedding stories",
-    "",
-    ...weddings.map(
-      (w) =>
-        `- [${oneLine(w.couple)} — ${oneLine(w.title)}](${SITE_URL}/portfolio/real-weddings/${w.slug}): ${oneLine(w.type)} wedding at ${oneLine(w.venue)}, ${oneLine(w.location)}. ${oneLine(w.summary)}`,
-    ),
     "",
     "## Wedding films",
     "",
